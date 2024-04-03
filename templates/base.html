@@ -1,0 +1,168 @@
+{% load static %}
+
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+
+{#1. Page Title------------------------------------------------------------#}
+    {% block page_title %}My Program{% endblock %}
+{#-------------------------------------------------------------------------#}
+
+    </title>
+
+{#Styles-------------------------------------------------------------------#}
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+{#Additional css--------------------------------------------------------- #}
+    {% block extra_css %}{% endblock %}
+
+{#Additional js---------------------------------------------------------- #}
+    {% block extra_js %}
+    {% endblock %}
+
+{#JS Functions-------------------------------------------------------------#}
+{#    <script type="text/javascript" src="{% static 'css/custom_functions.js' %}"></script>#}
+</head>
+
+<body>
+    <header class="header">
+
+{#2. Nav-------------------------------------------------------------------#}
+    {% block nav %}
+        <nav class="navigation">
+            <ul class="nav-list" role="list">
+                <li class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <a href="{% url 'index' %}"></a>
+                </li>
+            </ul>
+        </nav>
+    {% endblock %}
+{#-------------------------------------------------------------------------#}
+
+{#3. Page Name-------------------------------------------------------------#}
+    {% block page_name %}
+        <h1 class="page-title">Base Page to be used as a template</h1>
+    {% endblock %}
+{#-------------------------------------------------------------------------#}
+
+</header>
+<main>
+<div class="total-container">
+
+    <!-- Return-to-top button -->
+    <a id="return-to-top" href="#" title="Return to top"><i class="fa fa-chevron-up"></i></a>
+
+{#3.5. Menu----------------------------------------------------------------#}
+<div class="menu-container">
+    <ul class="menu-list" role="list">
+        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
+            <i class="fa-solid fa-handshake-angle"></i>
+            <span class="menu-item-title">
+                Клиенти
+            </span>
+        </button>
+        
+        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
+            <i class="fa-brands fa-audible"></i>
+            <span class="menu-item-title">
+                Одити
+            </span>
+        </button>
+        
+        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
+            <i class="fa-solid fa-glasses"></i>
+            <span class="menu-item-title">
+                Одитори
+            </span>
+        </button>
+        <hr class="horizontal">
+        
+        Полезна информация
+        
+        <div id="calendar"></div>
+    </ul>
+</div>
+{#-------------------------------------------------------------------------#}
+
+<div class="all-sections-container">
+
+{#4. Section1--------------------------------------------------------------#}
+{% block card_buttons %}
+    <section class="card-buttons-section">
+        <div class="all-card-buttons-container">
+            <button class="card-btn card-btn-hidden"></button>
+            
+            <button class="card-btn card-btn-hidden"></button>
+            
+            <button class="card-btn card-btn-hidden"></button>
+            
+            <button class="card-btn card-btn-hidden"></button>
+        </div>
+    </section>
+{% endblock %}
+{#-------------------------------------------------------------------------#}
+
+{#5. Section2--------------------------------------------------------------#}
+{% block display_content %}
+    <section class="display-content-section">
+        <div class="all-display-content-container">
+
+            <div class="card-display">
+                <h2 class="card-display-title">Some Title</h2>
+                <p class="card-display-content">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    Animi architecto aspernatur consequatur dolorem eos, eveniet
+                    explicabo iste maiores, neque provident ratione repudiandae
+                    saepe sunt tempore vel voluptate voluptatibus! Ipsam, laboriosam!
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}
+{#-------------------------------------------------------------------------#}
+</div>
+</div>
+</main>
+
+<footer class="footer">
+    <h3 class="footer-title">&copy; 2024 DZ</h3>
+</footer>
+
+{# for the return-to-top button #}
+    <!-- jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- JavaScript for the return-to-top button -->
+    <script>
+        $(document).ready(function() {
+            // Show the button when the user scrolls down 20px from the top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 20) {
+                    $('#return-to-top').fadeIn();
+                } else {
+                    $('#return-to-top').fadeOut();
+                }
+            });
+
+            // Smooth scroll to the top when the button is clicked
+            $('#return-to-top').click(function(event) {
+                event.preventDefault();
+                $('html, body').animate({scrollTop: 0}, 'fast');
+            });
+        });
+    </script>
+</body>
+</html>
