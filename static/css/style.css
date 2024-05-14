@@ -6,13 +6,14 @@
   /*--clr-nav-bg: #190f05;*/
   /*--clr-nav-bg: #e89238;*/
   /*--clr-nav-bg: #e89238;*/
-  --clr-nav-bg: #7E969C;
+  /*--clr-nav-bg: #7E969C;*/
+  --clr-nav-bg: #2b2828;
 
-  /*--clr-nav-a: #B5D1DB;*/
-  --clr-nav-a: black;
+  --clr-nav-a: white;
+  /*--clr-nav-a: black;*/
 
-  /*--clr-nav-a-hover: #555;*/
-  --clr-nav-a-hover: #dedede;
+  --clr-nav-a-hover: #555;
+  /*--clr-nav-a-hover: #dedede;*/
 
   --clr-title-text: #333;
   --clr-p-text: #666;
@@ -142,6 +143,7 @@ i {
 
 .header .navigation .nav-list .nav-item:hover {
   background-color: var(--clr-nav-a-hover);
+  cursor: pointer;
 }
 
 .header .navigation .nav-list .nav-item a,
