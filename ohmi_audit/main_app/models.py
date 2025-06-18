@@ -1,8 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from common.common_models_data import *
+
+
+__all__ = ['Audit', 'Auditor', 'Customer']
 
 
 class Audit(CustomModelBase):
