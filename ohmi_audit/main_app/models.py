@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
-from common.common_models_data import *
+from django.core.validators import MaxLengthValidator
 
+from common.common_models_data import *
 
 __all__ = ['Audit', 'Auditor', 'Customer']
 
@@ -11,10 +12,40 @@ class Audit(CustomModelBase):
     """
     Represents an audit record in the system.
     """
-    name = models.CharField(max_length=CustomModelData.MAX_CHARFIELD_LENGTH)
-    description = models.TextField(max_length=CustomModelData.MAX_TEXTFIELD_LENGTH)
-    date = models.DateField()
-    is_active = models.BooleanField(default=True)
+    # blank is used to allow empty values in forms, null is used to allow NULL in the database
+    name = models.CharField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
+        unique=True,
+        blank=False,
+        null=False,
+    )
+    # for TextField, max_length is not enforced by the database, so we use a validator
+    description = models.TextField(
+        validators=[MaxLengthValidator(CustomModelData.MAX_TEXTFIELD_DESCRIPTION_LENGTH)],
+        blank=True,
+        null=False,
+    )
+    date = models.DateField(
+        blank=False,
+        null=False,
+    )
+    is_active = models.BooleanField(
+        default=True,
+        blank=False,
+        null=False,
+    )
+    category = models.CharField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
+        choices=CustomModelData.AUDIT_CATEGORY_CHOICES,
+        default='other',
+        blank=True,  # Allow form to skip (will use default)
+        null=False,
+    )
+
+    class Meta:
+        verbose_name = "Audit"
+        verbose_name_plural = "Audits"
+        ordering = ['id']
 
     @property
     def full_name(self) -> str:
@@ -38,10 +69,33 @@ class Auditor(CustomModelBase):
     """
     Represents an auditor in the system.
     """
-    first_name = models.CharField(max_length=CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH)
-    last_name = models.CharField(max_length=CustomModelData.MAX_LAST_NAME_CHARFIELD_LENGTH)
-    email = models.EmailField(max_length=CustomModelData.MAX_EMAIL_CHARFIELD_LENGTH)
-    phone = models.CharField(max_length=CustomModelData.MAX_PHONE_CHARFIELD_LENGTH)
+    first_name = models.CharField(
+        max_length=CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH,
+        blank=False,
+        null=False,
+    )
+    last_name = models.CharField(
+        max_length=CustomModelData.MAX_LAST_NAME_CHARFIELD_LENGTH,
+        blank=False,
+        null=False,
+    )
+    # max_length is 254 by default
+    email = models.EmailField(
+        unique=True,
+        blank=False,
+        null=False,
+    )
+    phone = models.CharField(
+        max_length=CustomModelData.MAX_PHONE_CHARFIELD_LENGTH,
+        unique=True,
+        blank=False,
+        null=False,
+    )
+
+    class Meta:
+        verbose_name = "Auditor"
+        verbose_name_plural = "Auditors"
+        ordering = ['id']
 
     @property
     def full_name(self) -> str:
@@ -67,11 +121,38 @@ class Customer(CustomModelBase):
     """
     Represents a customer in the system.
     """
-    first_name = models.CharField(max_length=CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH)
-    last_name = models.CharField(max_length=CustomModelData.MAX_LAST_NAME_CHARFIELD_LENGTH)
-    address = models.TextField(max_length=CustomModelData.MAX_TEXTFIELD_LENGTH)
-    phone = models.CharField(max_length=CustomModelData.MAX_PHONE_CHARFIELD_LENGTH)
-    email = models.EmailField(max_length=CustomModelData.MAX_EMAIL_CHARFIELD_LENGTH)
+    first_name = models.CharField(
+        max_length=CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH,
+        blank=False,
+        null=False,
+    )
+    last_name = models.CharField(
+        max_length=CustomModelData.MAX_LAST_NAME_CHARFIELD_LENGTH,
+        blank=False,
+        null=False,
+    )
+    # for TextField, max_length is not enforced by the database, so we use a validator
+    address = models.TextField(
+        validators=[MaxLengthValidator(CustomModelData.MAX_TEXTFIELD_ADDRESS_LENGTH)],
+        blank=False,
+        null=False,
+    )
+    phone = models.CharField(
+        max_length=CustomModelData.MAX_PHONE_CHARFIELD_LENGTH,
+        unique=True,
+        blank=False,
+        null=False,
+    )
+    email = models.EmailField(
+        unique=True,
+        blank=False,
+        null=False,
+    )
+
+    class Meta:
+        verbose_name = "Customer"
+        verbose_name_plural = "Customers"
+        ordering = ['id']
 
     @property
     def full_name(self) -> str:

@@ -1,7 +1,6 @@
 from abc import abstractmethod, ABC, ABCMeta
 from django.db import models
 
-
 # define the __all__ variable to control what is imported when using 'from module import *'
 __all__ = ['CustomModelData', 'CustomModelBase']
 
@@ -13,11 +12,18 @@ class CustomModelData:
     MAX_CHARFIELD_LENGTH = 255
     MAX_FIRST_NAME_CHARFIELD_LENGTH = 100
     MAX_LAST_NAME_CHARFIELD_LENGTH = 100
-    MAX_EMAIL_CHARFIELD_LENGTH = 254
     MAX_PHONE_CHARFIELD_LENGTH = 20
 
-    # textfield
-    MAX_TEXTFIELD_LENGTH = 1000
+    MAX_TEXTFIELD_DESCRIPTION_LENGTH = 1000
+    MAX_TEXTFIELD_ADDRESS_LENGTH = 500
+
+    AUDIT_CATEGORY_CHOICES = (
+        # On the left side, the value stored in the database, on the right side, the human-readable name
+        ('compliance', 'Compliance'),
+        ('information_security', 'Information Security'),
+        ('health_and_safety', 'Health and Safety'),
+        ('other', 'Other'),
+    )
 
 
 class CustomModelBase(models.Model):
@@ -28,8 +34,16 @@ class CustomModelBase(models.Model):
     Field names cannot have more than one underscore in a row and cannot
     end with an underscore
     """
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        blank=True,
+        null=True
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        blank=True,
+        null=True
+    )
 
     class Meta:
         abstract = True
