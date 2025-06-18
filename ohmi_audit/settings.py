@@ -25,6 +25,12 @@ New app:
 5. create a template for the view
 6. create urls.py in hr_management directory and add a path
 7. include the urls in the main urls.py
+
+8. create models based on common_models_base.py
+9. run migrations with comands:
+    python manage.py makemigrations
+    python manage.py migrate
+
 """
 
 INSTALLED_APPS = [
