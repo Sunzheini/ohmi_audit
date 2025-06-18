@@ -1,5 +1,9 @@
-from abc import abstractmethod, ABC
+from abc import abstractmethod, ABC, ABCMeta
 from django.db import models
+
+
+# define the __all__ variable to control what is imported when using 'from module import *'
+__all__ = ['CustomModelData', 'CustomModelBase']
 
 
 class CustomModelData:
@@ -16,7 +20,7 @@ class CustomModelData:
     MAX_TEXTFIELD_LENGTH = 1000
 
 
-class CustomModelBase(models.Model, ABC):
+class CustomModelBase(models.Model):
     """
     Base model for all models in the application. Provides common fields
     and methods.
@@ -24,15 +28,15 @@ class CustomModelBase(models.Model, ABC):
     Field names cannot have more than one underscore in a row and cannot
     end with an underscore
     """
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
         abstract = True
 
     @property
     @abstractmethod
-    def full_name(self):
+    def full_name(self) -> str:
         """For models that have name components"""
         raise NotImplementedError
 
@@ -45,7 +49,7 @@ class CustomModelBase(models.Model, ABC):
         self.validate_model()  # Keep your custom validation
 
     @abstractmethod
-    def get_display_name(self):
+    def get_display_name(self) -> str:
         """Return a display-friendly name for the model instance"""
         raise NotImplementedError("Subclasses must implement get_display_name()")
 
@@ -55,6 +59,6 @@ class CustomModelBase(models.Model, ABC):
         raise NotImplementedError("Subclasses must implement validate_model()")
 
     @abstractmethod
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return URL for viewing the model instance"""
         raise NotImplementedError("Subclasses must implement get_absolute_url()")
