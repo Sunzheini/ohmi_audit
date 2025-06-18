@@ -3,21 +3,29 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+"""
+when it is False the 404.html is used automatically instead of 
+django's default 404 page.
+"""
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+]
 
+"""
+New app:
 
-# Application definition
+1. python manage.py startapp hr_management
+2. move hr_management to inside ohmi_audit directory
+3. add 'ohmi_audit.hr_management' to INSTALLED_APPS
+4. create a view
+5. create a template for the view
+6. create urls.py in hr_management directory and add a path
+7. include the urls in the main urls.py
+"""
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -28,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'ohmi_audit.main_app',
+    'ohmi_audit.hr_management',
 ]
 
 MIDDLEWARE = [
@@ -61,20 +70,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -91,21 +92,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
@@ -115,8 +105,5 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media_files'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
