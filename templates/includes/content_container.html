@@ -6,29 +6,24 @@
         <div class="card-display">
             <h2 class="card-display-title">Some Title</h2>
 
-            {% block content_container_dynamic_content %}
-                {% if form %}
-                    <form method="post">
-                    {% csrf_token %}
+            <form method="POST">
+                {% csrf_token %}
+                <table>
+                    {{ form.as_table }}
+                </table>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
 
-                    <table>
-                        {{ form.as_table }}
-                    </table>
-
-                    <button type="submit" class="btn btn-primary">Save</button>
-                {% endif %}
-
-                {% if content %}
-                    {% for item in content %}
-                        <div class="item">
-                <h3>{{ item.title }}</h3>
-                </div>
-            {% endfor %}
+            {% if content %}
+                {% for item in content %}
+                    <div class="item">
+                        <h3>{{ item.name }}</h3>
+                    </div>
+                {% endfor %}
             {% else %}
                 <p>No audits found.</p>
             {% endif %}
 
-            {% endblock %}
-    </div>
+        </div>
     </div>
 </section>
