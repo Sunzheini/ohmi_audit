@@ -8,6 +8,21 @@ from common.common_models_data import *
 __all__ = ['Audit', 'Auditor', 'Customer']
 
 
+"""
+Audit.object.create() will create a new Audit object with the given parameters.
+
+Audit.objects.all() will return all Audit objects in the database.
+
+Audit.objects.get(pk=1) will return the Audit object with primary key 1.
+
+Audit.objects.filter(name='Test Audit') will return all Audit objects with the name 'Test Audit'.
+Audit.objects.filter(is_active=True) will return all active Audit objects.
+Audit.objects.filter(date__year=2023) will return all Audit objects created in the year 2023.
+Audit.objects.filter(category='financial') will return all Audit objects in the 'financial' category.
+Audit.objects.filter(related_auditors__first_name='John') will return all Audit objects related to auditors with the first name 'John'.
+"""
+
+
 class Audit(CustomModelBase):
     """
     Represents an audit record in the system.
@@ -50,6 +65,18 @@ class Audit(CustomModelBase):
         blank=True, # blank=True is appropriate for optional relationships
         through='AuditAuditor',  # doesn't auto create a table but uses the one specified
     )
+
+    @property
+    def current_assignments(self):
+        """Returns active auditor assignments (through model instances)"""
+        return self.auditor_assignments.filter(auditor__isnull=False)
+
+    def active_auditors(self):
+        """Returns actual Auditor objects for this audit"""
+        return Auditor.objects.filter(
+            audit_assignments__audit=self,
+            audit_assignments__auditor__isnull=False
+        ).distinct()
 
     class Meta:
         verbose_name = "Audit"
@@ -97,6 +124,18 @@ class Auditor(CustomModelBase):
         blank=False,
         null=False,
     )
+
+    @property
+    def active_assignments(self):
+        """Returns active audit assignments (through model instances)"""
+        return self.audit_assignments.filter(audit__is_active=True)
+
+    def active_audits(self):
+        """Returns actual active Audit objects for this auditor"""
+        return Audit.objects.filter(
+            auditor_assignments__auditor=self,
+            is_active=True
+        ).distinct()
 
     class Meta:
         verbose_name = "Auditor"
@@ -181,14 +220,20 @@ class AuditAuditor(models.Model):
     # One-to-many relationship
     audit = models.ForeignKey(
         Audit,
-        on_delete=models.CASCADE,   # when Audit is deleted, delete related Auditors
+        # on_delete=models.CASCADE,   # when Audit is deleted, delete related Auditors
         # on_delete=models.SET_NULL, null=True, # set null when Audit is deleted
         # on_delete=models.RESTRICT, # cannot delete if there is an Auditor attached
+        # on_delete=models.PROTECT,  # prevent deletion if there are assignments
+        on_delete=models.SET_NULL,  # When audit is deleted, set this field to NULL
+        null=True,  # Must be True when using SET_NULL
+        blank=True,  # Allow form submission without this field
         related_name='auditor_assignments'
     )
     auditor = models.ForeignKey(
         Auditor,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,  # When auditor is deleted, set this field to NULL
+        null=True,  # Must be True when using SET_NULL
+        blank=True,  # Allow form submission without this field
         related_name='audit_assignments'
     )
 
@@ -207,7 +252,7 @@ class AuditAuditor(models.Model):
 
     def clean(self):
         """Ensure only one lead auditor per audit"""
-        if self.is_lead_auditor:
+        if self.is_lead_auditor and self.audit:  # Check if audit exists
             existing_leads = self.audit.auditor_assignments.filter(
                 is_lead_auditor=True
             ).exclude(pk=self.pk)
@@ -215,8 +260,10 @@ class AuditAuditor(models.Model):
                 raise ValidationError("An audit can only have one lead auditor")
 
     def __str__(self):
+        audit_name = self.audit.name if self.audit else "[Deleted Audit]"
+        auditor_name = self.auditor.full_name if self.auditor else "[Deleted Auditor]"
         lead_status = " (Lead)" if self.is_lead_auditor else ""
-        return f"{self.auditor.full_name} on {self.audit.name}{lead_status}"
+        return f"{auditor_name} on {audit_name}{lead_status}"
 
     class Meta:
         constraints = [
