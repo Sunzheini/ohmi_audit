@@ -1,4 +1,12 @@
 {# This is the base template that other templates will extend from. #}
 {% extends 'base.html' %}
 
-{% block page_title %} {{ page_title }} {% endblock %}
+{% block page_title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content_container %}
+    <div class="content-container">
+        {% include "includes/content_container.html" with content=audit_list form=audit_form %}
+    </div>
+{% endblock %}
