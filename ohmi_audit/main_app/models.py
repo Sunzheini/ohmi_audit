@@ -42,6 +42,15 @@ class Audit(CustomModelBase):
         null=False,
     )
 
+    # Bi-directional many-to-many relationship using explicit through model
+    # Allows tracking additional metadata about the auditor's participation in audits
+    related_auditors = models.ManyToManyField(
+        'Auditor',
+        related_name='audits',
+        blank=True, # blank=True is appropriate for optional relationships
+        through='AuditAuditor',  # doesn't auto create a table but uses the one specified
+    )
+
     class Meta:
         verbose_name = "Audit"
         verbose_name_plural = "Audits"
@@ -60,9 +69,6 @@ class Audit(CustomModelBase):
 
     def get_absolute_url(self) -> str:
         return reverse('audit-detail', kwargs={'pk': self.pk})
-
-    def __str__(self) -> str:
-        return self.name
 
 
 class Auditor(CustomModelBase):
@@ -112,9 +118,6 @@ class Auditor(CustomModelBase):
 
     def get_absolute_url(self) -> str:
         return reverse('auditor-detail', kwargs={'pk': self.pk})
-
-    def __str__(self) -> str:
-        return self.full_name
 
 
 class Customer(CustomModelBase):
@@ -170,5 +173,58 @@ class Customer(CustomModelBase):
     def get_absolute_url(self) -> str:
         return reverse('customer-detail', kwargs={'pk': self.pk})
 
-    def __str__(self) -> str:
-        return self.full_name
+
+class AuditAuditor(models.Model):
+    """
+    Through model for many-to-many relationship between Audit and Auditor.
+    """
+    # One-to-many relationship
+    audit = models.ForeignKey(
+        Audit,
+        on_delete=models.CASCADE,   # when Audit is deleted, delete related Auditors
+        # on_delete=models.SET_NULL, null=True, # set null when Audit is deleted
+        # on_delete=models.RESTRICT, # cannot delete if there is an Auditor attached
+        related_name='auditor_assignments'
+    )
+    auditor = models.ForeignKey(
+        Auditor,
+        on_delete=models.CASCADE,
+        related_name='audit_assignments'
+    )
+
+    assigned_date = models.DateField(
+        auto_now_add=True,  # Automatically set to the date when the record is created
+        blank=False,
+        null=False,
+    )
+
+    is_lead_auditor = models.BooleanField(
+        default=False,
+        blank=False,
+        null=False,
+        help_text="Indicates if the auditor is the lead auditor for this audit",
+    )
+
+    def clean(self):
+        """Ensure only one lead auditor per audit"""
+        if self.is_lead_auditor:
+            existing_leads = self.audit.auditor_assignments.filter(
+                is_lead_auditor=True
+            ).exclude(pk=self.pk)
+            if existing_leads.exists():
+                raise ValidationError("An audit can only have one lead auditor")
+
+    def __str__(self):
+        lead_status = " (Lead)" if self.is_lead_auditor else ""
+        return f"{self.auditor.full_name} on {self.audit.name}{lead_status}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['audit', 'auditor'],
+                name='unique_audit_auditor'
+            )
+        ]
+        ordering = ['-assigned_date']  # Newest assignments first
+        verbose_name = "Audit Assignment"
+        verbose_name_plural = "Audit Assignments"
