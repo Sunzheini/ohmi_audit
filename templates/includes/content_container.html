@@ -6,20 +6,51 @@
         <div class="card-display">
             <h2 class="card-display-title">Some Title</h2>
 
-            <form method="POST">
-                {% csrf_token %}
-                <table>
-                    {{ form.as_table }}
-                </table>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
+            {% if form %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <table>
+                        {{ form.as_table }}
+                    </table>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            {% else %}
+                No forms
+            {% endif %}
 
-            {% if content %}
-                {% for item in content %}
-                    <div class="item">
-                        <h3>{{ item.name }}</h3>
-                    </div>
-                {% endfor %}
+            {% if audit_list %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Is Active</th>
+                            <th>Category</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in audit_list %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.description }}</td>
+                                <td>{{ item.date }}</td>
+                                <td>{{ item.is_active }}</td>
+                                <td>{{ item.category }}</td>
+                                <td>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="delete_id" value="{{ item.id }}">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
                 <p>No audits found.</p>
             {% endif %}

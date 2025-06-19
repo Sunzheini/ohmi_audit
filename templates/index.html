@@ -5,8 +5,10 @@
     {{ page_title }}
 {% endblock %}
 
+{# 9. Content Container #}
 {% block content_container %}
     <div class="content-container">
-        {% include "includes/content_container.html" with content=audit_list form=form %}
+{#        {% include "includes/content_container.html" with content=audit_list form=form %}#}
+        {% include "includes/content_container.html" %}
     </div>
 {% endblock %}
