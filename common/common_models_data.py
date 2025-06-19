@@ -99,7 +99,6 @@ class CustomModelBase(models.Model):
                     + '-'
                     + self.full_name.lower().replace(' ', '-')
             )
-        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """
