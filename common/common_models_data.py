@@ -37,12 +37,20 @@ class CustomModelBase(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
         blank=True,
-        null=True
+        null=True,
     )
     updated_at = models.DateTimeField(
         auto_now=True,
         blank=True,
-        null=True
+        null=True,
+    )
+
+    slug = models.SlugField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
+        unique=True,
+        blank=True,
+        null=True,
+        editable=False,
     )
 
     class Meta:
@@ -53,14 +61,6 @@ class CustomModelBase(models.Model):
     def full_name(self) -> str:
         """For models that have name components"""
         raise NotImplementedError
-
-    def clean(self):
-        """
-        Custom clean method to validate the model data.
-        :return: None
-        """
-        super().clean()
-        self.validate_model()  # Keep your custom validation
 
     @abstractmethod
     def get_display_name(self) -> str:
@@ -76,3 +76,33 @@ class CustomModelBase(models.Model):
     def get_absolute_url(self) -> str:
         """Return URL for viewing the model instance"""
         raise NotImplementedError("Subclasses must implement get_absolute_url()")
+
+
+    def clean(self):
+        """
+        Custom clean method to validate the model data.
+        :return: None
+        """
+        super().clean()
+        self.validate_model()  # Keep your custom validation
+
+    def save(self, *args, **kwargs):
+        """
+        Custom save method to ensure model validation before saving.
+        :param args: the positional arguments
+        :param kwargs: the keyword arguments
+        :return: None
+        """
+        if not self.slug:
+            self.slug = (
+                    str(self.id)
+                    + '-'
+                    + self.full_name.lower().replace(' ', '-')
+            )
+
+    def __str__(self) -> str:
+        """
+        String representation of the model instance.
+        :return:
+        """
+        return self.get_display_name()
