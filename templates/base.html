@@ -1,182 +1,84 @@
+{# {% load static %} means that we can use the static files in the templates #}
 {% load static %}
 
+{# Load the i18n template tag library to enable internationalization #}
 {% load i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-{#1. Page Title------------------------------------------------------------#}
-    {% block page_title %}My Program{% endblock %}
-{#-------------------------------------------------------------------------#}
+        <title>
+            {# 1. Page Title #}
+            {% block page_title %}   {% endblock %}
+        </title>
 
-    </title>
+        {# Common Styles #}
+        <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-{#Styles-------------------------------------------------------------------#}
-    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        {# 2. Additional Styles #}
+        {% block additional_styles %}   {% endblock %}
 
-{#Additional css--------------------------------------------------------- #}
-    {% block extra_css %}{% endblock %}
+        {# 3. Additional JS #}
+        {% block additional_js %}   {% endblock %}
 
-{#Additional js---------------------------------------------------------- #}
-    {% block extra_js %}
-    {% endblock %}
+        {# Common JS #}
+    {#    <script type="text/javascript" src="{% static 'css/custom_functions.js' %}"></script>#}
+    </head>
 
-{#JS Functions-------------------------------------------------------------#}
-{#    <script type="text/javascript" src="{% static 'css/custom_functions.js' %}"></script>#}
-</head>
+    <body>
+        <header class="header">
+            {# 4. Navigation #}
+            {% block nav %}
+                <div class="navigation-container">
+                    {% include "includes/navigation_bar.html" %}
+                </div>
+            {% endblock %}
 
-<body>
-    <header class="header">
+            {# 5. Main Page Text #}
+            {% block main_page_text %}  {% endblock %}
+        </header>
 
-{#2. Nav-------------------------------------------------------------------#}
-    {% block nav %}
-        <nav class="navigation">
-            <ul class="nav-list" role="list">
-                <li class="nav-item">
-                    <i class="fas fa-home"></i>
-                    <a href="{% url 'index' %}"></a>
-                </li>
-            </ul>
-        </nav>
-    {% endblock %}
-{#-------------------------------------------------------------------------#}
+        <main>
+            {# 6. The Page Content #}
+            {% block page_container %}
+                <div class="page-content-container">
 
-{#3. Page Name-------------------------------------------------------------#}
-    {% block page_name %}
-        <h1 class="page-title">Base Page to be used as a template</h1>
-    {% endblock %}
-{#-------------------------------------------------------------------------#}
+                    {# 7. Left Bar #}
+                    {% block left_bar %}
+                        <div class="menu-container">
+                            {% include "includes/left_menu_bar.html" %}
+                        </div>
+                    {% endblock %}
 
-</header>
-<main>
-<div class="total-container">
+                    {# 8. Card Buttons Bar #}
+                    {% block card_buttons_bar %}
+                        <div class="card-buttons-bar-container">
+                            {% include "includes/card_buttons_bar.html" %}
+                        </div>
+                    {% endblock %}
 
-    <!-- Return-to-top button -->
-    <a id="return-to-top" href="#" title="Return to top"><i class="fa fa-chevron-up"></i></a>
+                    {# 9. Content Container #}
+                    {% block content_container %}
+                        <div class="content-container">
+                            {% include "includes/content_container.html" %}
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </main>
 
-{#3.5. Menu----------------------------------------------------------------#}
-<div class="menu-container">
-    <ul class="menu-list" role="list">
-        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-            <i class="fa-solid fa-handshake-angle"></i>
-            <span class="menu-item-title">
-                Клиенти
-            </span>
-        </button>
-        
-        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-            <i class="fa-brands fa-audible"></i>
-            <span class="menu-item-title">
-                Одити
-            </span>
-        </button>
-        
-        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-            <i class="fa-solid fa-glasses"></i>
-            <span class="menu-item-title">
-                Одитори
-            </span>
-        </button>
-        
-        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-            <i class="fa-solid fa-book"></i>
-            <span class="menu-item-title">
-                Документи
-            </span>
-        </button>
-        
-        <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-            <i class="fa-regular fa-calendar-days"></i>
-            <span class="menu-item-title">
-                График
-            </span>
-        </button>
-        <hr class="horizontal">
-        
-        Полезна информация
-        
-        <div id="calendar"></div>
-    </ul>
-</div>
-{#-------------------------------------------------------------------------#}
-
-<div class="all-sections-container">
-
-{#4. Section1--------------------------------------------------------------#}
-{% block card_buttons %}
-    <section class="card-buttons-section">
-        <div class="all-card-buttons-container">
-            <button class="card-btn card-btn-hidden"></button>
-            
-            <button class="card-btn card-btn-hidden"></button>
-            
-            <button class="card-btn card-btn-hidden"></button>
-            
-            <button class="card-btn card-btn-hidden"></button>
-        </div>
-    </section>
-{% endblock %}
-{#-------------------------------------------------------------------------#}
-
-{#5. Section2--------------------------------------------------------------#}
-{% block display_content %}
-    <section class="display-content-section">
-        <div class="all-display-content-container">
-
-            <div class="card-display">
-                <h2 class="card-display-title">Some Title</h2>
-                <p class="card-display-content">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Animi architecto aspernatur consequatur dolorem eos, eveniet
-                    explicabo iste maiores, neque provident ratione repudiandae
-                    saepe sunt tempore vel voluptate voluptatibus! Ipsam, laboriosam!
-                </p>
+        {# 10. Footer #}
+        {% block footer %}
+            <div class="footer-container">
+                {% include "includes/footer.html" %}
             </div>
-
-        </div>
-    </section>
-
-{% endblock %}
-{#-------------------------------------------------------------------------#}
-</div>
-</div>
-</main>
-
-<footer class="footer">
-    <h3 class="footer-title">&copy; 2024 DZ</h3>
-</footer>
-
-{# for the return-to-top button #}
-    <!-- jQuery library -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- JavaScript for the return-to-top button -->
-    <script>
-        $(document).ready(function() {
-            // Show the button when the user scrolls down 20px from the top
-            $(window).scroll(function() {
-                if ($(this).scrollTop() >= 20) {
-                    $('#return-to-top').fadeIn();
-                } else {
-                    $('#return-to-top').fadeOut();
-                }
-            });
-
-            // Smooth scroll to the top when the button is clicked
-            $('#return-to-top').click(function(event) {
-                event.preventDefault();
-                $('html, body').animate({scrollTop: 0}, 'fast');
-            });
-        });
-    </script>
-</body>
+        {% endblock %}
+    </body>
 </html>
