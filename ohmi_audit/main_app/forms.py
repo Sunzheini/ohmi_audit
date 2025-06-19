@@ -1,10 +1,12 @@
 from django import forms
+
+from common.common_forms_data import ChangeLabelsMixin
 from ohmi_audit.main_app.models import *
 
 __all__ = ['AuditForm']
 
 
-class AuditForm(forms.ModelForm):
+class AuditForm(forms.ModelForm, ChangeLabelsMixin):
     class Meta:
         model = Audit
         fields = '__all__'

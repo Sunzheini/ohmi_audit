@@ -16,14 +16,20 @@ def index_view(request: HttpRequest):
     context is an optional dictionary that can be used to pass data to the template.
     """
     if request.method == 'POST':
-        form = AuditForm(request.POST)
-        if form.is_valid():
+        # Check if this is a delete request
+        if 'delete_id' in request.POST:
             try:
-                form.save()
-                messages.success(request, "Audit created successfully!")
+                audit = Audit.objects.get(id=request.POST['delete_id'])
+                audit.delete()
                 return redirect('index')
-            except Exception as e:
-                messages.error(request, f"Error saving audit: {str(e)}")
+            except Audit.DoesNotExist:
+                pass
+        # Otherwise handle form submission
+        else:
+            form = AuditForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('index')
     else:
         form = AuditForm()
 
@@ -31,7 +37,7 @@ def index_view(request: HttpRequest):
         'page_title': 'Ohmi Audit Test',
         'page_name': 'Welcome',
         'audit_list': Audit.objects.all(),
-        'form': form,    # Pass the form instance, not the class
+        'form': form,  # Pass the form instance, not the class
     }
 
     return render(request, 'index.html', context)
