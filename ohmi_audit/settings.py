@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-'
@@ -103,13 +104,35 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# -----------------------------------------------------------------------------
+# The base URL prefix for static files. Defines how static files are referenced
+# in templates (/static/css/style.css) Used with the {% static %} template tag
 STATIC_URL = '/static/'
+
+# Additional directories to search for static files. Lists folders where Django
+# should look for static files during development. Used with `collectstatic`
+# (files are copied from here to STATIC_ROOT)
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+# Where collected static files are stored for production. Single directory where
+# all static files are gathered when running `collectstatic`. This is what your
+# web server (Nginx/Apache) actually serves from
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+
+
+# -----------------------------------------------------------------------------
+# Base URL for serving user-uploaded media files. Defines the URL prefix for media
+# files in templates (/media/user_photos/avatar.jpg). Similar to STATIC_URL but for
+# dynamic content. In templates:
+# <img src="{{ object.image.url }}"> <!-- Resolves to /media/path/to/file.jpg -->
 MEDIA_URL = '/media/'
+
+# Absolute filesystem path where uploaded files are stored. Where Django saves
+# files uploaded via FileField or ImageField. Analogous to STATIC_ROOT
+# but for user content
 MEDIA_ROOT = BASE_DIR / 'media_files'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
