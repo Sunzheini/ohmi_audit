@@ -14,7 +14,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     'ohmi-audit.onrender.com',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://ohmi-audit.onrender.com',
 ]
 
 """
