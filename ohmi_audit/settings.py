@@ -10,7 +10,17 @@ SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-
 when it is False the 404.html is used automatically instead of 
 django's default 404 page.
 """
-DEBUG = True
+DEBUG = False
+
+"""
+Deployment Renderer.com
+    - add 'ohmi-audit.onrender.com' in ALLOWED_HOSTS
+    - add 'https://ohmi-audit.onrender.com' in CSRF_TRUSTED_ORIGINS
+    - New web service
+    - Build Command: pip install -r requirements.txt && python manage.py collectstatic --no-input 
+    (&& python manage.py migrate?)
+    - Start Command: python manage.py runserver 0.0.0.0:8000
+"""
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -127,6 +137,9 @@ STATICFILES_DIRS = (
 # all static files are gathered when running `collectstatic`. This is what your
 # web server (Nginx/Apache) actually serves from
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+
+# Add this for production (Render):
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # -----------------------------------------------------------------------------
