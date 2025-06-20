@@ -14,10 +14,11 @@ DEBUG = False
 
 """
 Deployment Renderer.com
+    - run before deployment: python manage.py collectstatic
     - add 'ohmi-audit.onrender.com' in ALLOWED_HOSTS
     - add 'https://ohmi-audit.onrender.com' in CSRF_TRUSTED_ORIGINS
     - New web service
-    - Build Command: pip install -r requirements.txt && python manage.py collectstatic --no-input 
+    - Build Command: pip install -r requirements.txt && python manage.py collectstatic --noinput
     (&& python manage.py migrate?)
     - Start Command: python manage.py runserver 0.0.0.0:8000
 """
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -139,7 +141,7 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 
 # Add this for production (Render):
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # -----------------------------------------------------------------------------
