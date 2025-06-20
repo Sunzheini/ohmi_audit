@@ -14,6 +14,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+    'ohmi-audit.onrender.com',
 ]
 
 """
