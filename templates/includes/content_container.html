@@ -62,16 +62,48 @@
                                 {% endif %}
                             </td>
                             <td>
+                                {% if item.file %}
+                                    <a href="{{ item.file.url }}" class="btn btn-primary">Download File</a>
+                                {% else %}
+                                    No File
+                                {% endif %}
+                            </td>
+                            <td>
                                 <form method="POST">
                                     {% csrf_token %}
-                                    <button type="submit" name="edit" value="{{ item.id }}" class="btn btn-danger">Edit</button>
+                                    <button type="submit" name="edit" value="{{ item.id }}" class="btn btn-danger">
+                                        Edit
+                                    </button>
                                 </form>
                             </td>
                             <td>
                                 <form method="POST">
                                     {% csrf_token %}
-                                    <button type="submit" name="delete" value="{{ item.id }}" class="btn btn-danger">Delete</button>
+                                    <button type="submit" name="delete" value="{{ item.id }}" class="btn btn-danger">
+                                        Delete
+                                    </button>
                                 </form>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="9">
+                                {% if item.file %}
+
+                                    {# Microsoft's viewer requires publicly accessible URLs for files! #}
+                                    {% if '.doc' in item.file.name|lower %}
+                                        <iframe class="iframe-ms-office"
+                                                src='https://view.officeapps.live.com/op/embed.aspx?src={{ item.file.url }}'
+                                                width='100%' height='600px' frameborder='0'>
+                                        </iframe>
+                                    {% elif '.pdf' in item.file.name|lower %}
+                                        <iframe src="{{ item.file.url }}" width="100%" height="600px">
+                                            <p>Your browser does not support iframes.</p>
+                                        </iframe>
+                                    {% else %}
+                                        text
+                                    {% endif %}
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
