@@ -14,3 +14,4 @@ class AuditForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_widget_styles()
+        self.change_to_current_labels()

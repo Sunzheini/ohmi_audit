@@ -15,6 +15,7 @@ def index_view(request: HttpRequest):
     `return HttpResponse("<h1>Welcome to the Index Page</h1>")`
     context is an optional dictionary that can be used to pass data to the template.
     """
+    # GET and POST are the only HTTP methods to use when dealing with forms in Django.
     if request.method == 'POST':
         # Check if this is a delete request
         if 'delete_id' in request.POST:
@@ -24,9 +25,29 @@ def index_view(request: HttpRequest):
                 return redirect('index')
             except Audit.DoesNotExist:
                 pass
-        # Otherwise handle form submission
+
+        elif 'edit_id' in request.POST:
+            try:
+                audit = Audit.objects.get(id=request.POST['edit_id'])
+                form = AuditForm(instance=audit)  # Use instance to pre-fill the form
+
+                # STORE THE EDITING ID IN SESSION
+                request.session['editing_id'] = request.POST['edit_id']
+            except Audit.DoesNotExist:
+                form = AuditForm()
+
+        # Handle form submission (both create and edit)
         else:
-            form = AuditForm(request.POST)
+            editing_id = request.session.get('editing_id')
+            if editing_id:
+                # This is an edit submission
+                audit = Audit.objects.get(id=editing_id)
+                form = AuditForm(request.POST, instance=audit)
+                del request.session['editing_id']  # Clean up
+            else:
+                # This is a create submission
+                form = AuditForm(request.POST)
+
             if form.is_valid():
                 form.save()
                 return redirect('index')
