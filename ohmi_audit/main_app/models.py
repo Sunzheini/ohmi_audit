@@ -57,6 +57,12 @@ class Audit(CustomModelBase):
         null=False,
     )
 
+    image = models.ImageField(
+        upload_to='audit_images/',  # Directory where images will be stored
+        blank=True,  # Allow form submission without an image
+        null=True,  # Allow database to store NULL if no image is provided
+    )
+
     # Bi-directional many-to-many relationship using explicit through model
     # Allows tracking additional metadata about the auditor's participation in audits
     # related_auditors = models.ManyToManyField(

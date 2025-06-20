@@ -47,12 +47,12 @@ def index_view(request: HttpRequest):
             # If editing_id is set, it means we are editing an existing audit
             if editing_id:
                 audit = Audit.objects.get(id=editing_id)
-                form = AuditForm(request.POST, instance=audit)
+                form = AuditForm(request.POST, request.FILES, instance=audit)
                 del request.session['editing_id']  # Clean up
 
             # If editing_id is not set, it means we are creating a new audit
             else:
-                form = AuditForm(request.POST)
+                form = AuditForm(request.POST, request.FILES)
 
             if form.is_valid():
                 form.save()
