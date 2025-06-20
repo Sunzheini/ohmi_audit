@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-
 when it is False the 404.html is used automatically instead of 
 django's default 404 page.
 """
-DEBUG = False
+DEBUG = True    # must be True for development, e.g. for .css and .js files to be loaded correctly
 
 """
 Deployment Renderer.com
