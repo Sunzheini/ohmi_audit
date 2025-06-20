@@ -15,3 +15,8 @@ class AuditForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
         super().__init__(*args, **kwargs)
         self.set_widget_styles()
         self.change_to_current_labels()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Add any custom validation logic here if needed
+        return cleaned_data
