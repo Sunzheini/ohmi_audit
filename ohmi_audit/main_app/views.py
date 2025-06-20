@@ -17,35 +17,41 @@ def index_view(request: HttpRequest):
     """
     # GET and POST are the only HTTP methods to use when dealing with forms in Django.
     if request.method == 'POST':
-        # Check if this is a delete request
-        if 'delete_id' in request.POST:
+
+        # Check if this is a delete request by the name of the button
+        if 'delete' in request.POST:
             try:
-                audit = Audit.objects.get(id=request.POST['delete_id'])
+                audit = Audit.objects.get(id=request.POST.get('delete'))
                 audit.delete()
                 return redirect('index')
             except Audit.DoesNotExist:
                 pass
 
-        elif 'edit_id' in request.POST:
+        # Check if this is an edit request by the name of the button
+        elif 'edit' in request.POST:
             try:
-                audit = Audit.objects.get(id=request.POST['edit_id'])
+                item_id = request.POST.get('edit')
+                audit = Audit.objects.get(id=item_id)
                 form = AuditForm(instance=audit)  # Use instance to pre-fill the form
 
-                # STORE THE EDITING ID IN SESSION
-                request.session['editing_id'] = request.POST['edit_id']
+                # Store the ID in the session for later use, otherwise it will be lost
+                # and pressing the save button will create a new object
+                request.session['editing_id'] = item_id
             except Audit.DoesNotExist:
                 form = AuditForm()
 
-        # Handle form submission (both create and edit)
+        # Save button was pressed then (for both create and edit)
         else:
             editing_id = request.session.get('editing_id')
+
+            # If editing_id is set, it means we are editing an existing audit
             if editing_id:
-                # This is an edit submission
                 audit = Audit.objects.get(id=editing_id)
                 form = AuditForm(request.POST, instance=audit)
                 del request.session['editing_id']  # Clean up
+
+            # If editing_id is not set, it means we are creating a new audit
             else:
-                # This is a create submission
                 form = AuditForm(request.POST)
 
             if form.is_valid():
