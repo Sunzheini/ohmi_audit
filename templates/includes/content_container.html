@@ -6,11 +6,19 @@
         <div class="card-display">
             <h2 class="card-display-title">Some Title</h2>
 
+            {# form #}
             {% if form %}
                 <form method="POST">
                     {% csrf_token %}
                     <table>
-                        {{ form.as_table }}
+{#                        {{ form.as_table }}#}
+
+                        {% for field in form %}
+                            <tr>
+                                <td>{{ field.label_tag }}</td>
+                                <td>{{ field }}</td>
+                            </tr>
+                        {% endfor %}
                     </table>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
@@ -18,6 +26,7 @@
                 No forms
             {% endif %}
 
+            {# list #}
             {% if audit_list %}
                 <table>
                     <thead>
