@@ -1,0 +1,9 @@
+.idea/
+__pycache__/
+.venv/
+venv/
+*.sqlite3
+*.db
+/static_files/
+/media_files/
+Thumbs.db
