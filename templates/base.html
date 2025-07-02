@@ -23,7 +23,14 @@
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
         {# 2. Additional Styles #}
-        {% block additional_styles %}   {% endblock %}
+        {% block additional_styles %}
+            <link rel="stylesheet" href="{% static 'css/components/navigation_bar.css' %}">
+            <link rel="stylesheet" href="{% static 'css/components/buttons.css' %}">
+            <link rel="stylesheet" href="{% static 'css/components/left_menu_bar.css' %}">
+            <link rel="stylesheet" href="{% static 'css/components/card-buttons-bar.css' %}">
+            <link rel="stylesheet" href="{% static 'css/components/content_container.css' %}">
+            <link rel="stylesheet" href="{% static 'css/components/footer.css' %}">
+        {% endblock %}
 
         {# 3. Additional JS #}
         {% block additional_js %}   {% endblock %}
@@ -42,7 +49,11 @@
             {% endblock %}
 
             {# 5. Main Page Text #}
-            {% block main_page_text %}  {% endblock %}
+            {% block main_page_text %}
+                <div class="main-page-text-container">
+                    {% include 'includes/main_page_text.html' %}
+                </div>
+            {% endblock %}
         </header>
 
         <main>
@@ -52,29 +63,20 @@
 
                     {# 7. Left Bar #}
                     {% block left_bar %}
-                        <div class="menu-container">
+                        <div class="left-bar-container">
                             {% include "includes/left_menu_bar.html" %}
                         </div>
                     {% endblock %}
 
-                    {# 8. Card Buttons Bar #}
-                    {% block card_buttons_bar %}
-                        <div class="card-buttons-bar-container">
-                            {% include "includes/card_buttons_bar.html" %}
-                        </div>
-                    {% endblock %}
-
-                    {# 9. Content Container #}
-                    {% block content_container %}
-                        <div class="content-container">
-                            {% include "includes/content_container.html" %}
-                        </div>
+                    {# 8. Right Bar #}
+                    {% block right_bar %}
+                        <div class="right-bar-container"></div>
                     {% endblock %}
                 </div>
             {% endblock %}
         </main>
 
-        {# 10. Footer #}
+        {# 8. Footer #}
         {% block footer %}
             <div class="footer-container">
                 {% include "includes/footer.html" %}

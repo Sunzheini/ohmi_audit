@@ -1,0 +1,31 @@
+.left-menu-bar {
+    height: 100%;
+    width: 100%;
+    background-color: var(--clr-main-app-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-style);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--common-gap);
+}
+
+    .left-menu-bar-button {
+        min-width: 150px;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--common-gap);
+    }
+
+    .left-menu-bar-button :hover {}
+
+        .left-menu-bar-button-icon {
+            color: var(--clr-icon-color);
+        }
+
+        .left-menu-bar-button-text {}
