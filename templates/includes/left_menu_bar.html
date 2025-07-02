@@ -1,43 +1,23 @@
 {% load static i18n %}
 
-<ul class="menu-list" role="list">
-    <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-        <i class="fa-solid fa-handshake-angle"></i>
-        <span class="menu-item-title">
-                        Клиенти
-                    </span>
+<div class="left-menu-bar">
+    <button class="left-menu-bar-button" onclick="location.href='{% url 'index' %}';">
+        <i class="fa-solid fa-handshake-angle left-menu-bar-button-icon"></i>
+        <span class="left-menu-bar-button-text">Клиенти</span>
     </button>
 
-    <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-        <i class="fa-brands fa-audible"></i>
-        <span class="menu-item-title">
-                        Одити
-                    </span>
+    <button class="left-menu-bar-button" onclick="location.href='{% url 'index' %}';">
+        <i class="fa-brands fa-audible left-menu-bar-button-icon"></i>
+        <span class="left-menu-bar-button-text">Одити</span>
     </button>
 
-    <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-        <i class="fa-solid fa-glasses"></i>
-        <span class="menu-item-title">
-                        Одитори
-                    </span>
+    <button class="left-menu-bar-button" onclick="location.href='{% url 'index' %}';">
+        <i class="fa-solid fa-glasses left-menu-bar-button-icon"></i>
+        <span class="left-menu-bar-button-text">Одитори</span>
     </button>
 
-    <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-        <i class="fa-solid fa-book"></i>
-        <span class="menu-item-title">
-                        Документи
-                    </span>
+    <button class="left-menu-bar-button" onclick="location.href='{% url 'index' %}';">
+        <i class="fa-solid fa-book left-menu-bar-button-icon"></i>
+        <span class="left-menu-bar-button-text">Документи</span>
     </button>
-
-    <button class="menu-item" onclick="location.href='{% url 'index' %}';">
-        <i class="fa-regular fa-calendar-days"></i>
-        <span class="menu-item-title">
-                        График
-                    </span>
-    </button>
-    <hr class="horizontal">
-
-    Полезна информация
-
-    <div id="calendar"></div>
-</ul>
+</div>

@@ -1,0 +1,40 @@
+.navigation {
+    background-color: var(--clr-main-app-color);
+    height: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-style);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+    .navigation-list {
+        height: 100%;
+        width: 95%;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+        .navigation-list-item {
+        }
+
+        .navigation-list-item:hover {
+
+        }
+
+            .navigation-list-item-link {
+            }
+
+                .navigation-list-item-icon {
+                    color: var(--clr-icon-color);
+                }
+
+                .navigation-list-item-icon:hover {
+                    color: var(--hover-color);
+                    cursor: var(--hover-cursor-type);
+                }

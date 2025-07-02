@@ -1,0 +1,18 @@
+.content-container-section {
+    margin: var(--container-margin);
+    border: white 1px solid;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--common-gap);
+}
+
+    .content-container-section-top {
+        border: green 1px solid;
+    }
+
+    .content-container-section-bottom {
+        border: cornflowerblue 1px solid;
+    }

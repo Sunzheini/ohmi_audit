@@ -1,0 +1,13 @@
+button {
+    background-color: var(--clr-button-color);
+    height: 2rem;
+    border-radius: var(--button-border-radius);
+    box-shadow: var(--box-shadow-style);
+    transition: var(--button-transition-style);
+    border-width:var(--button-border-width);
+}
+
+button:hover {
+    background-color: var(--hover-color);
+    cursor: var(--hover-cursor-type);
+}

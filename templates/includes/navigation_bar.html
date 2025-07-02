@@ -1,10 +1,23 @@
 {% load static i18n %}
 
 <nav class="navigation">
-    <ul class="nav-list" role="list">
-        <li class="nav-item">
-            <i class="fas fa-home"></i>
-            <a href="{% url 'index' %}"></a>
+    <ul class="navigation-list" role="list">
+        <li class="navigation-list-item">
+            <a class="navigation-list-item-link" href="{% url 'index' %}">
+                <i class="fas fa-home navigation-list-item-icon"></i>
+            </a>
+        </li>
+
+        <li class="navigation-list-item">
+            <a class="navigation-list-item-link" href="{% url 'index' %}">
+                <i class="fas fa-users navigation-list-item-icon"></i>
+            </a>
+        </li>
+
+        <li class="navigation-list-item">
+            <a class="navigation-list-item-link" href="{% url 'index' %}">
+                <i class="fas fa-file-alt navigation-list-item-icon"></i>
+            </a>
         </li>
     </ul>
 </nav>
