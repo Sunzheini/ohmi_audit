@@ -84,7 +84,7 @@ class CustomModelBase(models.Model):
         :return: None
         """
         super().clean()
-        self.validate_model()  # Keep your custom validation
+        self.validate_model()  # Keep custom validation
 
     def save(self, *args, **kwargs):
         """
