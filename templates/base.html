@@ -4,6 +4,12 @@
 {# Load the i18n template tag library to enable internationalization #}
 {% load i18n %}
 
+{# We have access to the request object in the templates, so we can check if the user is authenticated #}
+{% if request.user.is_authenticated %}
+{% elif request.user.is_anonymous %}
+{% elif request.user.is_superuser %}
+{% endif %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -45,6 +51,10 @@
         <header class="header">
             {# 4. Navigation #}
             {% block nav %}
+                {% if request.user.is_superuser%}
+
+                {% endif %}
+
                 <div class="navigation-container">
                     {% include "includes/navigation_bar.html" %}
                 </div>
