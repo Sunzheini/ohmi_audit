@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -5,7 +6,7 @@ from django.core.validators import MaxLengthValidator
 
 from common.common_models_data import *
 
-__all__ = ['Audit', 'Auditor', 'Customer']
+__all__ = ['Audit', 'Auditor', 'Customer', 'AppUser']
 
 
 """
@@ -223,6 +224,71 @@ class Customer(CustomModelBase):
 
     def get_absolute_url(self) -> str:
         return reverse('customer-detail', kwargs={'pk': self.pk})
+
+
+class AppUser(AbstractUser, CustomModelBase):
+    """
+    Represents a user in the system.
+    """
+    username = models.CharField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
+        unique=True,
+        blank=False,
+        null=False,
+    )
+    email = models.EmailField(
+        unique=True,
+        blank=False,
+        null=False,
+    )
+    first_name = models.CharField(
+        max_length=CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH,
+        blank=False,
+        null=False,
+    )
+    last_name = models.CharField(
+        max_length=CustomModelData.MAX_LAST_NAME_CHARFIELD_LENGTH,
+        blank=True,
+        null=True,
+    )
+
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        related_name="appuser_groups",  # Custom related_name
+        related_query_name="appuser",
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name="appuser_permissions",  # Custom related_name
+        related_query_name="appuser",
+    )
+
+    class Meta:
+        verbose_name = "App User"
+        verbose_name_plural = "App Users"
+        ordering = ['id']
+
+    @property
+    def full_name(self) -> str:
+        return f'{self.first_name} {self.last_name}' if self.first_name and self.last_name else self.username
+
+    def get_display_name(self) -> str:
+        return f"User: {self.full_name}"
+
+    def validate_model(self) -> None:
+        if not self.username.strip():
+            raise ValidationError("Username is required")
+        if not self.email.strip():
+            raise ValidationError("Email is required")
+
+    def get_absolute_url(self) -> str:
+        return reverse('appuser-detail', kwargs={'pk': self.pk})
 
 
 # class AuditAuditor(models.Model):

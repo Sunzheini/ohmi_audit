@@ -159,14 +159,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # -----------------------------------------------------------------------------
 # this is needed for the custom user model
-# AUTH_USER_MODEL = 'user_mng.AppUser'
+AUTH_USER_MODEL = 'main_app.AppUser'
 
 """
 Create superuser:
 python manage.py createsuperuser
 
-superusers:
-Sunzheini, Maimun06, sunzheini@gmail.com
-
-Customer, pass1234, daniel_zoroff@abv.bg
+Superusers:
+Sunzheini, daniel_zorov@abv.bg, Maimun06
 """

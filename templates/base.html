@@ -51,10 +51,6 @@
         <header class="header">
             {# 4. Navigation #}
             {% block nav %}
-                {% if request.user.is_superuser%}
-
-                {% endif %}
-
                 <div class="navigation-container">
                     {% include "includes/navigation_bar.html" %}
                 </div>
