@@ -156,3 +156,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media_files'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# -----------------------------------------------------------------------------
+# this is needed for the custom user model
+# AUTH_USER_MODEL = 'user_mng.AppUser'
+
+"""
+Create superuser:
+python manage.py createsuperuser
+
+superusers:
+Sunzheini, Maimun06, sunzheini@gmail.com
+
+Customer, pass1234, daniel_zoroff@abv.bg
+"""
