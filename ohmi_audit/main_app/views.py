@@ -62,8 +62,9 @@ def index_view(request: HttpRequest):
     context = {
         'page_title': 'Ohmi Audit Test',
         'page_name': 'Welcome',
-        'audit_list': Audit.objects.all(),
-        'form': form,  # Pass the form instance, not the class
+
+        'data_for_content_container_wrapper_top': form,  # Pass the form instance, not the class
+        'data_for_content_container_wrapper_bottom': Audit.objects.all(),
     }
 
     return render(request, 'index.html', context)
