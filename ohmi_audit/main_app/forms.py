@@ -25,7 +25,7 @@ class AuditForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
         return cleaned_data
 
 
-class SignUpForm(forms.ModelForm):
+class SignUpForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput,
@@ -56,16 +56,9 @@ class SignUpForm(forms.ModelForm):
         return user
 
 
-class LoginForm(AuthenticationForm):
+class LoginForm(AuthenticationForm, ChangeLabelsMixin, FormWidgetStylesMixin):
     username = forms.CharField(label="Username or Email")
 
     class Meta:
         model = UserModel
         fields = ['username', 'password']
-
-
-
-
-
-
-
