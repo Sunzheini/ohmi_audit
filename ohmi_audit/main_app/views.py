@@ -17,6 +17,7 @@ all_users = list(UserModel.objects.all())
 
 # use the LoginRequiredMixin to ensure that the user is logged in before accessing the view
 class IndexView(LoginRequiredMixin, View):
+    # Change all backslashes (\) to forward slashes (/) if deploying on Render (linux-based servers)
     template_name = 'main_app/index.html'
     form_class = AuditForm
     page_title = 'Ohmi Audit Test'
