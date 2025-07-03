@@ -4,7 +4,6 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import get_user_model, login, authenticate, logout
-from django.core.paginator import Paginator
 
 from common.pagination_decorator import paginate_results
 from ohmi_audit.main_app.forms import *
@@ -18,7 +17,7 @@ all_users = list(UserModel.objects.all())
 
 # use the LoginRequiredMixin to ensure that the user is logged in before accessing the view
 class IndexView(LoginRequiredMixin, View):
-    template_name = 'main_app\index.html'
+    template_name = 'main_app/index.html'
     form_class = AuditForm
     page_title = 'Ohmi Audit Test'
     page_name = 'Welcome'
@@ -94,7 +93,7 @@ class IndexView(LoginRequiredMixin, View):
 
 # -----------------------------------------------------------------------
 class SignUpView(View):
-    template_name = 'main_app\index.html'
+    template_name = 'main_app/index.html'
     form_class = SignUpForm
     page_title = 'Sign Up'
     page_name = 'Create Account'
@@ -123,8 +122,7 @@ class SignUpView(View):
 
 
 class LoginView(View):
-    # template_name = 'main_app/login.html'
-    template_name = 'main_app\index.html'
+    template_name = 'main_app/index.html'
     form_class = LoginForm
     page_title = 'Login'
     page_name = 'Welcome Back'
