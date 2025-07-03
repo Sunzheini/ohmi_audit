@@ -4,8 +4,6 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import get_user_model, login, authenticate, logout
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
 
 from ohmi_audit.main_app.forms import *
 from ohmi_audit.main_app.models import Audit
@@ -14,9 +12,9 @@ from ohmi_audit.main_app.models import Audit
 # You can use the get_user_model() function to get the user model
 UserModel = get_user_model()
 all_users = list(UserModel.objects.all())
-a = 1
 
 
+# use the LoginRequiredMixin to ensure that the user is logged in before accessing the view
 class IndexView(LoginRequiredMixin, View):
     template_name = 'main_app\index.html'
     form_class = AuditForm
@@ -92,7 +90,7 @@ class IndexView(LoginRequiredMixin, View):
 
 # -----------------------------------------------------------------------
 class SignUpView(View):
-    template_name = 'main_app/signup.html'
+    template_name = 'main_app\index.html'
     form_class = SignUpForm
     page_title = 'Sign Up'
     page_name = 'Create Account'
@@ -121,7 +119,8 @@ class SignUpView(View):
 
 
 class LoginView(View):
-    template_name = 'main_app/login.html'
+    # template_name = 'main_app/login.html'
+    template_name = 'main_app\index.html'
     form_class = LoginForm
     page_title = 'Login'
     page_name = 'Welcome Back'
@@ -154,7 +153,8 @@ class LoginView(View):
 
 
 class LogoutView(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         logout(request)
         return redirect('index')
 
