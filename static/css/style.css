@@ -38,9 +38,17 @@ Prefer using classes over IDs for styling to maintain flexibility and reusabilit
     --button-border-radius: 0.5rem;
     --button-transition-style: background-color 250ms linear, color 300ms linear;
     --button-border-width: 0;
-
     --hover-color: #d1d1d1;
     --hover-cursor-type: pointer;
+
+    --clr-table-border-color: #9714d9;
+    --table-row-border: 1px solid var(--clr-table-border-color);
+    --clr-table-header-background-color: #f0f0f0;
+    --clr-table-header-font-color: #000000;
+    --clr-table-row-even-background-color: #f9f9f9;
+    --clr-table-row-odd-background-color: #ffffff;
+    --clr-table-row-hover-background-color: #e0e0e0;
+    --clr-table-row-hover-font-color: #000000;
 }
 
 body {

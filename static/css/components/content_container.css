@@ -1,4 +1,4 @@
-.content-container-section {
+.content-container-wrapper {
     margin: var(--container-margin);
     border: white 1px solid;
 
@@ -9,10 +9,12 @@
     gap: var(--common-gap);
 }
 
-    .content-container-section-top {
+    .content-container-wrapper-top {
         border: green 1px solid;
+        margin: var(--container-margin);
     }
 
-    .content-container-section-bottom {
+    .content-container-wrapper-bottom {
         border: cornflowerblue 1px solid;
+        margin: var(--container-margin);
     }
