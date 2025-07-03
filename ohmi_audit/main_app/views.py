@@ -4,7 +4,9 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import get_user_model, login, authenticate, logout
+from django.core.paginator import Paginator
 
+from common.pagination_decorator import paginate_results
 from ohmi_audit.main_app.forms import *
 from ohmi_audit.main_app.models import Audit
 
@@ -25,13 +27,15 @@ class IndexView(LoginRequiredMixin, View):
     login_url = '/login/'  # Redirect to this URL if not logged in
     redirect_field_name = 'next'  # URL parameter to redirect after login
 
+    # add this decorator only if you want to paginate the results
+    @paginate_results(model=Audit, items_per_page=1)
     def get_context_data(self, **kwargs):
         """Shared context for both GET and POST"""
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
-
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),     # Pass the form instance, not the class
+
             'data_for_content_container_wrapper_bottom': Audit.objects.all(),
         }
         return context

@@ -23,6 +23,12 @@ Deployment Renderer.com
     - Start Command: python manage.py runserver 0.0.0.0:8000
 """
 
+"""
+Signals (Observer Pattern):
+1. create a new signal in ohmi_audit/main_app/signals.py
+2. connect it to a function in ohmi_audit/main_app/apps.py
+"""
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -63,6 +69,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # custom middleware: create it in the form of a decorator and add it here
+    'common.custom_middleware.measure_time_middleware',
+
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -98,6 +107,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND':
+            'django.core.cache.backends.redis.RedisCache',
+        'LOCATION':
+            'redis://127.0.0.1:6379',
     }
 }
 
