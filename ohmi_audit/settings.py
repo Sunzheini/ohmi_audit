@@ -21,8 +21,8 @@ be loaded correctly
 """
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
+# Env vars
 """
-Env vars:
     - pip install python-dotenv
     - create .env file in the root of the project and add the vars there
     - from dotenv import load_dotenv and after the imports load_dotenv()  # loads the .env file
@@ -32,8 +32,8 @@ Env vars:
     - until finished, use DEBUG = True in render.com
 """
 
+# Deployment Renderer.com
 """
-Deployment Renderer.com
     - run before deployment: python manage.py collectstatic
     - add 'ohmi-audit.onrender.com' in ALLOWED_HOSTS
     - add 'https://ohmi-audit.onrender.com' in CSRF_TRUSTED_ORIGINS
@@ -44,11 +44,10 @@ Deployment Renderer.com
     - Start Command: gunicorn ohmi_audit.wsgi:application  (for production)
 """
 
+# Deployment GCP
 """
-Deployment GCP:
     - pip install gunicorn
-
-
+    
 """
 
 """
@@ -62,9 +61,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://ohmi-audit.onrender.com',
 ]
 
+# New app steps
 """
-New app:
-
 1. python manage.py startapp hr_management
 2. move hr_management to inside ohmi_audit directory
 3. add 'ohmi_audit.hr_management' to INSTALLED_APPS
@@ -161,8 +159,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# -----------------------------------------------------------------------------
+# Localization
 """
-Localization:
     - LANGUAGE_CODE: The default language for the project (e.g., 'en-us' for English).
     - TIME_ZONE: The default time zone for the project (e.g., 'Europe/Sofia' for Bulgaria).
     - USE_I18N: Whether to enable Django's internationalization system.
@@ -181,7 +180,7 @@ Localization:
         - at the bottom: urlpatterns += i18n_patterns(
             path('', include('ohmi_audit.main_app.urls')),
             path('hr-management/', include('ohmi_audit.hr_management.urls')),
-            prefix_default_language=False
+            prefix_default_language=True,  # This will prefix the default language code to the URLs
     - in the navigation bar:
         <div class="lang">
             <form class="lang-form" action="{% url 'set_language' %}" method="post">

@@ -19,11 +19,5 @@ if settings.DEBUG:
 urlpatterns += i18n_patterns(
     path('', include('ohmi_audit.main_app.urls')),
     path('hr-management/', include('ohmi_audit.hr_management.urls')),
-    prefix_default_language=False
+    prefix_default_language=True
 )
-"""
-prefix_default_language=False  
-# Do not prefix URLs with the default language code
-# This allows URLs to be accessed without the language code if the default language is used
-# If you want to prefix URLs with the default language code, set this to True
-"""
