@@ -73,7 +73,8 @@ python manage.py createsuperuser
 Workspace -> +New -> Postgres
 Set the info as in the database settings below
 Get the link to the database and add it to the DATABASES in settings.py instead of localhost, postgresql://[USER]:[PASSWORD]@[HOST]/[DATABASE_NAME]
-
+Deploy
+Open shell in Render.com and run python manage.py migrate and python manage.py createsuperuser
 
 restore view.py from above
 """
@@ -173,27 +174,29 @@ WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'ohmi_audit_db',
-#         'USER': 'postgres_user',
-#         'PASSWORD': 'password',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
+# Local PostgreSQL database settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ohmi_audit_db',                       # Database name
-        'USER': 'postgres_user',                       # Username (from before @ symbol)
-        'PASSWORD': '4lhyvQAk9zzRyHuApA78973PYtnEU6ro',  # Password (before @ symbol)
-        'HOST': 'dpg-d1jt68i4d50c738gt37g-a',         # Hostname (after @ symbol)
-        'PORT': '5432',                                # Default PostgreSQL port
+        'NAME': 'ohmi_audit_db',
+        'USER': 'postgres_user',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+# Render.com /w postgresql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ohmi_audit_db',                       # Database name
+#         'USER': 'postgres_user',                       # Username (from before @ symbol)
+#         'PASSWORD': '4lhyvQAk9zzRyHuApA78973PYtnEU6ro',  # Password (before @ symbol)
+#         'HOST': 'dpg-d1jt68i4d50c738gt37g-a',         # Hostname (after @ symbol)
+#         'PORT': '5432',                                # Default PostgreSQL port
+#     }
+# }
 
 # -----------------------------------------------------------------------------
 
