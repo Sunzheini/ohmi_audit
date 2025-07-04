@@ -71,7 +71,8 @@ python manage.py createsuperuser
 # Render.com /w postgresql
 """
 Workspace -> +New -> Postgres
-
+Set the info as in the database settings below
+Get the link to the database and add it to the DATABASES in settings.py instead of localhost, postgresql://[USER]:[PASSWORD]@[HOST]/[DATABASE_NAME]
 
 
 restore view.py from above
@@ -163,6 +164,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 
+# -----------------------------------------------------------------------------
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -170,17 +173,29 @@ WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ohmi_audit_db',
+#         'USER': 'postgres_user',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ohmi_audit_db',
-        'USER': 'postgres_user',
-        'PASSWORD': 'password',
-        # 'HOST': 'localhost',
-        'HOST': 'postgresql://postgres_user:4lhyvQAk9zzRyHuApA78973PYtnEU6ro@dpg-d1jt68i4d50c738gt37g-a/ohmi_audit_db',
-        'PORT': '5432',
+        'NAME': 'ohmi_audit_db',                       # Database name
+        'USER': 'postgres_user',                       # Username (from before @ symbol)
+        'PASSWORD': '4lhyvQAk9zzRyHuApA78973PYtnEU6ro',  # Password (before @ symbol)
+        'HOST': 'dpg-d1jt68i4d50c738gt37g-a',         # Hostname (after @ symbol)
+        'PORT': '5432',                                # Default PostgreSQL port
     }
 }
+
+# -----------------------------------------------------------------------------
 
 CACHES = {
     'default': {
