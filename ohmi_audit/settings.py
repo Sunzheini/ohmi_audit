@@ -90,8 +90,7 @@ add below:
         )
     }
 In render.com, go to the web service -> Environment -> Add Environment Variable -> DATABASE_URL: the string
-
-ToDo: restore view.py from above
+restore view.py from above
 """
 
 # Deployment GCP
