@@ -32,6 +32,11 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
     - until finished, use DEBUG = True in render.com
 """
 
+# Deployment general
+"""
+docker sign-in: gmail, docker user: Sunzheini1407	
+"""
+
 # Deployment Renderer.com
 """
     - run before deployment: python manage.py collectstatic
