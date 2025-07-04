@@ -7,16 +7,18 @@ from pathlib import Path
 load_dotenv()
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-'
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 """
 when it is False the 404.html is used automatically instead of 
 django's default 404 page.
 """
-# DEBUG = True    # must be True for development, e.g. for .css and .js files to be loaded correctly
+
+"""
+must be True for development, e.g. for .css, .js and media files to 
+be loaded correctly
+"""
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 """
@@ -25,9 +27,10 @@ Env vars:
     - create .env file in the root of the project and add the vars there
     - from dotenv import load_dotenv and after the imports load_dotenv()  # loads the .env file
     - use os.environ.get('VAR_NAME') to get the value of the env var
-    
+    - add the .env file to .gitignore so it is not pushed to the repository
+    - add the env vars in the Render dashboard
+    - until finished, use DEBUG = True in render.com
 """
-
 
 """
 Deployment Renderer.com
@@ -37,7 +40,8 @@ Deployment Renderer.com
     - New web service
     - Build Command: pip install -r requirements.txt && python manage.py collectstatic --noinput
     (&& python manage.py migrate?)
-    - Start Command: python manage.py runserver 0.0.0.0:8000
+    - Start Command: python manage.py runserver 0.0.0.0:8000 (while developing)
+    - Start Command: gunicorn ohmi_audit.wsgi:application  (for production)
 """
 
 """
@@ -53,13 +57,7 @@ Signals (Observer Pattern):
 2. connect it to a function in ohmi_audit/main_app/apps.py
 """
 
-# ALLOWED_HOSTS = [
-#     'localhost',
-#     '127.0.0.1',
-#     'ohmi-audit.onrender.com',
-# ]
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-
 CSRF_TRUSTED_ORIGINS = [
     'https://ohmi-audit.onrender.com',
 ]
@@ -78,7 +76,6 @@ New app:
 9. run migrations with comands:
     python manage.py makemigrations
     python manage.py migrate
-
 """
 
 INSTALLED_APPS = [
