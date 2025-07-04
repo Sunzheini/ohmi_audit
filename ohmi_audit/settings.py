@@ -34,7 +34,21 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Deployment general
 """
-docker sign-in: gmail, docker user: Sunzheini1407	
+docker sign-in: gmail, docker user: Sunzheini1407
+download the postgres image from Docker Hub
+in cmd: docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+in cmd: docker ps to see the running containers, it should show the postgres container
+add the database settings in the settings.py file as below
+pip install psycopg2 # or psycopg2-binary
+delete the db.sqlite3 file if it exists
+in views.py temp replace all_users = list(UserModel.objects.all()) with all_users = []
+Delete migration files and __pycache__ folders in all apps
+docker exec -it my-postgres psql -U postgres -d template1 -c "DROP DATABASE postgres;"
+docker exec -it my-postgres psql -U postgres -d template1 -c "CREATE DATABASE postgres;"
+Delete migration files and __pycache__ folders in all apps
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
 """
 
 # Deployment Renderer.com
@@ -133,10 +147,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',  # Default database name
+        'USER': 'postgres',  # Default superuser
+        'PASSWORD': 'yourpassword',  # Or empty if you used trust
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
