@@ -1,13 +1,17 @@
 import os
+
+import dj_database_url
 from dotenv import load_dotenv
 from pathlib import Path
 
 
-# Load environment variables from .env file
-load_dotenv()
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file (for local development)
+if os.path.exists(os.path.join(BASE_DIR, '.env')):
+    from dotenv import load_dotenv
+    load_dotenv()
+
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 """
@@ -41,6 +45,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
     - add 'https://ohmi-audit.onrender.com' in CSRF_TRUSTED_ORIGINS
     - New web service
     - Build Command: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    - Build Command: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
     (&& python manage.py migrate?)
     - Start Command: python manage.py runserver 0.0.0.0:8000 (while developing)
     - Start Command: gunicorn ohmi_audit.wsgi:application  (for production)
@@ -75,8 +80,15 @@ Set the info as in the database settings below
 Get the link to the database and add it to the DATABASES in settings.py instead of localhost, postgresql://[USER]:[PASSWORD]@[HOST]/[DATABASE_NAME]
 Deploy
 Open shell in Render.com and run python manage.py migrate and python manage.py createsuperuser
+pip install dj-database-url
+add below:
+    if 'DATABASE_URL' in os.environ:
+        DATABASES['default'] = dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
 
-restore view.py from above
+ToDo: restore view.py from above
 """
 
 # Deployment GCP
@@ -177,14 +189,20 @@ WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 # Local PostgreSQL database settings
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ohmi_audit_db',
-        'USER': 'postgres_user',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
+
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 
 # Render.com /w postgresql
 # DATABASES = {
