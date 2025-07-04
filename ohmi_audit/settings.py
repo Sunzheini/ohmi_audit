@@ -82,11 +82,14 @@ Deploy
 Open shell in Render.com and run python manage.py migrate and python manage.py createsuperuser
 pip install dj-database-url
 add below:
-    if 'DATABASE_URL' in os.environ:
-        DATABASES['default'] = dj_database_url.config(
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
             conn_max_age=600,
             conn_health_checks=True,
         )
+    }
+In render.com, go to the web service -> Environment -> Add Environment Variable -> DATABASE_URL: the string
 
 ToDo: restore view.py from above
 """
@@ -198,14 +201,6 @@ WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-
 # Render.com /w postgresql
 # DATABASES = {
 #     'default': {
@@ -217,6 +212,14 @@ DATABASES = {
 #         'PORT': '5432',                                # Default PostgreSQL port
 #     }
 # }
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 # -----------------------------------------------------------------------------
 
