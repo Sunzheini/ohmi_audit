@@ -1,16 +1,33 @@
 import os
+from dotenv import load_dotenv
 from pathlib import Path
+
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-'
+# SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-'
+os.getenv('SECRET_KEY')
 
 """
 when it is False the 404.html is used automatically instead of 
 django's default 404 page.
 """
-DEBUG = True    # must be True for development, e.g. for .css and .js files to be loaded correctly
+# DEBUG = True    # must be True for development, e.g. for .css and .js files to be loaded correctly
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+"""
+Env vars:
+    - pip install python-dotenv
+    - create .env file in the root of the project and add the vars there
+    - from dotenv import load_dotenv and after the imports load_dotenv()  # loads the .env file
+    - use os.environ.get('VAR_NAME') to get the value of the env var
+    
+"""
+
 
 """
 Deployment Renderer.com
@@ -24,16 +41,24 @@ Deployment Renderer.com
 """
 
 """
+Deployment GCP:
+    - pip install gunicorn
+
+
+"""
+
+"""
 Signals (Observer Pattern):
 1. create a new signal in ohmi_audit/main_app/signals.py
 2. connect it to a function in ohmi_audit/main_app/apps.py
 """
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'ohmi-audit.onrender.com',
-]
+# ALLOWED_HOSTS = [
+#     'localhost',
+#     '127.0.0.1',
+#     'ohmi-audit.onrender.com',
+# ]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
     'https://ohmi-audit.onrender.com',
