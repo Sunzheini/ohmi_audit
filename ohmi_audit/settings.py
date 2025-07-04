@@ -32,26 +32,9 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
     - until finished, use DEBUG = True in render.com
 """
 
-# Deployment general
-"""
-docker sign-in: gmail, docker user: Sunzheini1407
-download the postgres image from Docker Hub
-in cmd: docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
-in cmd: docker ps to see the running containers, it should show the postgres container
-add the database settings in the settings.py file as below
-pip install psycopg2 # or psycopg2-binary
-delete the db.sqlite3 file if it exists
-in views.py temp replace all_users = list(UserModel.objects.all()) with all_users = []
-Delete migration files and __pycache__ folders in all apps
-docker exec -it my-postgres psql -U postgres -d template1 -c "DROP DATABASE postgres;"
-docker exec -it my-postgres psql -U postgres -d template1 -c "CREATE DATABASE postgres;"
-Delete migration files and __pycache__ folders in all apps
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-"""
+# -----------------------------------------------------------------
 
-# Deployment Renderer.com
+# Deployment Renderer.com /w sqlite
 """
     - run before deployment: python manage.py collectstatic
     - add 'ohmi-audit.onrender.com' in ALLOWED_HOSTS
@@ -63,11 +46,44 @@ python manage.py createsuperuser
     - Start Command: gunicorn ohmi_audit.wsgi:application  (for production)
 """
 
+# Changing to postgresql
+"""
+docker sign-in: gmail, docker user: Sunzheini1407
+download the postgres image from Docker Hub
+
+if resetting:
+    docker stop my-postgres
+    docker rm my-postgres
+    docker volume prune
+
+docker run --name my-postgres -e POSTGRES_DB=ohmi_audit_db -e POSTGRES_USER=postgres_user -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
+docker ps to see the running containers, it should show the postgres container
+add the database settings in the settings.py file as below
+pip install psycopg2 # or psycopg2-binary
+delete the db.sqlite3 file if it exists
+in views.py temp replace all_users = list(UserModel.objects.all()) with all_users = []
+Delete migration files and __pycache__ folders in all apps
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+"""
+
+# Render.com /w postgresql
+"""
+Workspace -> +New -> Postgres
+
+
+
+restore view.py from above
+"""
+
 # Deployment GCP
 """
     - pip install gunicorn
     
 """
+
+# -----------------------------------------------------------------------------
 
 """
 Signals (Observer Pattern):
@@ -157,10 +173,11 @@ WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',  # Default database name
-        'USER': 'postgres',  # Default superuser
-        'PASSWORD': 'yourpassword',  # Or empty if you used trust
-        'HOST': 'localhost',
+        'NAME': 'ohmi_audit_db',
+        'USER': 'postgres_user',
+        'PASSWORD': 'password',
+        # 'HOST': 'localhost',
+        'HOST': 'postgresql://postgres_user:4lhyvQAk9zzRyHuApA78973PYtnEU6ro@dpg-d1jt68i4d50c738gt37g-a/ohmi_audit_db',
         'PORT': '5432',
     }
 }
