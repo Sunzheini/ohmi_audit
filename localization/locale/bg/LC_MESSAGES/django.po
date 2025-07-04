@@ -1,0 +1,154 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-04 11:42+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\ohmi_audit\main_app\views.py:23
+msgid "Ohmi Audit Test"
+msgstr "Ohmi Audit Тест"
+
+#: .\ohmi_audit\main_app\views.py:24
+msgid "Welcome"
+msgstr "Добре дошли"
+
+#: .\ohmi_audit\main_app\views.py:101
+msgid "Sign Up"
+msgstr "Създай профил"
+
+#: .\ohmi_audit\main_app\views.py:102
+msgid "Create Account"
+msgstr "Създай профил"
+
+#: .\ohmi_audit\main_app\views.py:122
+#, python-format
+msgid "Account created successfully! Welcome, %(first_name)s!"
+msgstr "Акаунтът е създаден успешно! Добре дошъл, %(first_name)s!"
+
+#: .\ohmi_audit\main_app\views.py:135
+msgid "Login"
+msgstr "Вход"
+
+#: .\ohmi_audit\main_app\views.py:136
+msgid "Login to Your Account"
+msgstr "Влез в профила си"
+
+#: .\ohmi_audit\main_app\views.py:160
+#, python-format
+msgid "Welcome back, %(first_name)s!"
+msgstr "Добре дошъл отново, %(first_name)s!"
+
+#: .\ohmi_audit\main_app\views.py:166
+msgid "Invalid username or password"
+msgstr "Грешно потребителско име или парола"
+
+#: .\ohmi_audit\main_app\views.py:174
+msgid "You have been successfully logged out."
+msgstr "Успешно излязохте."
+
+#: .\templates\includes\content_container.html:16
+msgid "Save"
+msgstr "Запази"
+
+#: .\templates\includes\content_container.html:28
+#: .\templates\includes\content_container.html:59
+msgid "Id"
+msgstr "Id"
+
+#: .\templates\includes\content_container.html:29
+msgid "Name"
+msgstr "Име"
+
+#: .\templates\includes\content_container.html:30
+msgid "Description"
+msgstr "Описание"
+
+#: .\templates\includes\content_container.html:31
+msgid "Date"
+msgstr "Дата"
+
+#: .\templates\includes\content_container.html:32
+msgid "Is Active"
+msgstr "Активен"
+
+#: .\templates\includes\content_container.html:33
+msgid "Category"
+msgstr "Категория"
+
+#: .\templates\includes\content_container.html:34
+msgid "Image"
+msgstr "Снимка"
+
+#: .\templates\includes\content_container.html:35
+msgid "File"
+msgstr "Файл"
+
+#: .\templates\includes\content_container.html:36
+#: .\templates\includes\content_container.html:68
+msgid "Edit"
+msgstr "Редактирай"
+
+#: .\templates\includes\content_container.html:37
+#: .\templates\includes\content_container.html:77
+msgid "Delete"
+msgstr "Изтрий"
+
+#: .\templates\includes\content_container.html:54
+msgid "No Image"
+msgstr "Няма снимка"
+
+#: .\templates\includes\content_container.html:61
+msgid "No File"
+msgstr "Няма файл"
+
+#: .\templates\includes\content_container.html:112
+msgid "No audits found"
+msgstr "Няма намерени одити"
+
+#: .\templates\includes\left_menu_bar.html:6
+msgid "Customers"
+msgstr "Клиенти"
+
+#: .\templates\includes\left_menu_bar.html:11
+msgid "Audits"
+msgstr "Одити"
+
+#: .\templates\includes\left_menu_bar.html:16
+msgid "Auditors"
+msgstr "Одитори"
+
+#: .\templates\includes\left_menu_bar.html:21
+msgid "Documents"
+msgstr "Документи"
+
+#: .\templates\includes\pagination.html:6
+msgid "first"
+msgstr "първо"
+
+#: .\templates\includes\pagination.html:8
+msgid "previous"
+msgstr "предишно"
+
+#: .\templates\includes\pagination.html:12
+msgid "Page"
+msgstr "Стр"
+
+#: .\templates\includes\pagination.html:17
+msgid "next"
+msgstr "следващо"
+
+#: .\templates\includes\pagination.html:19
+msgid "last"
+msgstr "последно"
