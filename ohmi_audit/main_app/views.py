@@ -4,11 +4,11 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth import get_user_model, login, authenticate, logout
+from django.utils.translation import gettext_lazy as _
 
 from common.pagination_decorator import paginate_results
 from ohmi_audit.main_app.forms import *
 from ohmi_audit.main_app.models import Audit
-
 
 # You can use the get_user_model() function to get the user model
 UserModel = get_user_model()
@@ -20,8 +20,8 @@ class IndexView(LoginRequiredMixin, View):
     # Change all backslashes (\) to forward slashes (/) if deploying on Render (linux-based servers)
     template_name = 'main_app/index.html'
     form_class = AuditForm
-    page_title = 'Ohmi Audit Test'
-    page_name = 'Welcome'
+    page_title = _('Ohmi Audit Test')  # Mark for translation
+    page_name = _('Welcome')
 
     # for the LoginRequiredMixin
     login_url = '/login/'  # Redirect to this URL if not logged in
@@ -34,7 +34,9 @@ class IndexView(LoginRequiredMixin, View):
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
-            'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),     # Pass the form instance, not the class
+            'redirect_to': self.request.GET.get('next', ''),  # Add this to ensure language switcher works
+            'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
+            # Pass the form instance, not the class
 
             'data_for_content_container_wrapper_bottom': Audit.objects.all(),
         }
@@ -96,13 +98,14 @@ class IndexView(LoginRequiredMixin, View):
 class SignUpView(View):
     template_name = 'main_app/index.html'
     form_class = SignUpForm
-    page_title = 'Sign Up'
-    page_name = 'Create Account'
+    page_title = _('Sign Up')
+    page_name = _('Create Account')
 
     def get_context_data(self, **kwargs):
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
+            'redirect_to': self.request.GET.get('next', ''),
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
         }
         return context
@@ -115,7 +118,11 @@ class SignUpView(View):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, f'Account created successfully! Welcome, {user.first_name}!')
+            messages.success(request,
+                             _('Account created successfully! Welcome, %(first_name)s!') % {
+                                 'first_name': user.first_name
+                             }
+                             )
             return redirect('index')
 
         # If form is invalid, return the form with errors
@@ -125,13 +132,14 @@ class SignUpView(View):
 class LoginView(View):
     template_name = 'main_app/index.html'
     form_class = LoginForm
-    page_title = 'Login'
-    page_name = 'Welcome Back'
+    page_title = _('Login')
+    page_name = _('Login to Your Account')
 
     def get_context_data(self, **kwargs):
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
+            'redirect_to': self.request.GET.get('next', ''),
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
         }
         return context
@@ -148,10 +156,14 @@ class LoginView(View):
 
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Welcome back, {user.first_name}!')
+                messages.success(request,
+                                 _('Welcome back, %(first_name)s!') % {
+                                     'first_name': user.first_name
+                                 }
+                                 )
                 return redirect('index')
 
-        messages.error(request, 'Invalid username or password')
+        messages.error(request, _('Invalid username or password'))
         return render(request, self.template_name, self.get_context_data(form=form))
 
 
@@ -159,6 +171,7 @@ class LogoutView(View):
     @staticmethod
     def get(request):
         logout(request)
+        messages.success(request, _('You have been successfully logged out.'))
         return redirect('index')
 
 

@@ -97,6 +97,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'django.middleware.locale.LocaleMiddleware', # for translation
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -118,6 +121,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'django.template.context_processors.i18n',  # For language switcher
             ],
         },
     },
@@ -156,10 +161,79 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+"""
+Localization:
+    - LANGUAGE_CODE: The default language for the project (e.g., 'en-us' for English).
+    - TIME_ZONE: The default time zone for the project (e.g., 'Europe/Sofia' for Bulgaria).
+    - USE_I18N: Whether to enable Django's internationalization system.
+    - USE_TZ: Whether to enable timezone support.
+    - create a folder named localization/locale/bg/LC_MESSAGES in the root of the project
+    - LOCALE_PATHS: A list of directories where Django will search for translation files.
+    - LANGUAGES: A list of tuples defining the languages available in the project.
+    - 'django.middleware.locale.LocaleMiddleware'    # After SessionMiddleware, before CommonMiddleWare
+    - In templates add {% load i18n %} and {% trans "Save" %} for all the text. This doesn't work for variable text, e.g. {{ object.name }}.
+    - python manage.py makemessages -l bg   # get all {%trans ... %} from the templates to the .po file
+    - translate the messages in the .po file, remove the #fuzzy
+    - python manage.py compilemessages  # apply translations
+    - in the main urls.py add: 
+        - from django.conf.urls.i18n import i18n_patterns
+        - path('i18n/', include('django.conf.urls.i18n')),  # add this to the urlpatterns
+        - at the bottom: urlpatterns += i18n_patterns(
+            path('', include('ohmi_audit.main_app.urls')),
+            path('hr-management/', include('ohmi_audit.hr_management.urls')),
+            prefix_default_language=False
+    - in the navigation bar:
+        <div class="lang">
+            <form class="lang-form" action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to|default:request.path }}" />
+                <select name="language" onchange="this.form.submit()">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% for language in languages %}
+                        <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                            {{ language.name_local|capfirst }} ({{ language.code }})
+                        </option>
+                    {% endfor %}
+                </select>
+                {# The button is now optional since we're using onchange #}
+            </form>
+        </div>
+    - in the views:
+        - from django.utils.translation import gettext_lazy as _
+        - page_title = _('Ohmi Audit Test')  # Mark for translation all similar strings
+        - 'redirect_to': self.request.GET.get('next', ''),    # Add this to the context to ensure language switcher works
+        - TEMPLATES = [
+                {
+                    # ...
+                    'OPTIONS': {
+                        'context_processors': [
+                            # ...
+                            'django.template.context_processors.i18n',  # For language switcher
+                        ],
+                    },
+                },
+            ]
+            
+        - when making new messages:
+            - python manage.py makemessages -l bg
+            - translate the messages in the .po file, remove the #fuzzy
+            - python manage.py compilemessages  # apply translations
+            - restart the server to see the changes
+"""
+
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Sofia'
 USE_I18N = True
 USE_TZ = True
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'localization/locale'),
+]
+LANGUAGES = [
+    ('en', 'English'),
+    ('bg', 'Bulgarian'),
+]
 
 
 # -----------------------------------------------------------------------------

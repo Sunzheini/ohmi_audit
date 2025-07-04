@@ -13,7 +13,7 @@
                         </tr>
                     {% endfor %}
                 </table>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
             </form>
         {% else %}
             No forms
@@ -25,16 +25,16 @@
             <table>
                 <thead>
                     <tr>
-                         <th>Id</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Date</th>
-                        <th>Is Active</th>
-                        <th>Category</th>
-                        <th>Image</th>
-                        <th>File</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th>{% trans "Id" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% trans "Is Active" %}</th>
+                        <th>{% trans "Category" %}</th>
+                        <th>{% trans "Image" %}</th>
+                        <th>{% trans "File" %}</th>
+                        <th>{% trans "Edit" %}</th>
+                        <th>{% trans "Delete" %}</th>
                     </tr>
                 </thead>
 
@@ -51,21 +51,21 @@
                             {% if item.image %}
                                 <img src="{{ item.image.url }}" alt="Image" style="width: 50px; height: 50px;">
                             {% else %}
-                                No Image
+                                {% trans "No Image" %}
                             {% endif %}
                         </td>
                         <td>
                             {% if item.file %}
-                                <a href="{{ item.file.url }}" class="btn btn-primary">Download File</a>
+                                <a href="{{ item.file.url }}" class="btn btn-primary">{% trans "Download File" %}</a>
                             {% else %}
-                                No File
+                                {% trans "No File" %}
                             {% endif %}
                         </td>
                         <td>
                             <form method="POST">
                                 {% csrf_token %}
                                 <button type="submit" name="edit" value="{{ item.id }}" class="btn btn-danger">
-                                    Edit
+                                    {% trans "Edit" %}
                                 </button>
                             </form>
                         </td>
@@ -74,7 +74,7 @@
                                 {% csrf_token %}
                                 <button type="submit" name="delete" value="{{ item.id }}" class="btn btn-danger"
                                         onclick="return confirm('Are you sure?')">
-                                    Delete
+                                    {% trans "Delete" %}
                                 </button>
                             </form>
                         </td>
@@ -109,7 +109,7 @@
                 {% include "includes/pagination.html" %}
             {% endif %}
         {% else %}
-            <p>No audits found.</p>
+            <p>{% trans "No audits found" %}</p>
         {% endif %}
         </div>
     </div>
