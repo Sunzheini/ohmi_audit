@@ -10,7 +10,7 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = 'django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-'
-os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 """
 when it is False the 404.html is used automatically instead of 
