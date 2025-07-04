@@ -7,5 +7,4 @@ venv/
 /static_files/
 /media_files/
 Thumbs.db
-/ohmi_audit/__pycache__/settings.cpython-311.pyc
-/ohmi_audit/__pycache__/settings.cpython-311.pyc
+.env
