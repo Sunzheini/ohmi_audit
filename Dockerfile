@@ -33,3 +33,7 @@ COPY . .
 # Collect static files (for production)
 # Gathers all static files in one location (for production serving)
 RUN python manage.py collectstatic --noinput
+
+# to run docker on render.com
+# Run gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "ohmi_audit.wsgi:application"]
