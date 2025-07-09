@@ -13,6 +13,8 @@ if os.path.exists(os.path.join(BASE_DIR, '.env')):
     load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY')
+# this is needed for the custom user model
+AUTH_USER_MODEL = 'main_app.AppUser'
 
 """
 when it is False the 404.html is used automatically instead of 
@@ -121,13 +123,26 @@ restore view.py from above
     - change CACHE:
         'redis://redis:6379',  # Changed from 127.0.0.1 to redis
     
-    (after changes start from here)
+    ------------------>>>>> (after changes start from here) <<<<<-------------------
     - again modify temporarily views.py like above
     - docker-compose down -v  # Stop containers and remove volumes
     - docker-compose up --build to build and run the app
+    - migrations:
+        (try first only with makemigrations and migrate) and if not:
+        # 1. Contenttypes first (required for auth)
+        docker-compose exec web python manage.py migrate contenttypes
+        # 2. Auth tables (without admin dependencies)
+        docker-compose exec web python manage.py migrate auth --database=default
+        # 3. Your custom user model
+        docker-compose exec web python manage.py makemigrations main_app
+        docker-compose exec web python manage.py migrate main_app
+        # 4. Now admin can be migrated
+        docker-compose exec web python manage.py migrate admin
+        # 5. Finally, all other migrations
+        docker-compose exec web python manage.py migrate
     - access the app at http://localhost:8000, not 0.0.0.0:8000
     - now it is running
-    - without stopping it, open a second terminal, it will be called `Local(2)` and run:
+    - if still errors: without stopping it, open a second terminal, it will be called `Local(2)` and run:
         Delete old migrations:
             docker-compose exec web find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
             docker-compose exec web find . -path "*/migrations/*.pyc" -delete
@@ -145,10 +160,16 @@ restore view.py from above
         if you want again to run locally without Docker, i received an error, so:
         :: Delete virtual environment
             rmdir /s /q .venv
+            or 
+            Remove-Item -Recurse -Force .venv
         :: Delete all __pycache__ folders
             for /r %i in (__pycache__) do rmdir /s /q "%i"
+            or 
+            Get-ChildItem -Include __pycache__ -Recurse -Force | Remove-Item -Recurse -Force
         :: Delete all migration files (keep __init__.py)
             for /r %i in (*.py) do if not "%~nxi"=="__init__.py" if "%~pi"=="\migrations\" del "%i"
+            or 
+            Get-ChildItem -Recurse -File -Path "*/migrations/*.py" | Where-Object { $_.Name -ne "__init__.py" } | Remove-Item -Force
         :: Create new virtual environment
             python -m venv .venv
             .\.venv\Scripts\activate
@@ -212,15 +233,15 @@ CSRF_TRUSTED_ORIGINS = [
 """
 
 INSTALLED_APPS = [
+    'ohmi_audit.main_app',
+    'ohmi_audit.hr_management',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'ohmi_audit.main_app',
-    'ohmi_audit.hr_management',
 ]
 
 MIDDLEWARE = [
@@ -466,9 +487,6 @@ MEDIA_ROOT = BASE_DIR / 'media_files'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # -----------------------------------------------------------------------------
-# this is needed for the custom user model
-AUTH_USER_MODEL = 'main_app.AppUser'
-
 """
 Create superuser:
 python manage.py createsuperuser
