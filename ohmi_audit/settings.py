@@ -171,6 +171,7 @@ restore view.py from above
     - set the environment variables same as in the other service
     - add ohmi-audit-docker.onrender.com to ALLOWED_HOSTS, also in Render and in CSRF_TRUSTED_ORIGINS
     - push, Render will build the Docker image and run the container
+    - both apps on render use the same database.
 """
 
 # Deployment GCP
@@ -333,8 +334,8 @@ CACHES = {
         'BACKEND':
             'django.core.cache.backends.redis.RedisCache',
         'LOCATION':
-            # 'redis://127.0.0.1:6379',
-            'redis://redis:6379',  # Changed from 127.0.0.1 to redis
+            'redis://redis:6379' if os.getenv('DOCKER') == 'True'
+            else 'redis://127.0.0.1:6379',
     }
 }
 
