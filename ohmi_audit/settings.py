@@ -96,6 +96,10 @@ restore view.py from above
 # Deployment GCP
 """
     - pip install gunicorn
+    - install the Google Cloud SDK: https://cloud.google.com/sdk/docs/install
+    - gcloud init
+    
+    
     
 """
 
