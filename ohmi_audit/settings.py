@@ -169,7 +169,7 @@ restore view.py from above
     - create a render.yaml (see the file for details)
     - in the Render dashboard, create a new web service and select Docker settings
     - set the environment variables same as in the other service
-
+    - push, Render will build the Docker image and run the container
 """
 
 # Deployment GCP
