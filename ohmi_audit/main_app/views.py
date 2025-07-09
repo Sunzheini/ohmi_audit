@@ -172,7 +172,6 @@ class LoginView(View):
         return render(request, self.template_name, self.get_context_data(form=form))
 
 
-# minor change
 class LogoutView(View):
     @staticmethod
     def get(request):
