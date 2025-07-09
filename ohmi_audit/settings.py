@@ -101,7 +101,7 @@ restore view.py from above
     ... (ongoing)
 """
 
-# Django app to Docker:
+# Django app to Docker container (including PostgreSQL, Redis)
 """
     - modify .env from:
         DEBUG=True
@@ -129,9 +129,43 @@ restore view.py from above
     - change CACHE:
         'redis://redis:6379',  # Changed from 127.0.0.1 to redis
     
-    - docker-compose down -v  # Clean old containers
+    - again modify temporarily views.py like above
+    - docker-compose down -v  # Stop containers and remove volumes
     - docker-compose up --build to build and run the app
-    - access the app at http://localhost:8000
+    - access the app at http://localhost:8000, not 0.0.0.0:8000
+    - now it is running
+    - without stopping it, open a second terminal, it will be called `Local(2)` and run:
+        Delete old migrations:
+            docker-compose exec web find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+            docker-compose exec web find . -path "*/migrations/*.pyc" -delete
+        Create new migrations:
+            docker-compose exec web python manage.py makemigrations
+        Apply migrations:
+            docker-compose exec web python manage.py migrate
+        Check if users exist, should  be empty:
+            docker-compose exec web python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.all())" 
+        If users exist, delete them:
+            docker-compose exec web python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.all().delete()"
+        Create a new superuser:
+            docker-compose exec web python manage.py createsuperuser
+            
+        if you want again to run locally without Docker, i received an error, so:
+        :: Delete virtual environment
+            rmdir /s /q .venv
+        :: Delete all __pycache__ folders
+            for /r %i in (__pycache__) do rmdir /s /q "%i"
+        :: Delete all migration files (keep __init__.py)
+            for /r %i in (*.py) do if not "%~nxi"=="__init__.py" if "%~pi"=="\migrations\" del "%i"
+        :: Create new virtual environment
+            python -m venv .venv
+            .\.venv\Scripts\activate
+        :: Force reinstall Django and dependencies
+            pip install --force-reinstall Django
+            pip install -r requirements.txt
+        
+        python manage.py makemigrations
+        python manage.py migrate
+        run
 """
 
 # -----------------------------------------------------------------------------
