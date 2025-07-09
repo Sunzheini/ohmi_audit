@@ -124,6 +124,7 @@ restore view.py from above
         'redis://redis:6379',  # Changed from 127.0.0.1 to redis
     
     ------------------>>>>> (after changes start from here) <<<<<-------------------
+    - first try only docker-compose up --build in order to keep the database
     - again modify temporarily views.py like above
     - docker-compose down -v  # Stop containers and remove volumes
     - docker-compose up --build to build and run the app
