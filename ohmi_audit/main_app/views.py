@@ -12,8 +12,10 @@ from ohmi_audit.main_app.models import Audit
 
 # You can use the get_user_model() function to get the user model
 UserModel = get_user_model()
-# all_users = list(UserModel.objects.all())
-all_users = []
+if UserModel.objects.exists():
+    all_users = list(UserModel.objects.all())
+else:
+    all_users = []
 
 
 # use the LoginRequiredMixin to ensure that the user is logged in before accessing the view
