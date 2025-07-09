@@ -98,15 +98,46 @@ restore view.py from above
     - pip install gunicorn
     - install the Google Cloud SDK: https://cloud.google.com/sdk/docs/install
     - gcloud init
+    ... (ongoing)
+"""
+
+# Django app to Docker:
+"""
+    - modify .env from:
+        DEBUG=True
+        SECRET_KEY=django-insecure-!5!tssmkukvxsjx+xwqc9mlw67^ej6*h+fa_gzc!h^sv5@(ax-
+        ALLOWED_HOSTS=localhost,127.0.0.1,ohmi-audit.onrender.com
+        DB_ENGINE=django.db.backends.postgresql
+        DB_NAME=ohmi_audit_db
+        DB_USER=postgres_user
+        DB_PASSWORD=password
+        DB_HOST=localhost
+        DB_PORT=5432
+        DATABASE_URL=postgresql://postgres_user:password@localhost:5432/ohmi_audit_db
+        to:
+        ALLOWED_HOSTS=localhost,127.0.0.1,ohmi-audit.onrender.com,web
+        DB_HOST=db  # Changed from 'localhost' to 'db' (Docker service name)
+        DB_PORT=5432
+        # For Render.com deployment (keep this as is)
+        DATABASE_URL=postgresql://postgres_user:password@localhost:5432/ohmi_audit_db
+        # For Docker-compose (add this new variable)
+        DOCKER_DATABASE_URL=postgresql://postgres_user:password@db:5432/ohmi_audit_db
+
+    - create a Dockerfile in the root of the project (see the file for details)
+    - create a requirements.txt file with all the dependencies
+    - create a docker-compose.yml file to run the app and the database (see the file for details)
+    - change CACHE:
+        'redis://redis:6379',  # Changed from 127.0.0.1 to redis
     
-    
-    
+    - docker-compose down -v  # Clean old containers
+    - docker-compose up --build to build and run the app
+    - access the app at http://localhost:8000
 """
 
 # -----------------------------------------------------------------------------
 
+# Signals (Observer Pattern):
 """
-Signals (Observer Pattern):
 1. create a new signal in ohmi_audit/main_app/signals.py
 2. connect it to a function in ohmi_audit/main_app/apps.py
 """
@@ -216,13 +247,36 @@ WSGI_APPLICATION = 'ohmi_audit.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# Render.com /w dj_database_url to switch between local and production
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
+# }
+
+# Django is in a Docker container, and the database is in another container
+if os.getenv('DOCKER') == 'True':
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE'),
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),  # Will be 'db' in Docker
+            'PORT': os.getenv('DB_PORT'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+
 
 # -----------------------------------------------------------------------------
 
@@ -231,7 +285,8 @@ CACHES = {
         'BACKEND':
             'django.core.cache.backends.redis.RedisCache',
         'LOCATION':
-            'redis://127.0.0.1:6379',
+            # 'redis://127.0.0.1:6379',
+            'redis://redis:6379',  # Changed from 127.0.0.1 to redis
     }
 }
 
