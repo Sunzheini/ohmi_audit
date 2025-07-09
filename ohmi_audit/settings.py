@@ -93,14 +93,6 @@ In render.com, go to the web service -> Environment -> Add Environment Variable 
 restore view.py from above
 """
 
-# Deployment GCP
-"""
-    - pip install gunicorn
-    - install the Google Cloud SDK: https://cloud.google.com/sdk/docs/install
-    - gcloud init
-    ... (ongoing)
-"""
-
 # Django app to Docker container (including PostgreSQL, Redis)
 """
     - modify .env from:
@@ -129,6 +121,7 @@ restore view.py from above
     - change CACHE:
         'redis://redis:6379',  # Changed from 127.0.0.1 to redis
     
+    (after changes start from here)
     - again modify temporarily views.py like above
     - docker-compose down -v  # Stop containers and remove volumes
     - docker-compose up --build to build and run the app
@@ -166,6 +159,14 @@ restore view.py from above
         python manage.py makemigrations
         python manage.py migrate
         run
+"""
+
+# Deployment GCP
+"""
+    - pip install gunicorn
+    - install the Google Cloud SDK: https://cloud.google.com/sdk/docs/install
+    - gcloud init
+    ... (ongoing)
 """
 
 # -----------------------------------------------------------------------------
