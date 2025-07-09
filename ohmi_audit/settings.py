@@ -161,6 +161,17 @@ restore view.py from above
         run
 """
 
+# Docker container on Render.com
+"""
+    - In the Dockerfile, add at the end:
+        CMD ["gunicorn", "--bind", "0.0.0.0:8000", "ohmi_audit.wsgi:application"]
+    - add a .dockerignore file to ignore files and folders that should not be copied to the container
+    - create a render.yaml (see the file for details)
+    - in the Render dashboard, create a new web service and select Docker settings
+    - set the environment variables same as in the other service
+
+"""
+
 # Deployment GCP
 """
     - pip install gunicorn

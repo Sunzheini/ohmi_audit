@@ -1,0 +1,16 @@
+# render.yaml
+services:
+  - type: web
+    name: ohmi-audit-docker
+    runtime: docker
+    dockerfile: Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ohmi-audit-db  # Reuse your existing DB
+          property: connectionString
+      - key: DEBUG
+        value: "True"
+      - key: SECRET_KEY
+        generateValue: true
+    healthCheckPath: /health/
