@@ -2,9 +2,6 @@
 services:
   - type: web
     name: ohmi-audit-docker
-    disk:
-      name: media_volume
-      mountPath: /app/media_files
     runtime: docker
     dockerfile: Dockerfile
     envVars:
@@ -12,8 +9,14 @@ services:
         fromDatabase:
           name: ohmi-audit-db  # Reuse your existing DB
           property: connectionString
+      - key: DOCKER
+        value: "True"
       - key: DEBUG
         value: "True"
       - key: SECRET_KEY
         generateValue: true
     healthCheckPath: /health/
+    disk:
+      name: media_volume
+      mountPath: /app/media_files
+      sizeGB: 1  # Start with 1GB, increase as needed
