@@ -8,6 +8,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+      - media_volume:/app/media_files  # Persistent media storage
     ports:
       - "8000:8000"
     environment:
@@ -45,5 +46,6 @@ services:
       - redis_data:/data
 
 volumes:
+  media_volume:
   postgres_data:
   redis_data:
