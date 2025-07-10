@@ -4,6 +4,7 @@ import dj_database_url
 from dotenv import load_dotenv
 from pathlib import Path
 
+from requests import session
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -243,6 +244,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 'sessions_middleware_signals_cashe.web',
 ]
 
 MIDDLEWARE = [
@@ -358,8 +361,15 @@ CACHES = {
         'LOCATION':
             'redis://redis:6379' if os.getenv('DOCKER') == 'True'
             else 'redis://127.0.0.1:6379',
+        'VERSION':
+            1,  # Increment when you change cache structure
+        'TIMEOUT':
+            300,  # Default timeout in seconds (5 minutes)
     }
 }
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
 
 AUTH_PASSWORD_VALIDATORS = [
     {

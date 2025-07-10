@@ -2,9 +2,12 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
 from django.views.generic import View
 from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.utils.translation import gettext_lazy as _
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 from common.pagination_decorator import paginate_results
 from ohmi_audit.main_app.forms import *
@@ -36,6 +39,15 @@ class IndexView(LoginRequiredMixin, View):
     @paginate_results(model=Audit, items_per_page=1)
     def get_context_data(self, **kwargs):
         """Shared context for both GET and POST"""
+        cache_key = f"audit_list_{self.request.user.id}"  # User-specific cache
+        cached_data = cache.get(cache_key)
+
+        if not cached_data:
+            audits = Audit.objects.all()
+            cache.set(cache_key, audits, timeout=300)  # Cache for 5 minutes
+        else:
+            audits = cached_data
+
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
@@ -43,10 +55,11 @@ class IndexView(LoginRequiredMixin, View):
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
             # Pass the form instance, not the class
 
-            'data_for_content_container_wrapper_bottom': Audit.objects.all(),
+            'data_for_content_container_wrapper_bottom': audits,
         }
         return context
 
+    @method_decorator(cache_page(60 * 1))  # Cache for 5 minutes
     # GET and POST are the only HTTP methods to use when dealing with forms in Django.
     def get(self, request: HttpRequest):
         """
@@ -60,6 +73,10 @@ class IndexView(LoginRequiredMixin, View):
         return render(request, self.template_name, self.get_context_data())
 
     def post(self, request: HttpRequest):
+        # Invalidate cache when changes are made
+        cache_key = f"audit_list_{request.user.id}"
+        cache.delete(cache_key)
+
         # 1. Delete handling (by the name of the button)
         if 'delete' in request.POST:
             try:
@@ -153,8 +170,20 @@ class LoginView(View):
         return render(request, self.template_name, self.get_context_data())
 
     def post(self, request: HttpRequest):
+        # Rate limiting with Redis
+        ip_address = request.META.get('REMOTE_ADDR')
+        cache_key = f"login_attempts_{ip_address}"
+        attempts = cache.get(cache_key, 0)
+
+        if attempts >= 5:
+            messages.error(request, _('Too many login attempts. Please try again later.'))
+            return render(request, self.template_name, self.get_context_data())
+
         form = self.form_class(request, data=request.POST)
         if form.is_valid():
+            # Reset attempts on successful login
+            cache.delete(cache_key)
+
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=username, password=password)
@@ -167,8 +196,11 @@ class LoginView(View):
                                  }
                                  )
                 return redirect('index')
+        else:
+            # Increment failed attempts
+            cache.set(cache_key, attempts + 1, timeout=300)  # 5 minute window
+            messages.error(request, _('Invalid username or password'))
 
-        messages.error(request, _('Invalid username or password'))
         return render(request, self.template_name, self.get_context_data(form=form))
 
 
