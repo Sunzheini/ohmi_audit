@@ -1,4 +1,5 @@
 # render.yaml
+# This file is used to configure the Render service for the Ohmi Audit application.
 services:
   - type: web
     name: ohmi-audit-docker
@@ -20,3 +21,12 @@ services:
       name: media_volume
       mountPath: /app/media_files
       sizeGB: 1  # Start with 1GB, increase as needed
+  - type: background_worker
+    name: grafana-agent
+    envVars:
+      - key: PROMETHEUS_URL
+        value: "https://prometheus-us-central1.grafana.net/api/prom/push"
+    startCommand: |
+      wget https://github.com/grafana/agent/releases/download/v0.24.1/agent-linux-amd64.zip
+      unzip agent-linux-amd64.zip
+      ./agent-linux-amd64 --config.file=agent-config.yaml

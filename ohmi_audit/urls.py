@@ -7,6 +7,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
+    path('metrics/', include('django_prometheus.urls')),
     path('admin/', admin.site.urls),
     path('', include('ohmi_audit.main_app.urls')),
     path('hr-management/', include('ohmi_audit.hr_management.urls')),

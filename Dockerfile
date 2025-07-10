@@ -1,3 +1,6 @@
+# Dockerfile is a script that contains a series of instructions to build a Docker image.
+
+# FROM is used to specify the base image for the Docker image.
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
 #FROM python:3.11-bullseye  # More complete OS base

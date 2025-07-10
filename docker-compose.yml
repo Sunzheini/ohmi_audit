@@ -1,3 +1,4 @@
+# Docker Compose file is used to define and run multi-container Docker applications.
 version: '3.8'
 
 services:
