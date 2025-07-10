@@ -354,22 +354,36 @@ else:
 
 # -----------------------------------------------------------------------------
 
-CACHES = {
-    'default': {
-        'BACKEND':
-            'django.core.cache.backends.redis.RedisCache',
-        'LOCATION':
-            'redis://redis:6379' if os.getenv('DOCKER') == 'True'
-            else 'redis://127.0.0.1:6379',
-        'VERSION':
-            1,  # Increment when you change cache structure
-        'TIMEOUT':
-            300,  # Default timeout in seconds (5 minutes)
+# Redis/Cache Configuration
+if os.getenv('DOCKER') == 'True' and os.getenv('USE_REDIS', 'True') == 'True':
+    # Docker-compose with Redis
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': 'redis://redis:6379/1',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                'SOCKET_CONNECT_TIMEOUT': 5,
+                'SOCKET_TIMEOUT': 5,
+                'IGNORE_EXCEPTIONS': True,
+            },
+            'KEY_PREFIX': 'ohmi_audit',
+        }
     }
-}
+else:
+    # Fallback to local memory cache
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',  # Can be any unique string
+        }
+    }
 
+# Session configuration (works with both cache backends)
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
+
+# -----------------------------------------------------------------------------
 
 AUTH_PASSWORD_VALIDATORS = [
     {

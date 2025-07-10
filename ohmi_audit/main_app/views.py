@@ -44,7 +44,7 @@ class IndexView(LoginRequiredMixin, View):
 
         if not cached_data:
             audits = Audit.objects.all()
-            cache.set(cache_key, audits, timeout=300)  # Cache for 5 minutes
+            cache.set(cache_key, audits, timeout=60)  # Cache for 5 minutes
         else:
             audits = cached_data
 

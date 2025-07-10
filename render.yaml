@@ -8,10 +8,10 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: ohmi-audit-db  # Reuse your existing DB
+          name: ohmi-audit-db  # Reuse existing DB
           property: connectionString
       - key: DOCKER
-        value: "True"
+        value: "False"  # Set to False for Render environment
       - key: DEBUG
         value: "True"
       - key: SECRET_KEY
