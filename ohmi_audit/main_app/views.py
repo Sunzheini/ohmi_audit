@@ -59,7 +59,6 @@ class IndexView(LoginRequiredMixin, View):
         }
         return context
 
-    @method_decorator(cache_page(60 * 1))  # Cache for 5 minutes
     # GET and POST are the only HTTP methods to use when dealing with forms in Django.
     def get(self, request: HttpRequest):
         """
