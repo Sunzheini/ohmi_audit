@@ -51,6 +51,25 @@ services:
         timeout: 10s
         retries: 3
 
+  celery:
+    build: .
+    command: celery -A ohmi_audit worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DOCKER=True
+      - USE_CELERY=True
+      - DATABASE_URL=postgresql://postgres_user:password@db/ohmi_audit_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: [ "CMD", "celery", "--app=ohmi_audit", "inspect", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   media_volume:
   postgres_data:
