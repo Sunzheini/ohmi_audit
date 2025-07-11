@@ -1,4 +1,5 @@
 from django.urls import path
+from django.http import HttpResponse
 from ohmi_audit.main_app.views import *
 
 
@@ -31,4 +32,7 @@ urlpatterns = [
     path('celery-example/', TaskTestView.as_view(), name='celery-example-view'),
     # status endpoint for Celery tasks
     path('celery-example-task-status/<str:task_id>/', task_status, name='celery-example-task-status'),
+
+    # ----------------------------------------------------------------
+    path('health/', lambda request: HttpResponse(status=200)),  # Add this line
 ]
