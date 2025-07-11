@@ -575,3 +575,4 @@ else:
 CELERY_RESULT_BACKEND = 'django-db'
 
 #  docker-compose up --build
+# http://localhost:8000/
