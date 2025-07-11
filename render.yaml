@@ -21,3 +21,16 @@ services:
       name: media_volume
       mountPath: /app/media_files
       sizeGB: 1  # Start with 1GB, increase as needed
+
+  - type: worker
+    name: celery-worker
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ohmi-audit-db
+          property: connectionString
+      - key: USE_CELERY
+        value: "True"
+      - key: REDIS_URL
+        value: "redis://redis:6379/0"
+    command: celery -A ohmi_audit worker --loglevel=info

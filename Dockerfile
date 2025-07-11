@@ -28,6 +28,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install Celery
+RUN pip install celery
+
 # command to optimize build caching
 COPY --chown=1000:1000 . .
 # Copies all files from your local directory to the container's /app directory

@@ -228,6 +228,14 @@ restore view.py from above
     - need changes in urls.py, views.py, and the template
     
     - now for docker:
+        - add the following to the Dockerfile:
+            RUN pip install celery
+        - add the following to the docker-compose.yml file:
+            command: python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+            then docker-compose up --build
+        - add the change it back to:
+            command: python manage.py runserver 0.0.0.0:8000
+        - docker-compose up --build
 """
 
 # Deployment GCP
@@ -557,5 +565,13 @@ Sunzheini, daniel_zorov@abv.bg, Maimun06
 
 # -----------------------------------------------------------------------------
 # Celery Configuration
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+if os.getenv('DOCKER', 'False') == 'True':
+    CELERY_BROKER_URL = 'redis://redis:6379/0'  # Docker
+else:
+    # Explicit local configuration
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
+
+#  docker-compose up --build
