@@ -25,5 +25,10 @@ urlpatterns = [
     # http://localhost:8000/redirect-from-here/
     path('redirect-from-here/', redirect_from_here_view, name='redirect-from-here'),
 
-    path('celery-example/', TaskTestView.as_view(), name='async-example-view'),
+    # ----------------------------------------------------------------
+
+    # http://localhost:8000/celery-example/
+    path('celery-example/', TaskTestView.as_view(), name='celery-example-view'),
+    # status endpoint for Celery tasks
+    path('celery-example-task-status/<str:task_id>/', task_status, name='celery-example-task-status'),
 ]

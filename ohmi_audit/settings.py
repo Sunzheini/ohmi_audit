@@ -218,11 +218,17 @@ restore view.py from above
             - Parameters: celery -A ohmi_audit worker --loglevel=info -P solo
             - Working directory: D:/Study/Projects/PycharmProjects/ohmi_audit
     - run both celery and ohmi_audit, below 2 terminals will be running
-    
     - create a task in the tasks.py file and use it in a view
     
-
+    now for dynamic updates:
+    - pip install django-celery-results
+    - add 'django_celery_results' to INSTALLED_APPS in settings.py
+    - add CELERY_RESULT_BACKEND = 'django-db' in settings.py
+    - run python manage.py migrate to create the necessary database tables
+    - need changes in urls.py, views.py, and the template
     
+    
+
     
     
 """
@@ -276,6 +282,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'celery',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -553,9 +560,5 @@ Sunzheini, daniel_zorov@abv.bg, Maimun06
 
 # -----------------------------------------------------------------------------
 # Celery Configuration
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379')  # Default to Redis
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_BACKEND = 'django-db'
-# CELERY_TIMEZONE = 'Europe/Sofia'
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
