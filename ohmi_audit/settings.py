@@ -574,6 +574,7 @@ else:
 # CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
 
+# docker-compose down -v
 # docker-compose build
 # docker-compose up -d
 # watch -n 1 docker-compose ps
