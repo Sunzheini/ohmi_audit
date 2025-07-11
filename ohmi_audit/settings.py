@@ -202,21 +202,24 @@ restore view.py from above
 """
     - pip install redis, django-redis
     - have redis set-up
-    - pip install celery
+    - pip install celery, pip install celery django-celery-results
     - add 'celery' to INSTALLED_APPS in settings.py
     - add configurations in settings.py
     - create a celery.py file in the ohmi_audit app directory (see the file for details)
     - create a tasks.py file in the main_app directory! (see the file for details)
     - if you want it in other app, create a tasks.py file in that app directory
-    - create a task in tasks.py
     - in ohmi_audit/__init__.py:
         from .celery import app as celery_app
             __all__ = ('celery_app',)
     - add configurations in PyCharm:
-        - in PyCharm, go to Run -> Edit Configurations -> + -> Celery -> Name: Celery Worker
-            - Script path: /path/to/your/venv/bin/celery (e.g., /home/user/.venv/bin/celery)
-            - Parameters: -A ohmi_audit worker --loglevel=info
-            - Environment variables: DJANGO_SETTINGS_MODULE=ohmi_audit.settings
+        - in PyCharm, go to Run -> Edit Configurations -> New -> Python
+            - Name: celery
+            - Script path: D:/Study/Projects/PycharmProjects/ohmi_audit/.venv/Scripts/celery.exe
+            - Parameters: celery -A ohmi_audit worker --loglevel=info -P solo
+            - Working directory: D:/Study/Projects/PycharmProjects/ohmi_audit
+    - run both celery and ohmi_audit, below 2 terminals will be running
+    
+    - create a task in the tasks.py file and use it in a view
     
 
     

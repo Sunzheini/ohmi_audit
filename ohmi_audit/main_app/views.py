@@ -1,8 +1,11 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +15,7 @@ from django.views.decorators.cache import cache_page
 from common.pagination_decorator import paginate_results
 from ohmi_audit.main_app.forms import *
 from ohmi_audit.main_app.models import Audit
+from ohmi_audit.main_app.tasks import *
 
 # You can use the get_user_model() function to get the user model
 UserModel = get_user_model()
@@ -20,6 +24,8 @@ UserModel = get_user_model()
 # else:
 #     all_users = []
 all_users = []
+
+
 # -----------------------------------------------------------------------
 
 
@@ -229,16 +235,66 @@ def redirect_from_here_view(request: HttpRequest):
     return redirect('index')
 
 
-def async_example_view(request: HttpRequest):
-    """
-    Example of using Celery for background tasks.
-    :param request: HttpRequest object.
-    :return: HttpResponse rendering the index page with a message.
-    """
-    for i in range(1000000):
-        # Simulating a long-running task
-        pass
+# @method_decorator(csrf_exempt, name='dispatch')
+# class TaskTestView(View):
+#     def post(self, request):
+#         try:
+#             data = json.loads(request.body)
+#             task_type = data.get('task_type', 'email')
+#
+#             if task_type == 'email':
+#                 # Email test task
+#                 task = send_email_task.delay(
+#                     subject="Test Email from Celery",
+#                     message="This email was sent asynchronously!",
+#                     recipient="sunzheini@gmail.com"
+#                 )
+#             else:
+#                 # Long-running test task
+#                 duration = int(data.get('duration', 5))
+#                 task = long_running_task.delay(duration)
+#
+#             return JsonResponse({
+#                 'status': 'Task started',
+#                 'task_id': task.id,
+#                 'task_type': task_type
+#             }, status=202)
+#
+#         except Exception as e:
+#             return JsonResponse({'error': str(e)}, status=400)
+#
+#     def get(self, request, task_id):
+#         from celery.result import AsyncResult
+#         task_result = AsyncResult(task_id)
+#
+#         response_data = {
+#             'task_id': task_id,
+#             'status': task_result.status,
+#             'result': task_result.result
+#         }
+#
+#         if task_result.status == 'PROGRESS':
+#             response_data['progress'] = task_result.info.get('current', 0)
+#             response_data['total'] = task_result.info.get('total', 1)
+#
+#         return JsonResponse(response_data)
 
-    result = _('This is an example of an asynchronous view that does not block the server.')
 
-    return render(request, 'main_app/index.html', {'message': result})
+class TaskTestView(View):
+    template_name = 'main_app/index.html'
+    page_title = 'Celery Task Test'
+    page_name = 'Test Celery Tasks'
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'page_title': self.page_title,
+            'page_name': self.page_name,
+            'message': None,
+        }
+        return context
+
+    def get(self, request: HttpRequest):
+        long_running_task.delay(duration=5)
+        messages.success(request, 'Long-running task started successfully!')
+        return render(request, self.template_name, self.get_context_data())
+

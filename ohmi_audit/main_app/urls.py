@@ -25,5 +25,5 @@ urlpatterns = [
     # http://localhost:8000/redirect-from-here/
     path('redirect-from-here/', redirect_from_here_view, name='redirect-from-here'),
 
-    path('celery-example/', async_example_view, name='async-example-view'),
+    path('celery-example/', TaskTestView.as_view(), name='async-example-view'),
 ]
