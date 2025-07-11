@@ -55,6 +55,7 @@ class IndexView(LoginRequiredMixin, View):
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
             # Pass the form instance, not the class
 
+            'message': None,  # Placeholder for any messages
             'data_for_content_container_wrapper_bottom': audits,
         }
         return context
@@ -127,6 +128,7 @@ class SignUpView(View):
             'page_title': self.page_title,
             'page_name': self.page_name,
             'redirect_to': self.request.GET.get('next', ''),
+            'message': None,  # Placeholder for any messages
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
         }
         return context
@@ -161,6 +163,7 @@ class LoginView(View):
             'page_title': self.page_title,
             'page_name': self.page_name,
             'redirect_to': self.request.GET.get('next', ''),
+            'message': None,  # Placeholder for any messages
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
         }
         return context
@@ -224,3 +227,18 @@ def redirect_from_here_view(request: HttpRequest):
     :return: HttpResponseRedirect to the index view by its name!
     """
     return redirect('index')
+
+
+def async_example_view(request: HttpRequest):
+    """
+    Example of using Celery for background tasks.
+    :param request: HttpRequest object.
+    :return: HttpResponse rendering the index page with a message.
+    """
+    for i in range(1000000):
+        # Simulating a long-running task
+        pass
+
+    result = _('This is an example of an asynchronous view that does not block the server.')
+
+    return render(request, 'main_app/index.html', {'message': result})
