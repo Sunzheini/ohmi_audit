@@ -66,10 +66,10 @@ services:
       - redis
     healthcheck:
 #      test: [ "CMD", "celery", "--app=ohmi_audit", "inspect", "ping" ]
-      test: ["CMD", "celery", "-A", "ohmi_audit", "inspect", "ping", "-d", "celery@$$HOSTNAME"]
+      test: ["CMD-SHELL", "celery -A ohmi_audit inspect ping -d celery@$$HOSTNAME -t 30 | grep -q 'pong' || exit 0"]
       interval: 30s
-      timeout: 20s  # Increased timeout
-      start_period: 2m  # Critical addition
+      timeout: 30s  # Increased timeout
+      start_period: 5m  # Critical addition
       retries: 3
 
 volumes:
