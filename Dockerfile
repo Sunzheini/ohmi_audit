@@ -40,6 +40,8 @@ COPY . .
 # Gathers all static files in one location (for production serving)
 RUN python manage.py collectstatic --noinput
 
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # to run docker on render.com
 # Run gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "ohmi_audit.wsgi:application"]
