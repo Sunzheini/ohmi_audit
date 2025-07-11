@@ -20,6 +20,10 @@
         {% endif %}
     </div>
 
+    {% if message %}
+        {{ message }}
+    {% endif %}
+
     <div class="content-container-wrapper-bottom">
         {% if data_for_content_container_wrapper_bottom %}
             <table>

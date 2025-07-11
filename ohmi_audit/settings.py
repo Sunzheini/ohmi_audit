@@ -1,6 +1,7 @@
 import os
 
 import dj_database_url
+from celery.contrib.rdb import CELERY_RDB_HOST
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -197,6 +198,32 @@ restore view.py from above
     - both apps on render use the same database.
 """
 
+# Celery (Run time-consuming tasks in the background e.g., generating PDF reports, sending emails, data exports):
+"""
+    - pip install redis, django-redis
+    - have redis set-up
+    - pip install celery
+    - add 'celery' to INSTALLED_APPS in settings.py
+    - add configurations in settings.py
+    - create a celery.py file in the ohmi_audit app directory (see the file for details)
+    - create a tasks.py file in the main_app directory! (see the file for details)
+    - if you want it in other app, create a tasks.py file in that app directory
+    - create a task in tasks.py
+    - in ohmi_audit/__init__.py:
+        from .celery import app as celery_app
+            __all__ = ('celery_app',)
+    - add configurations in PyCharm:
+        - in PyCharm, go to Run -> Edit Configurations -> + -> Celery -> Name: Celery Worker
+            - Script path: /path/to/your/venv/bin/celery (e.g., /home/user/.venv/bin/celery)
+            - Parameters: -A ohmi_audit worker --loglevel=info
+            - Environment variables: DJANGO_SETTINGS_MODULE=ohmi_audit.settings
+    
+
+    
+    
+    
+"""
+
 # Deployment GCP
 """
     - pip install gunicorn
@@ -245,7 +272,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 'sessions_middleware_signals_cashe.web',
+    'celery',
 ]
 
 MIDDLEWARE = [
@@ -371,6 +398,7 @@ if os.getenv('DOCKER') == 'True' and os.getenv('USE_REDIS', 'True') == 'True':
         }
     }
 else:
+    # ToDo: cloud redis
     # Fallback to local memory cache
     CACHES = {
         'default': {
@@ -519,3 +547,12 @@ python manage.py createsuperuser
 Superusers:
 Sunzheini, daniel_zorov@abv.bg, Maimun06
 """
+
+# -----------------------------------------------------------------------------
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379')  # Default to Redis
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_TIMEZONE = 'Europe/Sofia'
