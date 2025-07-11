@@ -1,5 +1,6 @@
 import json
 
+from celery.result import AsyncResult
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
@@ -279,6 +280,25 @@ def redirect_from_here_view(request: HttpRequest):
 #
 #         return JsonResponse(response_data)
 
+# -------------------------------------------------------------------------------
+# Celery
+# -------------------------------------------------------------------------------
+
+def task_status(request, task_id):
+    task_result = AsyncResult(task_id)
+
+    response_data = {
+        'ready': task_result.ready(),
+        'status': task_result.status,
+        'result': task_result.result if task_result.ready() else None,
+    }
+
+    if task_result.status == 'PROGRESS':
+        response_data['progress'] = task_result.info.get('current', 0)
+        response_data['total'] = task_result.info.get('total', 1)
+
+    return JsonResponse(response_data)
+
 
 class TaskTestView(View):
     template_name = 'main_app/index.html'
@@ -289,12 +309,17 @@ class TaskTestView(View):
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
-            'message': None,
+            'message': kwargs.get('message'),
+            'task_id': kwargs.get('task_id'),
         }
         return context
 
     def get(self, request: HttpRequest):
-        long_running_task.delay(duration=5)
-        messages.success(request, 'Long-running task started successfully!')
-        return render(request, self.template_name, self.get_context_data())
+        # Start the task and get its ID
+        task = long_running_task.delay(duration=5)
+        messages.success(request, 'Task started! Tracking progress...')
 
+        context = self.get_context_data(
+            task_id=task.id  # Pass task ID to template
+        )
+        return render(request, self.template_name, context)
