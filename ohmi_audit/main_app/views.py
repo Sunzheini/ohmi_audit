@@ -236,50 +236,6 @@ def redirect_from_here_view(request: HttpRequest):
     return redirect('index')
 
 
-# @method_decorator(csrf_exempt, name='dispatch')
-# class TaskTestView(View):
-#     def post(self, request):
-#         try:
-#             data = json.loads(request.body)
-#             task_type = data.get('task_type', 'email')
-#
-#             if task_type == 'email':
-#                 # Email test task
-#                 task = send_email_task.delay(
-#                     subject="Test Email from Celery",
-#                     message="This email was sent asynchronously!",
-#                     recipient="sunzheini@gmail.com"
-#                 )
-#             else:
-#                 # Long-running test task
-#                 duration = int(data.get('duration', 5))
-#                 task = long_running_task.delay(duration)
-#
-#             return JsonResponse({
-#                 'status': 'Task started',
-#                 'task_id': task.id,
-#                 'task_type': task_type
-#             }, status=202)
-#
-#         except Exception as e:
-#             return JsonResponse({'error': str(e)}, status=400)
-#
-#     def get(self, request, task_id):
-#         from celery.result import AsyncResult
-#         task_result = AsyncResult(task_id)
-#
-#         response_data = {
-#             'task_id': task_id,
-#             'status': task_result.status,
-#             'result': task_result.result
-#         }
-#
-#         if task_result.status == 'PROGRESS':
-#             response_data['progress'] = task_result.info.get('current', 0)
-#             response_data['total'] = task_result.info.get('total', 1)
-#
-#         return JsonResponse(response_data)
-
 # -------------------------------------------------------------------------------
 # Celery
 # -------------------------------------------------------------------------------
@@ -309,14 +265,17 @@ class TaskTestView(View):
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
+            'redirect_to': self.request.GET.get('next', ''),
             'message': kwargs.get('message'),
+
+            # need to pass the task ID to the template for tracking
             'task_id': kwargs.get('task_id'),
         }
         return context
 
     def get(self, request: HttpRequest):
         # Start the task and get its ID
-        task = long_running_task.delay(duration=5)
+        task = long_running_task.delay(duration=10)
         messages.success(request, 'Task started! Tracking progress...')
 
         context = self.get_context_data(

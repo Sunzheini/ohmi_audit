@@ -227,10 +227,7 @@ restore view.py from above
     - run python manage.py migrate to create the necessary database tables
     - need changes in urls.py, views.py, and the template
     
-    
-
-    
-    
+    - now for docker:
 """
 
 # Deployment GCP
