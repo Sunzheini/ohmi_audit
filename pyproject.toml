@@ -1,0 +1,64 @@
+[project]
+name = "ohmi-audit"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Sunzheini",email = "daniel_zorov@abv.bg"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "amqp (==5.3.1)",
+    "asgiref (==3.8.1)",
+    "async-timeout (==5.0.1)",
+    "billiard (==4.2.1)",
+    "celery (==5.5.3)",
+    "certifi (==2025.7.9)",
+    "cffi (==1.17.1)",
+    "channels (==4.2.2)",
+    "channels-redis (==4.2.1)",
+    "charset-normalizer (==3.4.2)",
+    "click (==8.2.1)",
+    "click-didyoumean (==0.3.1)",
+    "click-plugins (==1.1.1.2)",
+    "click-repl (==0.3.0)",
+    "colorama (==0.4.6)",
+    "cryptography (==45.0.5)",
+    "dj-database-url (==3.0.1)",
+    "django (==5.0.3)",
+    "django-allauth (==65.10.0)",
+    "django-oauth-toolkit (==3.0.1)",
+    "django-prometheus (==2.4.1)",
+    "django-redis (==6.0.0)",
+    "django-celery-results (==2.6.0)",
+    "gunicorn (==23.0.0)",
+    "idna (==3.10)",
+    "jwcrypto (==1.5.6)",
+    "kombu (==5.5.4)",
+    "msgpack (==1.1.1)",
+    "oauthlib (==3.3.1)",
+    "packaging (==25.0)",
+    "pillow (==11.2.1)",
+    "prometheus-client (==0.22.1)",
+    "prompt-toolkit (==3.0.51)",
+    "psycopg2 (==2.9.10)",
+    "psycopg2-binary (==2.9.10)",
+    "pycparser (==2.22)",
+    "python-dateutil (==2.9.0.post0)",
+    "python-dotenv (==1.1.1)",
+    "redis (==6.2.0)",
+    "requests (==2.32.4)",
+    "six (==1.17.0)",
+    "sqlparse (==0.4.4)",
+    "typing-extensions (==4.14.1)",
+    "tzdata (==2025.2)",
+    "urllib3 (==2.5.0)",
+    "vine (==5.1.0)",
+    "wcwidth (==0.2.13)",
+    "whitenoise (==6.9.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

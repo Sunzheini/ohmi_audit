@@ -444,6 +444,17 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # -----------------------------------------------------------------------------
+# Poetry
+"""
+poetry init
+poetry add $(cat requirements.txt)
+delete requirements.txt and .venv
+select add new interpreter in PyCharm
+select Type: Poetry and select the poetry executable in C:\\Python11\\Scripts\\poetry.exe
+check to create inside the project directory -> create
+"""
+
+# -----------------------------------------------------------------------------
 # Localization
 """
     - LANGUAGE_CODE: The default language for the project (e.g., 'en-us' for English).
