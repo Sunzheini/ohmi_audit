@@ -245,7 +245,7 @@ restore view.py from above
     - gcloud init
     - create a new project in GCP
     - enable compute service and container registry service in GCP
-    - create a VM instance
+    - create a VM instance with good resources
     - VM instances are @ https://console.cloud.google.com/compute/instances?onCreate=true&inv=1&invt=Ab3rTw&project=canvas-hook-462808-q0
     - view its ip, e.g. 34.40.119.24 and add it to ALLOWED_HOSTS
     - login SSH
