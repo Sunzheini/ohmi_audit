@@ -243,7 +243,38 @@ restore view.py from above
     - pip install gunicorn
     - install the Google Cloud SDK: https://cloud.google.com/sdk/docs/install
     - gcloud init
-    ... (ongoing)
+    - create a new project in GCP
+    - enable compute service and container registry service in GCP
+    - create a VM instance
+    - VM instances are @ https://console.cloud.google.com/compute/instances?onCreate=true&inv=1&invt=Ab3rTw&project=canvas-hook-462808-q0
+    - view its ip, e.g. 34.40.119.24 and add it to ALLOWED_HOSTS
+    - login SSH
+    - install Docker on the VM instance:
+        sudo apt-get update
+        sudo apt-get install docker.io
+    - install Docker Compose:
+        sudo apt-get install docker-compose
+        docker-compose --version
+    - clone the repository:
+        sudo apt-get install -y git
+        push latest changes and have also requirements.txt updated not just poetry.lock
+        git clone https://github.com/Sunzheini/ohmi_audit
+        cd ohmi_audit
+        create a .env file: sudo nano .env and add the environment variables
+    - sudo docker-compose up --build
+        it should show the same result as in Pycharm when building the Docker image
+        open another SSH terminal and run
+        sudo docker-compose ps --all    # all must be healthy
+        go to the list of vms and click edit
+        add a new network tag: django-server
+    - view network details on the dots next to the VM instance
+        select Firewall on the left side
+        Create a new firewall rule:
+        - Name: django-8000, target-tags: django-server, IP4 ranges: 0.0.0.0/0, TCP: 8000
+        - accessible at http://34.40.119.24:8000/
+
+        - sudo docker-compose exec web python manage.py migrate
+        - sudo docker-compose exec web python manage.py createsuperuser
 """
 
 # -----------------------------------------------------------------------------
@@ -597,56 +628,6 @@ CELERY_RESULT_BACKEND = 'django-db'
 # http://localhost:8000/
 
 
-# Deployment GCP
-"""
-    - pip install gunicorn
-    - install the Google Cloud SDK: https://cloud.google.com/sdk/docs/install
-    - gcloud init
-    - create a new project in GCP
-    - enable compute service and container registry service in GCP
-    - create a VM instance
-    - VM instances are @ https://console.cloud.google.com/compute/instances?onCreate=true&inv=1&invt=Ab3rTw&project=canvas-hook-462808-q0
-    - view its ip, e.g. 34.40.119.24 and add it to ALLOWED_HOSTS
-    - login SSH
-    - install Docker on the VM instance:
-        sudo apt-get update
-        sudo apt-get install docker.io
-    - install Docker Compose:
-        sudo apt-get install docker-compose
-        docker-compose --version
-    - clone the repository:
-        sudo apt-get install -y git
-        push latest changes and have also requirements.txt updated not just poetry.lock
-        git clone https://github.com/Sunzheini/ohmi_audit
-        cd ohmi_audit
-        create a .ENV file: sudo nano .env and add the environment variables
-    - sudo docker-compose up --build
-        it should show the same result as in Pycharm when building the Docker image
-        open another SSH terminal and run
-        sudo docker-compose ps --all    # all must be healthy
-        go to the list of vms and click edit
-        add a new network tag: django-server
-    - view network details on the dots next to the VM instance
-        select Firewall on the left side
-        Create a new firewall rule:
-        - Name: django-8000, target-tags: django-server, IP4 ranges: 0.0.0.0/0, TCP: 8000
-    
-    
-    
-    
-    
-    
-    - docker-compose exec django python manage.py migrate
-    - docker-compose exec django python manage.py createsuperuser
-    - gcloud compute firewall-rules create django-8000 --allow tcp:8000
-    - curl ifconfig.me # to get the external IP address of the VM instance 
-    - access the app at http://<EXTERNAL_IP>:8000/
-    
-    
-        
-        
-        
-    
-"""
+
 
 
