@@ -9,6 +9,8 @@ class AuditSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+
 # example for a serializer with custom fields
 class CustomDataSerializer(serializers.Serializer):
     custom_field = serializers.CharField(max_length=100, required=True)
