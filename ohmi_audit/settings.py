@@ -286,11 +286,26 @@ restore view.py from above
 """
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
-CSRF_TRUSTED_ORIGINS = [
-    'https://ohmi-audit.onrender.com',
-    'https://ohmi-audit-docker.onrender.com',
-    'http://34.40.119.24'
-    'http://34.40.119.24:8000/'
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+
+# Optional: Allow credentials (e.g., cookies) to be sent with the requests
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow specific HTTP methods (e.g., POST, PUT, DELETE)
+CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT',]
+
+# Allow specific headers to be included in the requests
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 # New app steps
@@ -321,11 +336,15 @@ INSTALLED_APPS = [
 
     'celery',
     'django_celery_results',
+    'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
     # custom middleware: create it in the form of a decorator and add it here
     'common.custom_middleware.measure_time_middleware',
+
+    'corsheaders.middleware.CorsMiddleware',  # For CORS headers
 
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -485,6 +504,9 @@ delete requirements.txt and .venv
 select add new interpreter in PyCharm
 select Type: Poetry and select the poetry executable in C:\\Python11\\Scripts\\poetry.exe
 check to create inside the project directory -> create
+
+poetry add djangorestframework      # install a new package and add it to the pyproject.toml
+poetry show djangorestframework     # verified that it is installed
 """
 
 # -----------------------------------------------------------------------------

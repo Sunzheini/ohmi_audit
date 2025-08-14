@@ -12,11 +12,18 @@ from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
+from rest_framework.views import APIView
 
 from common.pagination_decorator import paginate_results
+from common.serializers import *
 from ohmi_audit.main_app.forms import *
 from ohmi_audit.main_app.models import Audit
 from ohmi_audit.main_app.tasks import *
+
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 # You can use the get_user_model() function to get the user model
 UserModel = get_user_model()
@@ -106,16 +113,17 @@ class IndexView(LoginRequiredMixin, View):
             except Audit.DoesNotExist:
                 pass
 
-        # 3. Save handling
+        # 3. Continue editing / Handling Save
         editing_id = request.session.get('editing_id')
         form_data = self.form_class(request.POST, request.FILES)
 
-        # If editing_id is set, it means we are editing an existing audit
+        # a) If editing_id is set, it means we are editing an existing audit
         if editing_id:
             audit = Audit.objects.get(id=editing_id)
             form_data = self.form_class(request.POST, request.FILES, instance=audit)
             del request.session['editing_id']
 
+        # b) If not editing, we are creating a new audit
         if form_data.is_valid():
             form_data.save()
             return redirect('index')
@@ -219,6 +227,57 @@ class LogoutView(View):
         logout(request)
         messages.success(request, _('You have been successfully logged out.'))
         return redirect('index')
+
+
+# -----------------------------------------------------------------------
+class ModelEndPointView(APIView):
+    """
+    An API view that returns a serialized list of Audit objects.
+    This can be used for the frontend or Postman to send a GET request to.
+    """
+    permission_classes = [AllowAny]  # Or IsAuthenticated
+
+    def get(self, request, *args, **kwargs):
+        audits = Audit.objects.all()
+        serializer = AuditSerializer(audits, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests to create a new Audit object.
+        """
+        serializer = AuditSerializer(data=request.data)
+        if serializer.is_valid():
+            # serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+
+class CustomDataEndPointView(APIView):
+    """
+    A simple API view that returns a JSON response with a message.
+    This can be for the frontend / Postman to send a get request to.
+    """
+    permission_classes = [AllowAny]  # Or IsAuthenticated
+
+    def get(self, request, *args, **kwargs):
+        data = [
+            {
+                'custom_field': '1234567'
+            }
+        ]
+        serializer = CustomDataSerializer(data, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests to create a new custom data object.
+        """
+        serializer = CustomDataSerializer(data=request.data)
+        if serializer.is_valid():
+            # Here you can handle the creation logic if needed
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
 
 # -----------------------------------------------------------------------
