@@ -20,6 +20,14 @@ urlpatterns = [
 
     # ----------------------------------------------------------------
 
+    # http://localhost:8000/api-endpoint-example-model/
+    path('api-endpoint-example-model/', ModelEndPointView.as_view(), name='api-endpoint-example-model'),
+
+    # http://localhost:8000/api-endpoint-example-custom-data/
+    path('api-endpoint-example-custom-data/', CustomDataEndPointView.as_view(), name='api-endpoint-example-custom-data'),
+
+    # ----------------------------------------------------------------
+
     # http://localhost:8000/about-us/3/
     path('about-us/<int:some_variable>/', about_us_view, name='about-us'),
 
