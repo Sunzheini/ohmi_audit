@@ -48,7 +48,8 @@ class IndexView(LoginRequiredMixin, View):
     page_name = _('Welcome')
 
     # for the LoginRequiredMixin
-    login_url = '/login/'  # Redirect to this URL if not logged in
+    # Use the URL name so i18n patterns are respected (prefixes like /en/)
+    login_url = 'login'  # URL name, not hard-coded path like '/login/', Redirect to this URL if not logged in
     redirect_field_name = 'next'  # URL parameter to redirect after login
 
     # add this decorator only if you want to paginate the results

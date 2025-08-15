@@ -21,7 +21,8 @@ class CustomDataSerializer(serializers.Serializer):
         This method is called after individual field validations.
         """
         if 'custom_field' in data and not data['custom_field'].isalnum():
-            raise serializers.ValidationError("Custom field must be alphanumeric.")
+            # Attach the error to the specific field for clearer validation feedback
+            raise serializers.ValidationError({"custom_field": "Custom field must be alphanumeric."})
         return data
 
     def create(self, validated_data):
