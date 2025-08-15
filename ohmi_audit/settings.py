@@ -572,7 +572,7 @@ poetry show djangorestframework     # verified that it is installed
             - restart the server to see the changes
 """
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 TIME_ZONE = 'Europe/Sofia'
 USE_I18N = True
 USE_TZ = True
@@ -603,7 +603,12 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 
 # Add this for production (Render):
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Use non-manifest storage during tests to avoid errors about missing hashed files
+import sys as _sys
+if any(arg in _sys.argv for arg in ['test', 'pytest']) or os.getenv('DJANGO_DISABLE_WHITENOISE', 'False') == 'True':
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # -----------------------------------------------------------------------------
