@@ -496,7 +496,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # -----------------------------------------------------------------------------
-# Poetry
+
+# changing to Poetry
 """
 poetry init
 poetry add $(cat requirements.txt)
@@ -507,6 +508,25 @@ check to create inside the project directory -> create
 
 poetry add djangorestframework      # install a new package and add it to the pyproject.toml
 poetry show djangorestframework     # verified that it is installed
+"""
+
+# New project + Poetry
+"""
+create a new project in GitHub with a README.md file and .gitignore for Python
+git clone the repository
+open with pycharm
+
+in the terminal: `poetry init`
+follow the prompts and press enter to accept default or add your own values
+Would you like to define your main dependencies interactively? (yes/no) [yes] no
+Would you like to define your development dependencies interactively? (yes/no) [yes] no
+Do you confirm generation? (yes/no) [yes] yes
+`poetry add fastapi`: will install the package and also create the venv
+
+open with pycharm
+it should detect the created interpreter, check if the path is correct
+you add new packages with `poetry add requests`
+.idea and .venv are already in .gitignore, when making first commit add the .toml and poetry.lock files also
 """
 
 # -----------------------------------------------------------------------------
