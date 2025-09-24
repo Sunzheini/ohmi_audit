@@ -514,7 +514,6 @@ poetry show djangorestframework     # verified that it is installed
 """
 create a new project in GitHub with a README.md file and .gitignore for Python
 git clone the repository
-open with pycharm
 
 in the terminal: `poetry init`
 follow the prompts and press enter to accept default or add your own values
