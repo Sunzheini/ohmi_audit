@@ -526,6 +526,12 @@ open with pycharm
 it should detect the created interpreter, check if the path is correct
 you add new packages with `poetry add requests`
 .idea and .venv are already in .gitignore, when making first commit add the .toml and poetry.lock files also
+
+open on another pc
+the lock and the toml file are there
+`poetry config virtualenvs.in-project true` to create the venv inside the project directory
+`poetry install` will create the venv and install all packages from the lock file
+or `poetry install --no-root`
 """
 
 # -----------------------------------------------------------------------------
