@@ -454,7 +454,7 @@ if os.getenv('DOCKER') == 'True' and os.getenv('USE_REDIS', 'True') == 'True':
     CACHES = {
         'default': {
             'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': 'redis://redis:6379/1',
+            'LOCATION': 'redis://redis:6379/1',                     # use different index in other apps using the same redis, e.g. REDIS_URL = "redis://redis:6379/2" not 6379/1
             'OPTIONS': {
                 'CLIENT_CLASS': 'django_redis.client.DefaultClient',
                 'SOCKET_CONNECT_TIMEOUT': 5,
