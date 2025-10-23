@@ -38,6 +38,8 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
     - add the .env file to .gitignore so it is not pushed to the repository
     - add the env vars in the Render dashboard
     - until finished, use DEBUG = True in render.com
+    
+    `load_dotenv()` must be in every file before os.getenv() is used!!!
 """
 
 # -----------------------------------------------------------------
