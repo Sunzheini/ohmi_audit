@@ -40,6 +40,13 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
     - until finished, use DEBUG = True in render.com
     
     `load_dotenv()` must be in every file before os.getenv() is used!!!
+    
+# best pattern to load .env file:
+from dotenv import load_dotenv
+BASE_DIR = Path(__file__).resolve().parent
+
+if os.path.exists(os.path.join(BASE_DIR, '.env')):
+    load_dotenv()
 """
 
 # -----------------------------------------------------------------
