@@ -681,8 +681,3 @@ CELERY_RESULT_BACKEND = 'django-db'
 # sudo docker-compose logs --tail=100 celery
 
 # http://localhost:8000/
-
-
-
-
-
