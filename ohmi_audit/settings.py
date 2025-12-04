@@ -311,7 +311,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# New app steps
+# New django app steps
 """
 1. python manage.py startapp hr_management
 2. move hr_management to inside ohmi_audit directory
