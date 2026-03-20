@@ -14,6 +14,7 @@ from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 
+from common.base_view import BaseView
 from common.pagination_decorator import paginate_results
 from common.serializers import *
 from ohmi_audit.main_app.forms import *
@@ -135,59 +136,34 @@ class IndexView(LoginRequiredMixin, View):
 
 
 # -----------------------------------------------------------------------
-class SignUpView(View):
-    template_name = 'main_app/index.html'
-    form_class = SignUpForm
-    page_title = _('Sign Up')
-    page_name = _('Create Account')
-
-    def get_context_data(self, **kwargs):
-        context = {
-            'page_title': self.page_title,
-            'page_name': self.page_name,
-            'redirect_to': self.request.GET.get('next', ''),
-            'message': None,  # Placeholder for any messages
-            'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
-        }
-        return context
-
-    def get(self, request: HttpRequest):
-        return render(request, self.template_name, self.get_context_data())
+# Authentication Views (Sign Up, Login, Logout)
+# -----------------------------------------------------------------------
+#region Auth Views
+class SignUpView(BaseView):
+    def define_basic_elements(self):
+        self.template_name = 'main_app/index.html'
+        self.form_class = SignUpForm
+        self.page_title = _('Sign Up')
+        self.page_name = _('Create Account')
 
     def post(self, request: HttpRequest):
         form = self.form_class(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request,
-                             _('Account created successfully! Welcome, %(first_name)s!') % {
-                                 'first_name': user.first_name
-                             }
-                             )
+            messages.success(request, _('Account created successfully! Welcome, %(first_name)s!') % {'first_name': user.first_name})
             return redirect('index')
 
         # If form is invalid, return the form with errors
         return render(request, self.template_name, self.get_context_data(form=form))
 
 
-class LoginView(View):
-    template_name = 'main_app/index.html'
-    form_class = LoginForm
-    page_title = _('Login')
-    page_name = _('Login to Your Account')
-
-    def get_context_data(self, **kwargs):
-        context = {
-            'page_title': self.page_title,
-            'page_name': self.page_name,
-            'redirect_to': self.request.GET.get('next', ''),
-            'message': None,  # Placeholder for any messages
-            'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
-        }
-        return context
-
-    def get(self, request: HttpRequest):
-        return render(request, self.template_name, self.get_context_data())
+class LoginView(BaseView):
+    def define_basic_elements(self):
+        self.template_name = 'main_app/index.html'
+        self.form_class = LoginForm
+        self.page_title = _('Login')
+        self.page_name = _('Login to Your Account')
 
     def post(self, request: HttpRequest):
         # Rate limiting with Redis
@@ -230,10 +206,14 @@ class LogoutView(View):
         logout(request)
         messages.success(request, _('You have been successfully logged out.'))
         return redirect('index')
+#endregion
 
 
 # -----------------------------------------------------------------------
+# API Endpoints (using Django REST Framework)
+# -----------------------------------------------------------------------
 # ToDo: implement all CRUD operations and also some actions
+#region API Endpoints
 class ModelEndPointView(APIView):
     """
     Full CRUD API endpoint for Audit model.
@@ -304,9 +284,13 @@ class CustomDataEndPointView(APIView):
             # Here you can handle the creation logic if needed
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+# endregion
 
 
 # -----------------------------------------------------------------------
+# Other Views (not related to auth or API endpoints)
+# -----------------------------------------------------------------------
+#region Other Views
 def about_us_view(request: HttpRequest, some_variable: int):
     use_the_var = some_variable
     return render(request, 'main_app/index.html')
@@ -319,6 +303,7 @@ def redirect_from_here_view(request: HttpRequest):
     :return: HttpResponseRedirect to the index view by its name!
     """
     return redirect('index')
+#endregion
 
 
 # -------------------------------------------------------------------------------
