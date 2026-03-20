@@ -4,15 +4,12 @@ import dj_database_url
 from celery.contrib.rdb import CELERY_RDB_HOST
 from dotenv import load_dotenv
 from pathlib import Path
-
 from requests import session
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from .env file (for local development)
-if os.path.exists(os.path.join(BASE_DIR, '.env')):
-    from dotenv import load_dotenv
-    load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv()   # Load environment variables from .env file (for local development)
+
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 # this is needed for the custom user model
@@ -29,7 +26,9 @@ be loaded correctly
 """
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
+# -----------------------------------------------------------------
 # Env vars
+# -----------------------------------------------------------------
 """
     - pip install python-dotenv
     - create .env file in the root of the project and add the vars there
@@ -43,8 +42,8 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 """
 
 # -----------------------------------------------------------------
-
 # Deployment Renderer.com /w sqlite
+# -----------------------------------------------------------------
 """
     - run before deployment: python manage.py collectstatic
     - add 'ohmi-audit.onrender.com' in ALLOWED_HOSTS
@@ -57,7 +56,9 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
     - Start Command: gunicorn ohmi_audit.wsgi:application  (for production)
 """
 
+# -----------------------------------------------------------------
 # Changing to postgresql
+# -----------------------------------------------------------------
 """
 docker sign-in: gmail, docker user: Sunzheini1407
 download the postgres image from Docker Hub
@@ -79,7 +80,9 @@ python manage.py migrate
 python manage.py createsuperuser
 """
 
+# -----------------------------------------------------------------
 # Render.com /w postgresql
+# -----------------------------------------------------------------
 """
 Workspace -> +New -> Postgres
 Set the info as in the database settings below
@@ -99,7 +102,9 @@ In render.com, go to the web service -> Environment -> Add Environment Variable 
 restore view.py from above
 """
 
+# -----------------------------------------------------------------
 # Django app to Docker container (including PostgreSQL, Redis)
+# -----------------------------------------------------------------
 """
     - modify .env from:
         DEBUG=True
@@ -187,7 +192,9 @@ restore view.py from above
         run
 """
 
+# -----------------------------------------------------------------
 # Docker container on Render.com
+# -----------------------------------------------------------------
 """
     - In the Dockerfile, add at the end:
         CMD ["gunicorn", "--bind", "0.0.0.0:8000", "ohmi_audit.wsgi:application"]
@@ -200,7 +207,9 @@ restore view.py from above
     - both apps on render use the same database.
 """
 
+# -----------------------------------------------------------------
 # Celery (Run time-consuming tasks in the background e.g., generating PDF reports, sending emails, data exports):
+# -----------------------------------------------------------------
 """
     - pip install redis, django-redis
     - have redis set-up
@@ -240,7 +249,9 @@ restore view.py from above
         - docker-compose up --build
 """
 
+# -----------------------------------------------------------------
 # Deployment GCP
+# -----------------------------------------------------------------
 """
     - pip install gunicorn
     - install the Google Cloud SDK: https://cloud.google.com/sdk/docs/install
@@ -280,8 +291,8 @@ restore view.py from above
 """
 
 # -----------------------------------------------------------------------------
-
 # Signals (Observer Pattern):
+# -----------------------------------------------------------------
 """
 1. create a new signal in ohmi_audit/main_app/signals.py
 2. connect it to a function in ohmi_audit/main_app/apps.py
@@ -499,8 +510,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # -----------------------------------------------------------------------------
-
 # changing to Poetry
+# -----------------------------------------------------------------------------
 """
 poetry init
 poetry add $(cat requirements.txt)
@@ -513,7 +524,9 @@ poetry add djangorestframework      # install a new package and add it to the py
 poetry show djangorestframework     # verified that it is installed
 """
 
+# -----------------------------------------------------------------------------
 # New project + Poetry
+# -----------------------------------------------------------------------------
 """
 create a new project in GitHub with a README.md file and .gitignore for Python
 git clone the repository
@@ -539,6 +552,7 @@ or `poetry install --no-root`
 
 # -----------------------------------------------------------------------------
 # Localization
+# -----------------------------------------------------------------------------
 """
     - LANGUAGE_CODE: The default language for the project (e.g., 'en-us' for English).
     - TIME_ZONE: The default time zone for the project (e.g., 'Europe/Sofia' for Bulgaria).

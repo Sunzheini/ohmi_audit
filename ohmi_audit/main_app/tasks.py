@@ -1,3 +1,7 @@
+"""
+This module defines Celery tasks for the main_app. These tasks can be executed asynchronously to
+perform background processing without blocking the main application.
+"""
 import time
 from celery import shared_task
 
