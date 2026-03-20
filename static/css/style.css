@@ -45,8 +45,10 @@ Prefer using classes over IDs for styling to maintain flexibility and reusabilit
     --hover-color: #d1d1d1;
     --hover-cursor-type: pointer;
 
-    --clr-table-border-color: #9714d9;
+    --clr-table-border-color: #b0aeaa;
     --table-row-border: 1px solid var(--clr-table-border-color);
+    --table-border-radius: 0.3rem;
+
     --clr-table-header-background-color: #f0f0f0;
     --clr-table-header-font-color: #000000;
     --clr-table-row-even-background-color: #f9f9f9;

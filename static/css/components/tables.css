@@ -1,5 +1,6 @@
 table {
     border: var(--table-row-border);
+    border-radius: var(--table-border-radius);
 }
 
     thead {}
@@ -15,7 +16,9 @@ table {
 
     tbody {}
 
-        tbody tr {}
+        tbody tr {
+
+        }
 
         tbody tr:nth-child(even) {
             background-color: var(--clr-table-row-even-background-color);
