@@ -82,7 +82,7 @@ class IndexView(LoginRequiredMixin, BaseView):
             'data_for_content_container_wrapper_bottom': audits,
 
             'card_button_1_name': _('New Record'), # Mark for translation
-            'is_form_hidden': True,
+            'form_visibility': "none",
         }
         return context
 
