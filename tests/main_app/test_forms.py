@@ -1,4 +1,4 @@
-from django.test import TestCase
+import pytest
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
@@ -6,7 +6,8 @@ from ohmi_audit.main_app.forms import AuditForm, SignUpForm, LoginForm
 from ohmi_audit.main_app.models import Audit
 
 
-class AuditFormTests(TestCase):
+@pytest.mark.django_db
+class TestAuditForm:
     def test_audit_form_valid_minimal(self):
         form = AuditForm(data={
             'name': 'My Audit',
@@ -15,7 +16,7 @@ class AuditFormTests(TestCase):
             'is_active': True,
             'category': 'other',
         })
-        self.assertTrue(form.is_valid(), form.errors)
+        assert form.is_valid(), form.errors
 
     def test_audit_form_invalid_missing_name(self):
         form = AuditForm(data={
@@ -25,11 +26,12 @@ class AuditFormTests(TestCase):
             'is_active': True,
             'category': 'other',
         })
-        self.assertFalse(form.is_valid())
-        self.assertIn('name', form.errors)
+        assert not form.is_valid()
+        assert 'name' in form.errors
 
 
-class SignUpFormTests(TestCase):
+@pytest.mark.django_db
+class TestSignUpForm:
     def test_password_mismatch(self):
         form = SignUpForm(data={
             'username': 'user1',
@@ -39,9 +41,9 @@ class SignUpFormTests(TestCase):
             'password1': 'password123',
             'password2': 'password456',
         })
-        self.assertFalse(form.is_valid())
+        assert not form.is_valid()
         # HTML escapes apostrophes in error output
-        self.assertIn("Passwords don&#x27;t match", str(form.errors))
+        assert "Passwords don&#x27;t match" in str(form.errors)
 
     def test_successful_signup_creates_user(self):
         form = SignUpForm(data={
@@ -52,14 +54,14 @@ class SignUpFormTests(TestCase):
             'password1': 'password123',
             'password2': 'password123',
         })
-        self.assertTrue(form.is_valid(), form.errors)
+        assert form.is_valid(), form.errors
         user = form.save()
-        self.assertIsNotNone(user.pk)
+        assert user.pk is not None
         # Password is hashed
-        self.assertTrue(user.check_password('password123'))
+        assert user.check_password('password123')
 
 
-class LoginFormTests(TestCase):
+class TestLoginForm:
     def test_login_form_has_custom_label(self):
         form = LoginForm()
-        self.assertEqual(form.fields['username'].label, 'Username or Email')
+        assert form.fields['username'].label == 'Username or Email'

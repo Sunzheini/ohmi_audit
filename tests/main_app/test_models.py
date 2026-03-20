@@ -1,8 +1,7 @@
-from django.test import TestCase
+import pytest
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from common.common_models_data import CustomModelData
-import unittest
 from ohmi_audit.main_app.models import *
 
 
@@ -10,16 +9,16 @@ class BaseModelTest:
     """Contains common tests for all models inheriting from CustomModelBase"""
 
     def test_full_name_property(self):
-        self.assertTrue(hasattr(self.instance, 'full_name'))
-        self.assertIsInstance(self.instance.full_name, str)
+        assert hasattr(self.instance, 'full_name')
+        assert isinstance(self.instance.full_name, str)
 
     def test_get_display_name(self):
         display_name = self.instance.get_display_name()
-        self.assertIsInstance(display_name, str)
-        self.assertTrue(len(display_name) > 0)
+        assert isinstance(display_name, str)
+        assert len(display_name) > 0
 
     def test_str_representation(self):
-        self.assertEqual(str(self.instance), self.instance.get_display_name())
+        assert str(self.instance) == self.instance.get_display_name()
 
     def test_clean_invokes_validate_model(self):
         """Find a field to make invalid based on model"""
@@ -27,7 +26,7 @@ class BaseModelTest:
         if invalid_field:
             original_value = getattr(self.instance, invalid_field)
             setattr(self.instance, invalid_field, '')
-            with self.assertRaises(ValidationError):
+            with pytest.raises(ValidationError):
                 self.instance.clean()
             setattr(self.instance, invalid_field, original_value)
 
@@ -35,13 +34,14 @@ class BaseModelTest:
         """Test slug generation on save"""
         self.instance.slug = ''
         self.instance.save()
-        self.assertTrue(self.instance.slug)
-        self.assertEqual(self.instance.slug, f"{self.instance.id}-{self.instance.full_name.lower().replace(' ', '-')}")
+        assert self.instance.slug
+        assert self.instance.slug == f"{self.instance.id}-{self.instance.full_name.lower().replace(' ', '-')}"
 
 
-
-class AuditModelTest(BaseModelTest, TestCase):
-    def setUp(self):
+@pytest.mark.django_db
+class TestAuditModel(BaseModelTest):
+    @pytest.fixture(autouse=True)
+    def setup(self):
         self.valid_data = {
             'name': "Test Audit",
             'description': "This is a test audit.",
@@ -59,32 +59,31 @@ class AuditModelTest(BaseModelTest, TestCase):
             description="Test",
             date=timezone.now().date()
         )
-        self.assertTrue(audit.is_active)
+        assert audit.is_active
 
     def test_max_length_constraints(self):
         """Test field length validations"""
         # Name too long
         self.audit.name = 'A' * (CustomModelData.MAX_CHARFIELD_LENGTH + 1)
-        with self.assertRaises(ValidationError):
+        with pytest.raises(ValidationError):
             self.audit.full_clean()
 
     def test_validate_model_with_valid_data(self):
         """Test validation passes with correct data"""
-        try:
-            self.audit.validate_model()
-        except ValidationError:
-            self.fail("validate_model() raised ValidationError unexpectedly!")
+        self.audit.validate_model()  # Should not raise
 
     def test_validate_model_raises_on_empty_name(self):
         """Test empty name validation"""
         self.audit.name = ""
-        with self.assertRaises(ValidationError) as cm:
+        with pytest.raises(ValidationError) as exc_info:
             self.audit.validate_model()
-        self.assertIn("cannot be empty", str(cm.exception))
+        assert "cannot be empty" in str(exc_info.value)
 
 
-class AuditorModelTest(BaseModelTest, TestCase):
-    def setUp(self):
+@pytest.mark.django_db
+class TestAuditorModel(BaseModelTest):
+    @pytest.fixture(autouse=True)
+    def setup(self):
         self.valid_data = {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -99,34 +98,33 @@ class AuditorModelTest(BaseModelTest, TestCase):
         """Test field length validations"""
         # First name too long
         self.auditor.first_name = 'A' * (CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH + 1)
-        with self.assertRaises(ValidationError):
+        with pytest.raises(ValidationError):
             self.auditor.full_clean()
 
     def test_validate_model_with_valid_data(self):
         """Test validation passes with correct data"""
-        try:
-            self.auditor.validate_model()
-        except ValidationError:
-            self.fail("validate_model() raised ValidationError unexpectedly!")
+        self.auditor.validate_model()  # Should not raise
 
     def test_validate_model_raises_on_missing_names(self):
         """Test name validation"""
         # Empty first name
         self.auditor.first_name = ""
-        with self.assertRaises(ValidationError) as cm:
+        with pytest.raises(ValidationError) as exc_info:
             self.auditor.validate_model()
-        self.assertIn("First and last names are required", str(cm.exception))
+        assert "First and last names are required" in str(exc_info.value)
 
     def test_validate_model_raises_on_empty_email(self):
         """Test email validation"""
         self.auditor.email = ""
-        with self.assertRaises(ValidationError) as cm:
+        with pytest.raises(ValidationError) as exc_info:
             self.auditor.validate_model()
-        self.assertIn("Email is required", str(cm.exception))
+        assert "Email is required" in str(exc_info.value)
 
 
-class CustomerModelTest(BaseModelTest, TestCase):
-    def setUp(self):
+@pytest.mark.django_db
+class TestCustomerModel(BaseModelTest):
+    @pytest.fixture(autouse=True)
+    def setup(self):
         self.valid_data = {
             'first_name': 'Alice',
             'last_name': 'Johnson',
@@ -142,23 +140,16 @@ class CustomerModelTest(BaseModelTest, TestCase):
         """Test field length validations"""
         # First name too long
         self.customer.first_name = 'A' * (CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH + 1)
-        with self.assertRaises(ValidationError):
+        with pytest.raises(ValidationError):
             self.customer.full_clean()
 
     def test_validate_model_with_valid_data(self):
         """Test validation passes with correct data"""
-        try:
-            self.customer.validate_model()
-        except ValidationError:
-            self.fail("validate_model() raised ValidationError unexpectedly!")
+        self.customer.validate_model()  # Should not raise
 
     def test_validate_model_raises_on_empty_address(self):
         """Test address validation"""
         self.customer.address = ""
-        with self.assertRaises(ValidationError) as cm:
+        with pytest.raises(ValidationError) as exc_info:
             self.customer.validate_model()
-        self.assertIn("Address is required", str(cm.exception))
-
-
-if __name__ == '__main__':
-    unittest.main()
+        assert "Address is required" in str(exc_info.value)
