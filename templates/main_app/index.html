@@ -1,10 +1,12 @@
 {# This is the base template that other templates will extend from. #}
 {% extends 'base.html' %}
 
+{# 1. Page Title (On the explorer tab) #}
 {% block page_title %}
     {{ page_title }}
 {% endblock %}
 
+{# 8. Right Bar #}
 {% block right_bar %}
     <div class="right-bar-container">
         {% block card_buttons_bar %}
