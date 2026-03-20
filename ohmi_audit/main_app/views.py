@@ -38,21 +38,25 @@ all_users = []
 
 
 # -----------------------------------------------------------------------
-
-
 # use the LoginRequiredMixin to ensure that the user is logged in before accessing the view
-class IndexView(LoginRequiredMixin, View):
+class IndexView(LoginRequiredMixin, BaseView):
+    """
     # Change all backslashes (\) to forward slashes (/) if deploying on Render (linux-based servers)
-    template_name = 'main_app/index.html'
-    form_class = AuditForm
-    page_title = _('Ohmi Audit Test')  # Mark for translation
-    page_name = _('Welcome')
-
+    """
+    # -----------------------------------------------------------------------
     # for the LoginRequiredMixin
     # Use the URL name so i18n patterns are respected (prefixes like /en/)
     login_url = 'login'  # URL name, not hard-coded path like '/login/', Redirect to this URL if not logged in
     redirect_field_name = 'next'  # URL parameter to redirect after login
 
+    # -----------------------------------------------------------------------
+    def define_basic_elements(self):
+        self.template_name = 'main_app/index.html'
+        self.form_class = AuditForm
+        self.page_title = _('Ohmi Audit Test')  # Mark for translation
+        self.page_name = _('Welcome')
+
+    # -----------------------------------------------------------------------
     # add this decorator only if you want to paginate the results
     @paginate_results(model=Audit, items_per_page=1)
     def get_context_data(self, **kwargs):
@@ -66,6 +70,7 @@ class IndexView(LoginRequiredMixin, View):
         else:
             audits = cached_data
 
+        # -----------------------------------------------------------------------
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
@@ -78,23 +83,13 @@ class IndexView(LoginRequiredMixin, View):
         }
         return context
 
-    # GET and POST are the only HTTP methods to use when dealing with forms in Django.
-    def get(self, request: HttpRequest):
-        """
-        :param request: Even though `request` is technically WSGIRequest, you can type-hint it as
-        HttpRequest for clarity.
-        :return: HttpResponse rendering the index page through the render function. You can also
-        return a simple HttpResponse with raw HTML content:
-        `return HttpResponse("<h1>Welcome to the Index Page</h1>")`
-        context is an optional dictionary that can be used to pass data to the template.
-        """
-        return render(request, self.template_name, self.get_context_data())
-
+    # -----------------------------------------------------------------------
     def post(self, request: HttpRequest):
         # Invalidate cache when changes are made
         cache_key = f"audit_list_{request.user.id}"
         cache.delete(cache_key)
 
+        # -----------------------------------------------------------------------
         # 1. Delete handling (by the name of the button)
         if 'delete' in request.POST:
             try:
@@ -103,6 +98,7 @@ class IndexView(LoginRequiredMixin, View):
             except Audit.DoesNotExist:
                 pass
 
+        # -----------------------------------------------------------------------
         # 2. Edit handling (by the name of the button)
         elif 'edit' in request.POST:
             try:
@@ -117,6 +113,7 @@ class IndexView(LoginRequiredMixin, View):
             except Audit.DoesNotExist:
                 pass
 
+        # -----------------------------------------------------------------------
         # 3. Continue editing / Handling Save
         editing_id = request.session.get('editing_id')
         form_data = self.form_class(request.POST, request.FILES)
