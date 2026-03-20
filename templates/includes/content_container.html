@@ -3,7 +3,7 @@
 <div class="content-container-wrapper">
     <div class="content-container-wrapper-top">
         {% if data_for_content_container_wrapper_top %}
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" id="custom_form">
                 {% csrf_token %}
                 <table>
                     {% for field in data_for_content_container_wrapper_top %}

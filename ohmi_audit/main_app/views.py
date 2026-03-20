@@ -80,6 +80,9 @@ class IndexView(LoginRequiredMixin, BaseView):
 
             'message': None,  # Placeholder for any messages
             'data_for_content_container_wrapper_bottom': audits,
+
+            'card_button_1_name': _('New Record'), # Mark for translation
+            'is_form_hidden': True,
         }
         return context
 
