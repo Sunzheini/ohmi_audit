@@ -26,8 +26,11 @@ Prefer using classes over IDs for styling to maintain flexibility and reusabilit
     --clr-background-color: #cacdd0;
 
     --container-margin: 10px;
-    /*--container-border: #966b18 1px solid;*/
-    --container-border: #b0aeaa 1px solid;
+
+    /*--container-border: #b0aeaa 1px solid;*/
+    /*--content-container-wrapper-top-border: green 1px solid;*/
+    /*--content-container-wrapper-bottom-border: cornflowerblue 1px solid;*/
+
     --box-shadow-style: 0px 0px 3px 0px rgba(0, 0, 0, 0.9);
     --border-radius: 1rem;
     --common-gap: 10px;
@@ -35,8 +38,8 @@ Prefer using classes over IDs for styling to maintain flexibility and reusabilit
     --clr-font-color: #1c1a1a;
     --clr-icon-color: #f6f1f1;
 
-    --clr-button-color: #a17373;
-    --button-border-radius: 0.5rem;
+    --clr-button-color: #896ba8;
+    --button-border-radius: 0.3rem;
     --button-transition-style: background-color 250ms linear, color 300ms linear;
     --button-border-width: 0;
     --hover-color: #d1d1d1;
@@ -101,6 +104,7 @@ header {}
     }
 
       .card-buttons-bar-container {
+        padding: 0 10px;
         margin: var(--container-margin);
         border: var(--container-border);
       }

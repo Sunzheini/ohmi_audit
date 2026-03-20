@@ -10,9 +10,12 @@
 {% block right_bar %}
     <div class="right-bar-container">
         {% block card_buttons_bar %}
-            <div class="card-buttons-bar-container">
-                {% include "includes/card_buttons_bar.html" %}
-            </div>
+
+            {% if request.user.is_authenticated %}
+                <div class="card-buttons-bar-container">
+                    {% include "includes/card_buttons_bar.html" %}
+                </div>
+            {% endif %}
         {% endblock %}
 
         {% block content_container %}
