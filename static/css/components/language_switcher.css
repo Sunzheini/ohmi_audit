@@ -1,0 +1,81 @@
+/* Language Switcher Component Styles */
+.lang {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+}
+
+#language-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+#language-form label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+}
+
+#language-selector {
+    background-color: var(--clr-button-color);
+    color: var(--clr-icon-color);
+    border: none;
+    border-radius: var(--button-border-radius);
+    box-shadow: var(--box-shadow-style);
+    padding: 0.2rem 0.6rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: var(--hover-cursor-type);
+    transition: var(--button-transition-style);
+    outline: none;
+    min-width: 100px;
+    height: 1.6rem;
+}
+
+#language-selector:hover {
+    background-color: var(--clr-main-app-color);
+    color: var(--clr-icon-color);
+}
+
+#language-selector:focus {
+    outline: 2px solid var(--hover-color);
+    outline-offset: 2px;
+}
+
+/* Style the dropdown arrow */
+#language-selector option {
+    background-color: var(--clr-button-color);
+    color: var(--clr-icon-color);
+    padding: 0.5rem;
+}
+
+/* For better contrast in the dropdown */
+#language-selector option:hover {
+    background-color: var(--clr-main-app-color);
+}
+
+/* Additional styling for selected option */
+#language-selector option:checked {
+    background-color: var(--clr-main-app-color);
+    font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lang {
+        padding: 0 0.5rem;
+    }
+
+    #language-selector {
+        min-width: 90px;
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+        height: 1.4rem;
+    }
+}
+
