@@ -6,5 +6,6 @@ venv/
 *.db
 /static_files/
 /media_files/
+/logs/
 Thumbs.db
 .env

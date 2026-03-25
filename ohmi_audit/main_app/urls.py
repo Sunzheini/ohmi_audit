@@ -29,6 +29,7 @@ urlpatterns = [
     path('api-endpoint-example-custom-data/', CustomDataEndPointView.as_view(), name='api-endpoint-example-custom-data'),
 
     # Other Views
+    # ToDo: just placeholders
     # ----------------------------------------------------------------
     # http://localhost:8000/about-us/3/
     path('about-us/<int:some_variable>/', about_us_view, name='about-us'),
@@ -44,5 +45,5 @@ urlpatterns = [
     path('celery-example-task-status/<str:task_id>/', task_status, name='celery-example-task-status'),
 
     # ----------------------------------------------------------------
-    path('health/', lambda request: HttpResponse(status=200)),  # Add this line
+    path('health/', lambda request: HttpResponse(status=200)),
 ]

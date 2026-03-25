@@ -212,8 +212,8 @@ class LogoutView(View):
 # -----------------------------------------------------------------------
 # API Endpoints (using Django REST Framework)
 # -----------------------------------------------------------------------
-# ToDo: implement all CRUD operations and also some actions
 #region API Endpoints
+# ToDo: implement all CRUD operations and also some actions
 class ModelEndPointView(APIView):
     """
     Full CRUD API endpoint for Audit model.
@@ -291,6 +291,7 @@ class CustomDataEndPointView(APIView):
 # Other Views (not related to auth or API endpoints)
 # -----------------------------------------------------------------------
 #region Other Views
+#ToDo: just placeholders, implement as needed
 def about_us_view(request: HttpRequest, some_variable: int):
     use_the_var = some_variable
     return render(request, 'main_app/index.html')
@@ -309,7 +310,7 @@ def redirect_from_here_view(request: HttpRequest):
 # -------------------------------------------------------------------------------
 # Celery
 # -------------------------------------------------------------------------------
-
+#region Celery Example
 def task_status(request, task_id):
     task_result = AsyncResult(task_id)
 
@@ -352,3 +353,4 @@ class TaskTestView(View):
             task_id=task.id  # Pass task ID to template
         )
         return render(request, self.template_name, context)
+#endregion

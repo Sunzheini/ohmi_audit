@@ -355,8 +355,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # custom middleware: create it in the form of a decorator and add it here
-    'common.custom_middleware.measure_time_middleware',
+    # ---------custom middleware: create it in the form of a decorator and add it here----------
+    'custom_middleware.custom_middleware_example.measure_time_middleware',
+    'custom_middleware.custom_logging_middleware.logging_middleware',
 
     'corsheaders.middleware.CorsMiddleware',  # For CORS headers
 
@@ -687,6 +688,78 @@ else:
 # CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'django-db'
 
+
+# -----------------------------------------------------------------------------
+# Logging Configuration
+# -----------------------------------------------------------------------------
+"""
+Logs are saved to:
+    - logs/ohmi_audit.log (all INFO+ messages) - Rotates at 10MB, keeps 5 backups
+    - logs/errors.log (ERROR+ messages only) - Rotates at 10MB, keeps 5 backups
+    - Console output (all messages)
+    
+Log rotation:
+    - When a log file reaches 10MB, it's renamed to .log.1
+    - Previous .log.1 becomes .log.2, etc.
+    - Maximum 5 backup files are kept (oldest is deleted)
+    - Total max space: ~60MB per log file (10MB x 6 files)
+"""
+
+# Create logs directory if it doesn't exist
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGS_DIR / 'ohmi_audit.log',
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 5,  # Keep 5 backup files
+        },
+        'error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGS_DIR / 'errors.log',
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+            'level': 'ERROR',
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 5,  # Keep 5 backup files
+        },
+    },
+    'loggers': {
+        'ohmi_audit': {
+            'handlers': ['console', 'file', 'error_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+
 # docker-compose up --build
 
 
@@ -695,3 +768,4 @@ CELERY_RESULT_BACKEND = 'django-db'
 # sudo docker-compose logs --tail=100 celery
 
 # http://localhost:8000/
+
