@@ -1,6 +1,28 @@
 from django.urls import path
 from django.http import HttpResponse
-from ohmi_audit.main_app.views import *
+
+# Explicit imports - better practice than wildcard imports
+from ohmi_audit.main_app.views import (
+    # Main views
+    IndexView,
+
+    # Auth views
+    SignUpView,
+    LoginView,
+    LogoutView,
+
+    # API views
+    ModelEndPointView,
+    CustomDataEndPointView,
+
+    # Task views
+    TaskTestView,
+    task_status,
+
+    # Other views
+    about_us_view,
+    redirect_from_here_view,
+)
 
 
 urlpatterns = [
