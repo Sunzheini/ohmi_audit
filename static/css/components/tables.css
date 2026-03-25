@@ -33,7 +33,6 @@ thead th {
     text-align: left;
     font-weight: 600;
     font-size: 0.95rem;
-    border-bottom: 2px solid var(--clr-button-color);
     letter-spacing: 0.3px;
 }
 
@@ -43,6 +42,12 @@ thead th:first-child {
 
 thead th:last-child {
     border-top-right-radius: var(--table-border-radius);
+}
+
+/* Center Edit and Delete header columns */
+table thead th:nth-last-child(1),
+table thead th:nth-last-child(2) {
+    text-align: center;
 }
 
 /* Table Body */
