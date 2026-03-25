@@ -15,7 +15,7 @@ def paginate_results(model=None, items_per_page=10):
             # Get the original context
             context = view_method(view_instance, *args, **kwargs)
 
-            items = model.objects.all().order_by('-id') if model else []
+            items = model.objects.all().order_by('id') if model else []
 
             if items is not []:
                 paginator = Paginator(items, items_per_page)

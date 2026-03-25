@@ -47,7 +47,7 @@ class IndexView(LoginRequiredMixin, BaseView):
     # -----------------------------------------------------------------------
     # Audit  # Set the model for pagination and for listing
     # add this decorator only if you want to paginate the results
-    @paginate_results(model=Customer, items_per_page=1)
+    @paginate_results(model=Customer, items_per_page=10)
     def get_context_data(self, **kwargs):
         """Shared context for both GET and POST"""
         cache_key = f"audit_list_{self.request.user.id}"  # User-specific cache
