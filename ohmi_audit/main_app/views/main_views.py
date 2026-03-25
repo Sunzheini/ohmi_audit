@@ -85,9 +85,9 @@ class IndexView(LoginRequiredMixin, BaseView):
         # 1. Delete handling (by the name of the button)
         if 'delete' in request.POST:
             try:
-                Audit.objects.get(id=request.POST.get('delete')).delete()
+                Customer.objects.get(id=request.POST.get('delete')).delete()
                 return redirect('index')
-            except Audit.DoesNotExist:
+            except Customer.DoesNotExist:
                 pass
 
         # -----------------------------------------------------------------------
@@ -95,14 +95,14 @@ class IndexView(LoginRequiredMixin, BaseView):
         elif 'edit' in request.POST:
             try:
                 item_id = request.POST.get('edit')
-                audit = Audit.objects.get(id=item_id)
+                audit = Customer.objects.get(id=item_id)
                 form = self.form_class(instance=audit)
 
                 # Store the ID in the session for later use, otherwise it will be lost
                 # and pressing the save button will create a new object
                 request.session['editing_id'] = item_id
                 return render(request, self.template_name, self.get_context_data(form=form))
-            except Audit.DoesNotExist:
+            except Customer.DoesNotExist:
                 pass
 
         # -----------------------------------------------------------------------
@@ -112,7 +112,7 @@ class IndexView(LoginRequiredMixin, BaseView):
 
         # a) If editing_id is set, it means we are editing an existing audit
         if editing_id:
-            audit = Audit.objects.get(id=editing_id)
+            audit = Customer.objects.get(id=editing_id)
             form_data = self.form_class(request.POST, request.FILES, instance=audit)
             del request.session['editing_id']
 
