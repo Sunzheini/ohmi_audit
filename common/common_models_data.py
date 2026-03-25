@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC, ABCMeta
 from django.db import models
 
+
 # define the __all__ variable to control what is imported when using 'from module import *'
 __all__ = ['CustomModelData', 'CustomModelBase']
 
@@ -34,6 +35,9 @@ class CustomModelBase(models.Model):
     Field names cannot have more than one underscore in a row and cannot
     end with an underscore
     """
+    class Meta:
+        abstract = True
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         blank=True,
@@ -53,9 +57,10 @@ class CustomModelBase(models.Model):
         editable=False,
     )
 
-    class Meta:
-        abstract = True
-
+    # -------------------------------------------------------------------------------------
+    # Abstract
+    # -------------------------------------------------------------------------------------
+    #region Abstract methods and properties
     @property
     @abstractmethod
     def full_name(self) -> str:
@@ -76,8 +81,12 @@ class CustomModelBase(models.Model):
     def get_absolute_url(self) -> str:
         """Return URL for viewing the model instance"""
         raise NotImplementedError("Subclasses must implement get_absolute_url()")
+    #endregion
 
-
+    # -------------------------------------------------------------------------------------
+    # Regular
+    # -------------------------------------------------------------------------------------
+    #region Regular methods
     def clean(self):
         """
         Custom clean method to validate the model data.
@@ -107,3 +116,4 @@ class CustomModelBase(models.Model):
         :return:
         """
         return self.get_display_name()
+    #endregion
