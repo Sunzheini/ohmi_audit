@@ -355,9 +355,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # ---------custom middleware: create it in the form of a decorator and add it here----------
-    'custom_middleware.custom_middleware_example.measure_time_middleware',
+    # custom middleware: create it in the form of a decorator and add it here
     'custom_middleware.custom_logging_middleware.logging_middleware',
+    'custom_middleware.rate_limiting_middleware.rate_limiting_middleware',
+    'custom_middleware.custom_middleware_example.measure_time_middleware',
 
     'corsheaders.middleware.CorsMiddleware',  # For CORS headers
 
@@ -372,6 +373,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # Error handling should be last to catch all errors
+    'custom_middleware.error_handling_middleware.error_handling_middleware',
 ]
 
 ROOT_URLCONF = 'ohmi_audit.urls'

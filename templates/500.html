@@ -1,0 +1,113 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Something Went Wrong</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            color: var(--clr-main-app-color);
+            margin: 0;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            color: var(--clr-font-color);
+            margin: 1rem 0;
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 1rem 0;
+        }
+
+        .error-request-id {
+            font-size: 0.9rem;
+            color: #999;
+            margin: 1rem 0;
+            font-family: monospace;
+        }
+
+        .error-actions {
+            margin: 2rem 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .error-button {
+            background-color: var(--clr-button-color);
+            color: var(--clr-icon-color);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--button-border-radius);
+            text-decoration: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--button-transition-style);
+            box-shadow: var(--box-shadow-style);
+        }
+
+        .error-button:hover {
+            background-color: var(--clr-main-app-color);
+        }
+
+        .error-button-secondary {
+            background-color: transparent;
+            color: var(--clr-main-app-color);
+            border: 2px solid var(--clr-main-app-color);
+        }
+
+        .error-button-secondary:hover {
+            background-color: var(--clr-main-app-color);
+            color: var(--clr-icon-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-code">500</h1>
+        <h2 class="error-title">Oops! Something went wrong</h2>
+        <p class="error-message">
+            {{ error_message|default:"We encountered an unexpected error while processing your request. Our team has been notified and is working on it." }}
+        </p>
+
+        {% if request_id %}
+            <p class="error-request-id">
+                Request ID: {{ request_id }}
+            </p>
+        {% endif %}
+
+        <div class="error-actions">
+            <a href="{% url 'index' %}" class="error-button">
+                <i class="fas fa-home"></i> Go to Homepage
+            </a>
+            <button onclick="history.back()" class="error-button error-button-secondary">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+            <button onclick="location.reload()" class="error-button error-button-secondary">
+                <i class="fas fa-sync"></i> Try Again
+            </button>
+        </div>
+    </div>
+</body>
+</html>
+
