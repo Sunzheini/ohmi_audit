@@ -45,6 +45,8 @@ class IndexView(LoginRequiredMixin, BaseView):
         self.page_name = _('Welcome')
 
     # -----------------------------------------------------------------------
+
+    # Audit  # Set the model for pagination and for listing
     # add this decorator only if you want to paginate the results
     @paginate_results(model=Audit, items_per_page=1)
     def get_context_data(self, **kwargs):
@@ -53,10 +55,10 @@ class IndexView(LoginRequiredMixin, BaseView):
         cached_data = cache.get(cache_key)
 
         if not cached_data:
-            audits = Audit.objects.all()
+            all_items = Audit.objects.all()
             cache.set(cache_key, audits, timeout=60)  # Cache for 5 minutes
         else:
-            audits = cached_data
+            all_items = cached_data
 
         # -----------------------------------------------------------------------
         context = {
@@ -67,7 +69,7 @@ class IndexView(LoginRequiredMixin, BaseView):
             # Pass the form instance, not the class
 
             'message': None,  # Placeholder for any messages
-            'data_for_content_container_wrapper_bottom': audits,
+            'data_for_content_container_wrapper_bottom': all_items,
 
             'card_button_1_name': _('New Record'),  # Mark for translation
             'form_visibility': "none",
