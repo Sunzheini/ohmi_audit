@@ -71,7 +71,7 @@ class IndexView(LoginRequiredMixin, BaseView):
             'data_for_content_container_wrapper_bottom': all_items,
 
             'card_button_1_name': _('New Record'),  # Mark for translation
-            'form_visibility': "none",
+            'form_visibility': kwargs.get('form_visibility', "none"),
         }
         return context
 
@@ -101,7 +101,7 @@ class IndexView(LoginRequiredMixin, BaseView):
                 # Store the ID in the session for later use, otherwise it will be lost
                 # and pressing the save button will create a new object
                 request.session['editing_id'] = item_id
-                return render(request, self.template_name, self.get_context_data(form=form))
+                return render(request, self.template_name, self.get_context_data(form=form, form_visibility="block"))
             except Customer.DoesNotExist:
                 pass
 
@@ -121,4 +121,4 @@ class IndexView(LoginRequiredMixin, BaseView):
             form_data.save()
             return redirect('index')
 
-        return render(request, self.template_name, self.get_context_data(form=form_data))
+        return render(request, self.template_name, self.get_context_data(form=form_data, form_visibility="block"))
