@@ -35,9 +35,6 @@ class CustomModelBase(models.Model):
     Field names cannot have more than one underscore in a row and cannot
     end with an underscore
     """
-    class Meta:
-        abstract = True
-
     created_at = models.DateTimeField(
         auto_now_add=True,
         blank=True,
@@ -56,6 +53,9 @@ class CustomModelBase(models.Model):
         null=True,
         editable=False,
     )
+
+    class Meta:
+        abstract = True
 
     # -------------------------------------------------------------------------------------
     # Abstract
