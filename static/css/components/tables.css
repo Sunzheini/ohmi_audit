@@ -1,42 +1,218 @@
+/* General Table Styling */
 table {
+    border-collapse: separate;
+    border-spacing: 0;
     border: var(--table-row-border);
     border-radius: var(--table-border-radius);
+    box-shadow: var(--box-shadow-style);
+    overflow: hidden;
+    background-color: var(--clr-table-row-odd-background-color);
+    margin: 1rem 0;
 }
 
-    thead {}
+/* Data Tables (tables with thead - not form tables) */
+table:has(thead) {
+    width: 100%;
+}
 
-        thead tr {}
+/* Table Header */
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
 
-            thead th {
-                background-color: var(--clr-table-header-background-color);
-                color: var(--clr-table-header-font-color);
-                padding: 0.5rem;
-                text-align: left;
-            }
+thead tr {
+    background-color: var(--clr-main-app-color);
+}
 
-    tbody {}
+thead th {
+    background-color: var(--clr-main-app-color);
+    color: var(--clr-icon-color);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-bottom: 2px solid var(--clr-button-color);
+    letter-spacing: 0.3px;
+}
 
-        tbody tr {
+thead th:first-child {
+    border-top-left-radius: var(--table-border-radius);
+}
 
-        }
+thead th:last-child {
+    border-top-right-radius: var(--table-border-radius);
+}
 
-        tbody tr:nth-child(even) {
-            background-color: var(--clr-table-row-even-background-color);
-        }
+/* Table Body */
+tbody tr {
+    transition: background-color 200ms ease, transform 100ms ease;
+}
 
-        tbody tr:nth-child(odd) {
-            background-color: var(--clr-table-row-odd-background-color);
-        }
+tbody tr:nth-child(even) {
+    background-color: var(--clr-table-row-even-background-color);
+}
 
-        tbody tr:hover {
-            background-color: var(--clr-table-row-hover-background-color);
-            color: var(--clr-table-row-hover-font-color);
-        }
+tbody tr:nth-child(odd) {
+    background-color: var(--clr-table-row-odd-background-color);
+}
 
-            tbody th {}
+tbody tr:hover {
+    background-color: var(--clr-table-row-hover-background-color);
+    color: var(--clr-table-row-hover-font-color);
+    transform: scale(1.001);
+    cursor: pointer;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
 
-            tbody td {
-            }
+tbody td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--clr-table-border-color);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:last-child td:first-child {
+    border-bottom-left-radius: var(--table-border-radius);
+}
+
+tbody tr:last-child td:last-child {
+    border-bottom-right-radius: var(--table-border-radius);
+}
+
+/* Form Tables (inside forms) */
+form table {
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    margin: 0;
+}
+
+form table tr {
+    background-color: transparent;
+}
+
+form table tr:hover {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+    cursor: default;
+}
+
+form table td {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    vertical-align: middle;
+}
+
+form table td:first-child {
+    width: 30%;
+    font-weight: 500;
+    color: var(--clr-font-color);
+}
+
+form table td:last-child {
+    width: 70%;
+}
+
+/* Form input fields inside tables */
+form table input[type="text"],
+form table input[type="email"],
+form table input[type="password"],
+form table input[type="number"],
+form table input[type="date"],
+form table input[type="time"],
+form table input[type="datetime-local"],
+form table input[type="url"],
+form table input[type="tel"],
+form table textarea,
+form table select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--clr-table-border-color);
+    border-radius: var(--button-border-radius);
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    background-color: var(--clr-table-row-odd-background-color);
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+form table input[type="text"]:focus,
+form table input[type="email"]:focus,
+form table input[type="password"]:focus,
+form table input[type="number"]:focus,
+form table input[type="date"]:focus,
+form table input[type="time"]:focus,
+form table input[type="datetime-local"]:focus,
+form table input[type="url"]:focus,
+form table input[type="tel"]:focus,
+form table textarea:focus,
+form table select:focus {
+    outline: none;
+    border-color: var(--clr-main-app-color);
+    box-shadow: 0 0 0 2px rgba(56, 123, 162, 0.2);
+}
+
+form table input[type="file"] {
+    padding: 0.3rem;
+    font-size: 0.85rem;
+}
+
+/* Buttons inside table cells */
+table button,
+table .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: var(--button-border-radius);
+    border: none;
+    cursor: var(--hover-cursor-type);
+    transition: var(--button-transition-style);
+}
+
+/* Images in tables */
+table img {
+    border-radius: var(--button-border-radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+}
+
+/* Links in tables */
+table a {
+    color: var(--clr-main-app-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 200ms ease;
+}
+
+table a:hover {
+    color: var(--clr-button-color);
+    text-decoration: underline;
+}
+
+/* Responsive table design */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.85rem;
+    }
+
+    thead th,
+    tbody td {
+        padding: 0.5rem 0.6rem;
+    }
+
+    form table td:first-child {
+        width: 35%;
+    }
+
+    form table td:last-child {
+        width: 65%;
+    }
+}
 
 
 

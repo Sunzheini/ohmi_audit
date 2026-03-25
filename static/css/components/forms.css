@@ -1,6 +1,41 @@
+/* Form Container Styling */
 form {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-  }
+}
+
+/* Form buttons */
+form button[type="submit"] {
+    margin-top: 0.5rem;
+    align-self: flex-start;
+}
+
+/* Form error messages */
+form .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0 0;
+    color: #d32f2f;
+    font-size: 0.85rem;
+}
+
+form .errorlist li {
+    padding: 0.25rem 0;
+}
+
+/* Form help text */
+form .helptext {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* Required field indicator */
+form label .asteriskField {
+    color: #d32f2f;
+    margin-left: 0.25rem;
+}
