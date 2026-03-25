@@ -12,7 +12,7 @@ from django.core.cache import cache
 from common.base_view import BaseView
 from common.pagination_decorator import paginate_results
 from ohmi_audit.main_app.forms import AuditForm
-from ohmi_audit.main_app.models import Audit
+from ohmi_audit.main_app.models import Audit, Customer, Auditor
 
 
 # You can use the get_user_model() function to get the user model
@@ -42,21 +42,20 @@ class IndexView(LoginRequiredMixin, BaseView):
         self.template_name = 'main_app/index.html'
         self.form_class = AuditForm
         self.page_title = _('Ohmi Audit Test')  # Mark for translation
-        self.page_name = _('Welcome')
+        self.page_name = _("Customer's List")
 
     # -----------------------------------------------------------------------
-
     # Audit  # Set the model for pagination and for listing
     # add this decorator only if you want to paginate the results
-    @paginate_results(model=Audit, items_per_page=1)
+    @paginate_results(model=Customer, items_per_page=1)
     def get_context_data(self, **kwargs):
         """Shared context for both GET and POST"""
         cache_key = f"audit_list_{self.request.user.id}"  # User-specific cache
         cached_data = cache.get(cache_key)
 
         if not cached_data:
-            all_items = Audit.objects.all()
-            cache.set(cache_key, audits, timeout=60)  # Cache for 5 minutes
+            all_items = Customer.objects.all()
+            cache.set(cache_key, all_items, timeout=60)  # Cache for 5 minutes
         else:
             all_items = cached_data
 
