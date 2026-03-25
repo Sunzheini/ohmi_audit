@@ -32,7 +32,7 @@
                 <form method="POST">
                     {% csrf_token %}
                     <button type="submit" name="edit" value="{{ item.id }}" class="btn btn-danger">
-                        {% trans "Edit" %}
+                        <i class="fa-solid fa-pen-to-square"></i>
                     </button>
                 </form>
             </td>
@@ -41,7 +41,7 @@
                     {% csrf_token %}
                     <button type="submit" name="delete" value="{{ item.id }}" class="btn btn-danger"
                             onclick="return confirm('Are you sure?')">
-                        {% trans "Delete" %}
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </form>
             </td>
