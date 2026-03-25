@@ -5,10 +5,14 @@ from django.contrib.auth.forms import AuthenticationForm
 from common.common_forms_data import *
 from ohmi_audit.main_app.models import *
 
-__all__ = ['AuditForm', 'SignUpForm', 'LoginForm']
+
+__all__ = ['AuditForm', 'CustomerForm', 'SignUpForm', 'LoginForm']
 UserModel = get_user_model()
 
 
+# ------------------------------------------------------------------------------------------
+# Custom forms for the application
+# ------------------------------------------------------------------------------------------
 class AuditForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
     class Meta:
         model = Audit
@@ -25,6 +29,25 @@ class AuditForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
         return cleaned_data
 
 
+class CustomerForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.set_widget_styles()
+        self.change_to_current_labels()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Add any custom validation logic here if needed
+        return cleaned_data
+
+
+# ------------------------------------------------------------------------------------------
+# Authentication forms - SignUp and Login
+# ------------------------------------------------------------------------------------------
 class SignUpForm(forms.ModelForm, ChangeLabelsMixin, FormWidgetStylesMixin):
     password1 = forms.CharField(
         label="Password",

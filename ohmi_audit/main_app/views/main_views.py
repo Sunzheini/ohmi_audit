@@ -11,8 +11,8 @@ from django.core.cache import cache
 
 from common.base_view import BaseView
 from common.pagination_decorator import paginate_results
-from ohmi_audit.main_app.forms import AuditForm
-from ohmi_audit.main_app.models import Audit, Customer, Auditor
+from ohmi_audit.main_app.forms import *
+from ohmi_audit.main_app.models import *
 
 
 # You can use the get_user_model() function to get the user model
@@ -40,7 +40,7 @@ class IndexView(LoginRequiredMixin, BaseView):
     # -----------------------------------------------------------------------
     def define_basic_elements(self):
         self.template_name = 'main_app/index.html'
-        self.form_class = AuditForm
+        self.form_class = CustomerForm          # Select the correct form for the view
         self.page_title = _('Ohmi Audit Test')  # Mark for translation
         self.page_name = _("Customer's List")
 

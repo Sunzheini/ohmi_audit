@@ -1,22 +1,12 @@
 from django import forms
 from django.utils import translation
+from common.all_labels_dict import all_labels_bg
 
 __all__ = ['ChangeLabelsMixin', 'FormWidgetStylesMixin']
 
 
-ALL_LABELS_BG = {
-    # all fields of model Audit
-    'name': 'име',
-    'description': 'описание',
-    'date': 'дата',
-    'is_active': 'активен',
-    'category': 'категория',
-
-    # all fields of model Test
-    'some_other_field': 'друго поле',
-    'type': 'тип',
-    'number': 'номер',
-}
+# The fields of all models in the application, mapped to their Bulgarian labels.
+ALL_LABELS_BG = all_labels_bg
 
 
 class ChangeLabelsMixin:

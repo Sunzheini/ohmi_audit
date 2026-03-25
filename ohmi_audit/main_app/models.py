@@ -10,6 +10,9 @@ __all__ = ['Audit', 'Auditor', 'Customer', 'AppUser']
 
 
 """
+python manage.py makemigrations
+python manage.py migrate
+
 Audit.object.create() will create a new Audit object with the given parameters.
 
 Audit.objects.all() will return all Audit objects in the database.
@@ -176,33 +179,42 @@ class Customer(CustomModelBase):
     """
     Represents a customer in the system.
     """
-    first_name = models.CharField(
-        max_length=CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH,
+    year = models.IntegerField(
         blank=False,
         null=False,
     )
-    last_name = models.CharField(
-        max_length=CustomModelData.MAX_LAST_NAME_CHARFIELD_LENGTH,
-        blank=False,
-        null=False,
-    )
-    # for TextField, max_length is not enforced by the database, so we use a validator
-    address = models.TextField(
-        validators=[MaxLengthValidator(CustomModelData.MAX_TEXTFIELD_ADDRESS_LENGTH)],
-        blank=False,
-        null=False,
-    )
-    phone = models.CharField(
-        max_length=CustomModelData.MAX_PHONE_CHARFIELD_LENGTH,
+
+    BG_Vor_Nr = models.CharField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
         unique=True,
         blank=False,
         null=False,
     )
-    email = models.EmailField(
-        unique=True,
+
+    company_name_bg = models.CharField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
         blank=False,
         null=False,
     )
+
+    company_name_en = models.CharField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
+        blank=False,
+        null=False,
+    )
+
+    company_id = models.IntegerField(
+        blank=False,
+        null=False,
+    )
+
+    VAT_number = models.CharField(
+        max_length=CustomModelData.MAX_CHARFIELD_LENGTH,
+        blank=False,
+        null=False,
+    )
+
+    # ----------------------------------------------------------------------------------------
 
     class Meta:
         verbose_name = "Customer"
@@ -211,16 +223,14 @@ class Customer(CustomModelBase):
 
     @property
     def full_name(self) -> str:
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.BG_Vor_Nr} {self.company_name_en}'
 
     def get_display_name(self) -> str:
         return f"Customer: {self.full_name}"
 
     def validate_model(self) -> None:
-        if not self.address.strip():
-            raise ValidationError("Address is required")
-        if not self.phone.strip():
-            raise ValidationError("Phone number is required")
+        if not self.BG_Vor_Nr.strip():
+            raise ValidationError("BG_Vor_Nr is required")
 
     def get_absolute_url(self) -> str:
         return reverse('customer-detail', kwargs={'pk': self.pk})

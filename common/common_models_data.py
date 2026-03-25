@@ -54,12 +54,12 @@ class CustomModelBase(models.Model):
         editable=False,
     )
 
-    class Meta:
-        abstract = True
-
     # -------------------------------------------------------------------------------------
     # Abstract
     # -------------------------------------------------------------------------------------
+    class Meta:
+        abstract = True
+
     #region Abstract methods and properties
     @property
     @abstractmethod
