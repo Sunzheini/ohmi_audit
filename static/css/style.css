@@ -120,3 +120,9 @@ header {}
   margin: var(--container-margin);
   border: var(--container-border);
 }
+
+/* Pagination */
+.pagination .current {
+  font-size: 0.85rem;
+}
+
