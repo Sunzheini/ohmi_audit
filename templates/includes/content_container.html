@@ -32,87 +32,8 @@
     {% if request.user.is_authenticated %}
         <div class="content-container-wrapper-bottom">
             {% if data_for_content_container_wrapper_bottom %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>{% trans "Id" %}</th>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Description" %}</th>
-                            <th>{% trans "Date" %}</th>
-                            <th>{% trans "Is Active" %}</th>
-                            <th>{% trans "Category" %}</th>
-                            <th>{% trans "Image" %}</th>
-                            <th>{% trans "File" %}</th>
-                            <th>{% trans "Edit" %}</th>
-                            <th>{% trans "Delete" %}</th>
-                        </tr>
-                    </thead>
 
-                    <tbody>
-                    {% for item in data_for_content_container_wrapper_bottom %}
-                        <tr>
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.description }}</td>
-                            <td>{{ item.date }}</td>
-                            <td>{{ item.is_active }}</td>
-                            <td>{{ item.category }}</td>
-                            <td>
-                                {% if item.image %}
-                                    <img src="{{ item.image.url }}" alt="Image" style="width: 50px; height: 50px;">
-                                {% else %}
-                                    {% trans "No Image" %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.file %}
-                                    <a href="{{ item.file.url }}" class="btn btn-primary">{% trans "Download File" %}</a>
-                                {% else %}
-                                    {% trans "No File" %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" name="edit" value="{{ item.id }}" class="btn btn-danger">
-                                        {% trans "Edit" %}
-                                    </button>
-                                </form>
-                            </td>
-                            <td>
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" name="delete" value="{{ item.id }}" class="btn btn-danger"
-                                            onclick="return confirm('Are you sure?')">
-                                        {% trans "Delete" %}
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td colspan="10">
-                                {% if item.file %}
-
-                                    {# Microsoft's viewer requires publicly accessible URLs for files! #}
-                                    {% if '.doc' in item.file.name|lower %}
-                                        <iframe class="iframe-ms-office"
-                                                src='https://view.officeapps.live.com/op/embed.aspx?src={{ item.file.url }}'
-                                                width='100%' height='600px' frameborder='0'>
-                                        </iframe>
-                                    {% elif '.pdf' in item.file.name|lower %}
-                                        <iframe src="{{ item.file.url }}" width="100%" height="600px">
-                                            <p>Your browser does not support iframes.</p>
-                                        </iframe>
-                                    {% else %}
-                                        text
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                {% include "forms/customer_form.html" %}
 
                 {# pagination #}
                 {% if page_obj %}

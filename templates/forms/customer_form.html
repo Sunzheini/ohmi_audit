@@ -1,13 +1,72 @@
 {% load static i18n %}
 
-<div class="car-buttons-bar">
-    <button class="car-buttons-bar-button" onclick="fShowHideCreateForm()">
-        {{ card_button_1_name }}
-    </button>
+<table>
+    <thead>
+    <tr>
+        <th>{% trans "Id" %}</th>
 
-{#    <button class="car-buttons-bar-button"></button>#}
+        <th>{% trans "Year" %}</th>
+        <th>{% trans "BG Vor Nr" %}</th>
+        <th>{% trans "Company Name Bg" %}</th>
+        <th>{% trans "company Name En" %}</th>
+        <th>{% trans "Company ID" %}</th>
+        <th>{% trans "VAT" %}</th>
 
-{#    <button class="car-buttons-bar-button"></button>#}
+        <th>{% trans "Edit" %}</th>
+        <th>{% trans "Delete" %}</th>
+    </tr>
+    </thead>
 
-{#    <button class="car-buttons-bar-button"></button>#}
-</div>
+    <tbody>
+    {% for item in data_for_content_container_wrapper_bottom %}
+        <tr>
+            <td>{{ item.id }}</td>
+
+            <td>{{ item.year }}</td>
+            <td>{{ item.BG_Vor_Nr }}</td>
+            <td>{{ item.company_name_bg }}</td>
+            <td>{{ item.company_name_en }}</td>
+            <td>{{ item.company_id }}</td>
+            <td>{{ item.VAT_number }}</td>
+            <td>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="edit" value="{{ item.id }}" class="btn btn-danger">
+                        {% trans "Edit" %}
+                    </button>
+                </form>
+            </td>
+            <td>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="delete" value="{{ item.id }}" class="btn btn-danger"
+                            onclick="return confirm('Are you sure?')">
+                        {% trans "Delete" %}
+                    </button>
+                </form>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="10">
+                {% if item.file %}
+
+                    {# Microsoft's viewer requires publicly accessible URLs for files! #}
+                    {% if '.doc' in item.file.name|lower %}
+                        <iframe class="iframe-ms-office"
+                                src='https://view.officeapps.live.com/op/embed.aspx?src={{ item.file.url }}'
+                                width='100%' height='600px' frameborder='0'>
+                        </iframe>
+                    {% elif '.pdf' in item.file.name|lower %}
+                        <iframe src="{{ item.file.url }}" width="100%" height="600px">
+                            <p>Your browser does not support iframes.</p>
+                        </iframe>
+                    {% else %}
+                        text
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
