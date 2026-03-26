@@ -53,3 +53,35 @@ form label .asteriskField {
     margin-top: 1rem;
 }
 
+/* File input wrapper */
+.db-management-form input[type="file"] {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    color: var(--clr-font-color);
+    border: var(--table-row-border);
+    border-radius: var(--button-border-radius);
+    padding: 0.2rem 0.4rem;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+/* "Choose File" button part */
+.db-management-form input[type="file"]::file-selector-button {
+    background-color: var(--clr-button-color);
+    color: var(--clr-icon-color);
+    border: none;
+    border-radius: var(--button-border-radius);
+    height: 2rem;
+    padding: 0 0.75rem;
+    margin-right: 0.75rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    box-shadow: var(--box-shadow-style);
+    transition: var(--button-transition-style);
+    cursor: pointer;
+}
+
+.db-management-form input[type="file"]::file-selector-button:hover {
+    background-color: var(--hover-color);
+}
+
