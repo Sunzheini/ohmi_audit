@@ -20,6 +20,10 @@
     align-items: center;
 }
 
+.search-button-group .car-buttons-bar-button {
+    border-radius: 0.3rem 2rem 0.3rem 0.3rem;
+}
+
 .search-button-group input[type="text"] {
     width: 300px;
     padding: 0.5rem;
