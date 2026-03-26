@@ -1,18 +1,14 @@
 """
 Database Management views.
 """
-import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, JsonResponse
-from django.shortcuts import render, redirect
+from django.http import HttpRequest
+from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
-from django.core.cache import cache
 
 from common.base_view import BaseView
-from common.pagination_decorator import paginate_results
 from ohmi_audit.main_app.forms import *
-from ohmi_audit.main_app.models import *
 
 UserModel = get_user_model()
 all_users = []
@@ -30,9 +26,9 @@ class DbIndexView(LoginRequiredMixin, BaseView):
     def define_basic_elements(self):
         self.template_name = 'main_app/db_management.html'
 
-        self.form_class_delete_db = DeleteDatabaseForm
-        self.form_class_import_db = ImportDatabaseForm
-        self.form_class_export_db = ExportDatabaseForm
+        self.delete_db_form = DeleteDatabaseForm()
+        self.import_db_form = ImportDatabaseForm()
+        self.export_db_form = ExportDatabaseForm()
 
         self.page_title = _('Ohmi Audit Test')  # Mark for translation
         self.page_name = _("Database Management")
@@ -40,72 +36,83 @@ class DbIndexView(LoginRequiredMixin, BaseView):
     # -----------------------------------------------------------------------
     def get_context_data(self, **kwargs):
         """Shared context for both GET and POST"""
-        cache_key = f"audit_list_{self.request.user.id}"  # User-specific cache
-        cached_data = cache.get(cache_key)
-
-        if not cached_data:
-            all_items = Customer.objects.all()
-            cache.set(cache_key, all_items, timeout=60)  # Cache for 5 minutes
-        else:
-            all_items = cached_data
-
-        # -----------------------------------------------------------------------
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
             'redirect_to': self.request.GET.get('next', ''),
-            'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
-            # Pass the form instance, not the class
 
-            'message': None,  # Placeholder for any messages
-            'data_for_content_container_wrapper_bottom': all_items,
+            'delete_db_form': self.delete_db_form,
+            'import_db_form': self.import_db_form,
+            'export_db_form': self.export_db_form,
 
-            'card_button_1_name': _('New Record'),  # Mark for translation
-            'card_button_2_name': _('Search'),
-            'form_visibility': kwargs.get('form_visibility', "none"),
+            'message': kwargs.get('message', None),  # Get message from kwargs
         }
         return context
 
+    @staticmethod
+    def delete_database():
+        # Placeholder for actual database deletion logic
+        return _("Database deleted successfully.")
+
     # -----------------------------------------------------------------------
     def post(self, request: HttpRequest):
+        message = None
+
         # -----------------------------------------------------------------------
-        # 1. Delete handling (by the name of the button)
-        if 'delete' in request.POST:
+        # 1. Delete Database
+        if 'delete_db' in request.POST:
             try:
-                Customer.objects.get(id=request.POST.get('delete')).delete()
-                return redirect('index')
-            except Customer.DoesNotExist:
-                pass
+                self.delete_db_form = DeleteDatabaseForm(request.POST)
+
+                if self.delete_db_form.is_valid():
+                    message = self.delete_database()
+                    self.delete_db_form = DeleteDatabaseForm()
+
+                self.import_db_form = ImportDatabaseForm()
+                self.export_db_form = ExportDatabaseForm()
+
+            except Exception as e:
+                print(f"Form processing error: {e}")
+                self.delete_db_form.add_error(None, _("An error occurred during processing."))
+                self.import_db_form = ImportDatabaseForm()
+                self.export_db_form = ExportDatabaseForm()
 
         # -----------------------------------------------------------------------
-        # 2. Edit handling (by the name of the button)
-        elif 'edit' in request.POST:
+        # 1. Import Database
+        elif 'import_db' in request.POST:
             try:
-                item_id = request.POST.get('edit')
-                audit = Customer.objects.get(id=item_id)
-                form = self.form_class(instance=audit)
+                self.import_db_form = ImportDatabaseForm(request.POST, request.FILES)
 
-                # Store the ID in the session for later use, otherwise it will be lost
-                # and pressing the save button will create a new object
-                request.session['editing_id'] = item_id
-                return render(request, self.template_name, self.get_context_data(form=form, form_visibility="block"))
-            except Customer.DoesNotExist:
-                pass
+                if self.import_db_form.is_valid():
+                    message = _("Database imported successfully.")
+                    self.import_db_form = ImportDatabaseForm()
+
+                self.delete_db_form = DeleteDatabaseForm()
+                self.export_db_form = ExportDatabaseForm()
+
+            except Exception as e:
+                print(f"Form processing error: {e}")
+                self.import_db_form.add_error(None, _("An error occurred during processing."))
+                self.delete_db_form = DeleteDatabaseForm()
+                self.export_db_form = ExportDatabaseForm()
 
         # -----------------------------------------------------------------------
-        # 3. Continue editing / Handling Save
-        editing_id = request.session.get('editing_id')
-        form_data = self.form_class(request.POST, request.FILES)
+        # 1. Export Database
+        elif 'export_db' in request.POST:
+            try:
+                self.export_db_form = ExportDatabaseForm(request.POST)
 
-        # a) If editing_id is set, it means we are editing an existing audit
-        if editing_id:
-            audit = Customer.objects.get(id=editing_id)
-            form_data = self.form_class(request.POST, request.FILES, instance=audit)
-            del request.session['editing_id']
+                if self.export_db_form.is_valid():
+                    message = _("Database exported successfully.")
+                    self.export_db_form = ExportDatabaseForm()
 
-        # b) If not editing, we are creating a new audit
-        if form_data.is_valid():
-            form_data.save()
-            return redirect('index')
+                self.delete_db_form = DeleteDatabaseForm()
+                self.import_db_form = ImportDatabaseForm()
 
-        return render(request, self.template_name, self.get_context_data(form=form_data, form_visibility="block"))
+            except Exception as e:
+                print(f"Form processing error: {e}")
+                self.export_db_form.add_error(None, _("An error occurred during processing."))
+                self.delete_db_form = DeleteDatabaseForm()
+                self.import_db_form = ImportDatabaseForm()
+
+        return render(request, self.template_name, self.get_context_data(message=message))

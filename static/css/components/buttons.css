@@ -7,6 +7,10 @@ button {
     border-width:var(--button-border-width);
 }
 
+.button-long {
+    width: 200px;
+}
+
 button:hover {
     background-color: var(--hover-color);
     cursor: var(--hover-cursor-type);

@@ -11,12 +11,15 @@ from django.utils.translation import gettext_lazy as _
 class BaseView(View, ABC):
     def __init__(self, **kwargs):
         self.template_name, self.form_class, self.page_title, self.page_name = None, None, None, None
+        self.delete_db_form, self.import_db_form, self.export_db_form = None, None, None
+
         self.define_basic_elements()
         super().__init__(**kwargs)
 
     @abstractmethod
     def define_basic_elements(self):
         self.template_name, self.form_class, self.page_title, self.page_name = None, None, None, None
+
 
     def get_context_data(self, **kwargs):
         context = {
