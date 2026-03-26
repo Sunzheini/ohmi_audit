@@ -252,5 +252,96 @@ class DbManagement:
         )
 
     @staticmethod
+    def _build_export_workbook(customers):
+        """
+        Step 1 – Build an openpyxl Workbook from a Customer queryset.
+
+        Column order mirrors the import template exactly so the exported file
+        can be re-imported without any modifications.
+        Headers are bolded and column widths are auto-fitted for readability.
+        """
+        import openpyxl
+        from openpyxl.styles import Font
+
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = 'Customers'
+
+        # Header row – must match the COLUMN_MAP keys in _build_customer_record
+        headers = ['year', 'BG Vor.Nr.', 'Unternehmen-bg', 'Unternehmen-en', 'Company ID', 'VAT']
+        ws.append(headers)
+
+        # Bold the header row to match the import file appearance
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+
+        # Data rows – one per Customer, in the same column order as the headers
+        for customer in customers:
+            ws.append([
+                customer.year,
+                customer.BG_Vor_Nr,
+                customer.company_name_bg,
+                customer.company_name_en,
+                customer.company_id,
+                customer.VAT_number,
+            ])
+
+        # Auto-fit column widths based on the longest value in each column
+        for col in ws.columns:
+            max_len = max((len(str(cell.value or '')) for cell in col), default=0)
+            ws.column_dimensions[col[0].column_letter].width = max(max_len + 2, 14)
+
+        return wb
+
+    @staticmethod
     def export_to_excel():
-        return _("Database exported successfully.")
+        """
+        Exports all Customer records to an .xlsx file that mirrors the import
+        template format, then returns a file-download HttpResponse.
+
+        The view must return this response directly (not pass it as a template
+        context variable) so that the browser triggers an immediate file download.
+
+        Steps:
+          1. Fetch all Customer rows ordered by id.
+          2. Build the workbook via _build_export_workbook().
+          3. Serialise the workbook to an in-memory BytesIO buffer.
+          4. Wrap the buffer in an HttpResponse with the correct MIME type and
+             Content-Disposition header so the browser saves it as a .xlsx file.
+        """
+        import io
+        from datetime import datetime
+        from django.http import HttpResponse
+        from ohmi_audit.main_app.models import Customer
+
+        # ----------------------------------------------------------------
+        # Step 1 – fetch all customers
+        # ----------------------------------------------------------------
+        customers = Customer.objects.all().order_by('id')
+        count = customers.count()
+
+        # ----------------------------------------------------------------
+        # Step 2 – build the workbook
+        # ----------------------------------------------------------------
+        wb = DbManagement._build_export_workbook(customers)
+
+        # ----------------------------------------------------------------
+        # Step 3 – serialise to an in-memory buffer (no temp file on disk)
+        # ----------------------------------------------------------------
+        buffer = io.BytesIO()
+        wb.save(buffer)
+        buffer.seek(0)
+
+        # ----------------------------------------------------------------
+        # Step 4 – build the download response
+        # ----------------------------------------------------------------
+        filename = f"customers_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+
+        response = HttpResponse(
+            buffer.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        logger.info("export_to_excel – exported %d customer(s) as '%s'", count, filename)
+        return response

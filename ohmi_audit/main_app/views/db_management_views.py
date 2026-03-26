@@ -104,8 +104,9 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.export_db_form = ExportDatabaseForm(request.POST)
 
                 if self.export_db_form.is_valid():
-                    message = DbManagement.export_to_excel()
-                    self.export_db_form = ExportDatabaseForm()
+                    # export_to_excel() returns an HttpResponse with the file
+                    # attached – return it immediately to trigger the download.
+                    return DbManagement.export_to_excel()
 
                 self.delete_db_form = DeleteDatabaseForm()
                 self.import_db_form = ImportDatabaseForm()
