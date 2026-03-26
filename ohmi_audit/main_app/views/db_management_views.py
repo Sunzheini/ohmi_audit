@@ -84,7 +84,8 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.import_db_form = ImportDatabaseForm(request.POST, request.FILES)
 
                 if self.import_db_form.is_valid():
-                    message = DbManagement.import_from_excel()
+                    uploaded_file = self.import_db_form.cleaned_data['select_file']
+                    message = DbManagement.import_from_excel(uploaded_file)
                     self.import_db_form = ImportDatabaseForm()
 
                 self.delete_db_form = DeleteDatabaseForm()
