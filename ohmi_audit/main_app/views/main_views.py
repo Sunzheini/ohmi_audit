@@ -2,9 +2,10 @@
 Main application views.
 Contains the primary IndexView for the main application page.
 """
+import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
@@ -78,7 +79,47 @@ class IndexView(LoginRequiredMixin, BaseView):
 
     # -----------------------------------------------------------------------
     def post(self, request: HttpRequest):
-        # Invalidate cache when changes are made
+        # -----------------------------------------------------------------------
+        # 0. Handle AJAX search request
+        if request.content_type == 'application/json':
+            try:
+                data = json.loads(request.body)
+                search_query = data.get('search_query', '')
+                
+                if search_query:
+                    # Search across multiple fields in Customer model
+                    from django.db.models import Q
+                    
+                    results = Customer.objects.filter(
+                        Q(company_name_bg__icontains=search_query) |
+                        Q(company_name_en__icontains=search_query) |
+                        Q(BG_Vor_Nr__icontains=search_query) |
+                        Q(company_id__icontains=search_query) |
+                        Q(year__icontains=search_query)
+                    )
+                    
+                    # Serialize the results
+                    results_data = list(results.values())  # Convert to list of dictionaries
+                    
+                    return JsonResponse({
+                        'success': True,
+                        'results': results_data,
+                        'count': len(results_data)
+                    })
+                else:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'No search query provided'
+                    }, status=400)
+                    
+            except json.JSONDecodeError:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Invalid JSON'
+                }, status=400)
+        
+        # -----------------------------------------------------------------------
+        # 0.5. Invalidate cache when changes are made
         cache_key = f"audit_list_{request.user.id}"
         cache.delete(cache_key)
 
