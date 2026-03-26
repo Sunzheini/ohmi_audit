@@ -488,3 +488,237 @@ class TestImportFromExcel:
         assert Customer.objects.filter(BG_Vor_Nr='BG-017/24').exists()
         assert 'Created: 3' in message
 
+
+# =============================================================================
+# export_to_excel  (integration – needs DB)
+# =============================================================================
+
+@pytest.mark.django_db
+class TestExportToExcel:
+
+    # ── response structure ────────────────────────────────────────────────────
+
+    def test_returns_http_response(self, db):
+        from django.http import HttpResponse
+        assert isinstance(DbManagement.export_to_excel(), HttpResponse)
+
+    def test_content_type_is_xlsx(self, db):
+        response = DbManagement.export_to_excel()
+        assert response['Content-Type'] == (
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+
+    def test_content_disposition_is_attachment(self, db):
+        response = DbManagement.export_to_excel()
+        assert 'attachment' in response['Content-Disposition']
+
+    def test_filename_has_customers_prefix_and_xlsx_extension(self, db):
+        response = DbManagement.export_to_excel()
+        disposition = response['Content-Disposition']
+        assert 'customers_' in disposition
+        assert '.xlsx' in disposition
+
+    def test_response_body_is_valid_xlsx(self, db):
+        """The response body must be parseable by openpyxl without errors."""
+        response = DbManagement.export_to_excel()
+        wb = openpyxl.load_workbook(io.BytesIO(response.content))
+        assert wb is not None
+
+    # ── workbook headers ──────────────────────────────────────────────────────
+
+    def test_headers_match_import_template(self, db):
+        """
+        Exported header row must match the COLUMN_MAP keys used by the importer
+        so that export → re-import works without manual edits.
+        """
+        response = DbManagement.export_to_excel()
+        wb = openpyxl.load_workbook(io.BytesIO(response.content), read_only=True, data_only=True)
+        header_row = list(next(wb.active.iter_rows(values_only=True)))
+        assert header_row == [
+            'year', 'BG Vor.Nr.', 'Unternehmen-bg',
+            'Unternehmen-en', 'Company ID', 'VAT',
+        ]
+
+    def test_header_row_is_bold(self, db):
+        """Bold headers match the style of the original import template."""
+        response = DbManagement.export_to_excel()
+        wb = openpyxl.load_workbook(io.BytesIO(response.content))   # need styles → not read_only
+        for cell in wb.active[1]:
+            assert cell.font.bold, f"Cell {cell.coordinate} should be bold"
+
+    # ── workbook data ─────────────────────────────────────────────────────────
+
+    def test_empty_db_produces_header_only_file(self, db):
+        response = DbManagement.export_to_excel()
+        wb = openpyxl.load_workbook(io.BytesIO(response.content), read_only=True, data_only=True)
+        rows = list(wb.active.iter_rows(values_only=True))
+        assert len(rows) == 1   # header only, no data rows
+
+    def test_exports_correct_number_of_rows(self, db):
+        for i in range(3):
+            Customer.objects.create(
+                year=2026, BG_Vor_Nr=f'BG-{i:03d}/24',
+                company_name_bg='Тест', company_name_en='Test',
+                company_id=i, VAT_number=f'BG{i}',
+            )
+        response = DbManagement.export_to_excel()
+        wb = openpyxl.load_workbook(io.BytesIO(response.content), read_only=True, data_only=True)
+        rows = list(wb.active.iter_rows(values_only=True))
+        assert len(rows) == 4   # 1 header + 3 data
+
+    def test_exported_row_values_match_db(self, sample_customer):
+        """Every column in the exported row must equal the DB field value."""
+        response = DbManagement.export_to_excel()
+        wb = openpyxl.load_workbook(io.BytesIO(response.content), read_only=True, data_only=True)
+        data_row = list(wb.active.iter_rows(values_only=True))[1]   # first data row
+
+        assert data_row[0] == 2026           # year
+        assert data_row[1] == 'BG-001/24'    # BG_Vor_Nr
+        assert data_row[2] == 'Тест ООД'    # company_name_bg  (Cyrillic)
+        assert data_row[3] == 'TEST LTD'     # company_name_en
+        assert data_row[4] == 123456789      # company_id  (int, not str)
+        assert data_row[5] == 'BG123456789'  # VAT_number
+
+    def test_integer_fields_written_as_numbers(self, sample_customer):
+        """year and company_id must be Excel number cells, not text."""
+        response = DbManagement.export_to_excel()
+        wb = openpyxl.load_workbook(io.BytesIO(response.content))
+        data_row = list(wb.active.iter_rows())[1]
+
+        assert isinstance(data_row[0].value, int)   # year
+        assert isinstance(data_row[4].value, int)   # company_id
+
+
+# =============================================================================
+# export → delete → import  round-trip
+# =============================================================================
+
+@pytest.mark.django_db
+class TestExportImportRoundTrip:
+    """
+    Verifies the complete user workflow:
+      1. export_to_excel()  →  get .xlsx bytes
+      2. delete_database()  →  wipe all customers
+      3. import_from_excel()→  restore from the exported file
+
+    Each test targets a specific concern (field type, encoding, count, etc.)
+    so failures are easy to diagnose.
+    """
+
+    @staticmethod
+    def _export_bytes():
+        """Run export and return the raw .xlsx bytes."""
+        return DbManagement.export_to_excel().content
+
+    # ── count integrity ───────────────────────────────────────────────────────
+
+    def test_single_customer_count_survives(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.count() == 1
+
+    def test_multiple_customers_count_survives(self, db):
+        for i in range(3):
+            Customer.objects.create(
+                year=2026, BG_Vor_Nr=f'BG-{i:03d}/24',
+                company_name_bg=f'Тест {i}', company_name_en=f'TEST {i}',
+                company_id=i, VAT_number=f'BG{i}',
+            )
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.count() == 3
+
+    def test_empty_db_round_trip_creates_nothing(self, db):
+        """Exporting an empty DB produces a header-only file; importing it creates 0 rows."""
+        exported = self._export_bytes()
+        msg = str(DbManagement.import_from_excel(io.BytesIO(exported)))
+        assert Customer.objects.count() == 0
+        assert 'Created: 0' in msg
+
+    # ── field-by-field integrity ──────────────────────────────────────────────
+
+    def test_year_survives(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.get(BG_Vor_Nr='BG-001/24').year == 2026
+
+    def test_bg_vor_nr_survives(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.filter(BG_Vor_Nr='BG-001/24').exists()
+
+    def test_cyrillic_company_name_survives(self, sample_customer):
+        """Cyrillic (UTF-8) text must not be corrupted through the xlsx round-trip."""
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.get(BG_Vor_Nr='BG-001/24').company_name_bg == 'Тест ООД'
+
+    def test_english_company_name_survives(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.get(BG_Vor_Nr='BG-001/24').company_name_en == 'TEST LTD'
+
+    def test_company_id_survives(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.get(BG_Vor_Nr='BG-001/24').company_id == 123456789
+
+    def test_vat_number_survives(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+        assert Customer.objects.get(BG_Vor_Nr='BG-001/24').VAT_number == 'BG123456789'
+
+    def test_all_fields_match_originals(self, db):
+        """Full field-by-field comparison between original and restored customer."""
+        original = Customer.objects.create(
+            year=2026, BG_Vor_Nr='BG-017/24',
+            company_name_bg='Чистота Балкани ООД',
+            company_name_en='CHISTOTA BALKANI OOD',
+            company_id=112608680, VAT_number='BG112608680',
+        )
+        exported = self._export_bytes()
+        Customer.objects.all().delete()
+        DbManagement.import_from_excel(io.BytesIO(exported))
+
+        restored = Customer.objects.get(BG_Vor_Nr='BG-017/24')
+        assert restored.year            == original.year
+        assert restored.BG_Vor_Nr       == original.BG_Vor_Nr
+        assert restored.company_name_bg == original.company_name_bg
+        assert restored.company_name_en == original.company_name_en
+        assert restored.company_id      == original.company_id
+        assert restored.VAT_number      == original.VAT_number
+
+    # ── import message after round-trip ──────────────────────────────────────
+
+    def test_import_message_shows_created(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        msg = str(DbManagement.import_from_excel(io.BytesIO(exported)))
+        assert 'Created: 1' in msg
+
+    def test_import_message_shows_zero_errors(self, sample_customer):
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        msg = str(DbManagement.import_from_excel(io.BytesIO(exported)))
+        assert 'Errors: 0' in msg
+
+    # ── idempotency ───────────────────────────────────────────────────────────
+
+    def test_double_import_updates_not_duplicates(self, sample_customer):
+        """Importing the same exported file twice must update rows, never duplicate them."""
+        exported = self._export_bytes()
+        DbManagement.delete_database()
+        DbManagement.import_from_excel(io.BytesIO(exported))       # first import → create
+        msg = str(DbManagement.import_from_excel(io.BytesIO(exported)))  # second → update
+        assert Customer.objects.count() == 1
+        assert 'Updated: 1' in msg
+
+
