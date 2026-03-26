@@ -94,10 +94,11 @@ def customer(db):
     """Create a test customer"""
     from ohmi_audit.main_app.models import Customer
     return Customer.objects.create(
-        first_name='Jane',
-        last_name='Smith',
-        address='123 Main St',
-        phone='+0987654321',
-        email='jane.smith@example.com'
+        year=2026,
+        BG_Vor_Nr='BG-001/24',
+        company_name_bg='Тест ООД',
+        company_name_en='TEST LTD',
+        company_id=123456789,
+        VAT_number='BG123456789',
     )
 
