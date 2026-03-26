@@ -2,6 +2,8 @@
 API endpoint views.
 Contains REST API views for CRUD operations on models and custom data endpoints.
 """
+import logging
+
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -10,6 +12,8 @@ from rest_framework.views import APIView
 
 from common.serializers import AuditSerializer, CustomDataSerializer
 from ohmi_audit.main_app.models import Audit
+
+logger = logging.getLogger('ohmi_audit')
 
 
 class ModelEndPointView(APIView):
@@ -31,6 +35,7 @@ class ModelEndPointView(APIView):
         if serializer.is_valid():
             # serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        logger.warning("Audit POST validation failed: %s", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # PUT (Update full object)
@@ -40,6 +45,7 @@ class ModelEndPointView(APIView):
         if serializer.is_valid():
             # serializer.save()
             return Response(serializer.data)
+        logger.warning("Audit PUT validation failed for pk=%s: %s", pk, serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # PATCH (Partial update)
@@ -49,11 +55,13 @@ class ModelEndPointView(APIView):
         if serializer.is_valid():
             # serializer.save()
             return Response(serializer.data)
+        logger.warning("Audit PATCH validation failed for pk=%s: %s", pk, serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
         audit = get_object_or_404(Audit, pk=pk)
         # audit.delete()
+        logger.info("Audit pk=%s deleted via API by user %s", pk, request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

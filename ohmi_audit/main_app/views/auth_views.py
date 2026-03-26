@@ -2,6 +2,8 @@
 Authentication views.
 Contains Sign Up, Login, and Logout views.
 """
+import logging
+
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.core.cache import cache
@@ -12,6 +14,8 @@ from django.views.generic import View
 
 from common.base_view import BaseView
 from ohmi_audit.main_app.forms import SignUpForm, LoginForm
+
+logger = logging.getLogger('ohmi_audit')
 
 
 class SignUpView(BaseView):
@@ -28,6 +32,7 @@ class SignUpView(BaseView):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            logger.info("New user registered: %s", user.username)
             messages.success(request, _('Account created successfully! Welcome, %(first_name)s!') % {'first_name': user.first_name})
             return redirect('index')
 
@@ -51,6 +56,7 @@ class LoginView(BaseView):
         attempts = cache.get(cache_key, 0)
 
         if attempts >= 5:
+            logger.warning("Rate limit exceeded for IP %s (%d attempts)", ip_address, attempts)
             messages.error(request, _('Too many login attempts. Please try again later.'))
             return render(request, self.template_name, self.get_context_data())
 
@@ -65,6 +71,7 @@ class LoginView(BaseView):
 
             if user is not None:
                 login(request, user)
+                logger.info("User logged in: %s from %s", username, ip_address)
                 messages.success(request,
                                  _('Welcome back, %(first_name)s!') % {
                                      'first_name': user.first_name
@@ -74,6 +81,7 @@ class LoginView(BaseView):
         else:
             # Increment failed attempts
             cache.set(cache_key, attempts + 1, timeout=300)  # 5 minute window
+            logger.warning("Failed login attempt for username '%s' from %s (attempt %d)", form.data.get('username'), ip_address, attempts + 1)
             messages.error(request, _('Invalid username or password'))
 
         return render(request, self.template_name, self.get_context_data(form=form))
@@ -84,6 +92,7 @@ class LogoutView(View):
     
     @staticmethod
     def get(request):
+        logger.info("User logged out: %s", request.user.username)
         logout(request)
         messages.success(request, _('You have been successfully logged out.'))
         return redirect('index')

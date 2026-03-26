@@ -8,7 +8,7 @@ from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('ohmi_audit')
 
 
 class DbManagement:

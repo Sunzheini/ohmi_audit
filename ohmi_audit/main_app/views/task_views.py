@@ -2,6 +2,8 @@
 Celery task views.
 Contains views for testing and monitoring Celery background tasks.
 """
+import logging
+
 from celery.result import AsyncResult
 from django.contrib import messages
 from django.http import HttpRequest, JsonResponse
@@ -9,6 +11,8 @@ from django.shortcuts import render
 from django.views.generic import View
 
 from ohmi_audit.main_app.tasks import long_running_task
+
+logger = logging.getLogger('ohmi_audit')
 
 
 def task_status(request, task_id):
@@ -54,6 +58,7 @@ class TaskTestView(View):
     def get(self, request: HttpRequest):
         # Start the task and get its ID
         task = long_running_task.delay(duration=10)
+        logger.info("Celery long_running_task dispatched with id=%s by user %s", task.id, request.user)
         messages.success(request, 'Task started! Tracking progress...')
 
         context = self.get_context_data(

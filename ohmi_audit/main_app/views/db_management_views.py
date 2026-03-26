@@ -1,6 +1,8 @@
 """
 Database Management views.
 """
+import logging
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
@@ -10,6 +12,8 @@ from django.utils.translation import gettext_lazy as _
 from common.base_view import BaseView
 from common.db_management import DbManagement
 from ohmi_audit.main_app.forms import *
+
+logger = logging.getLogger('ohmi_audit')
 
 UserModel = get_user_model()
 all_users = []
@@ -68,7 +72,7 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.export_db_form = ExportDatabaseForm()
 
             except Exception as e:
-                print(f"Form processing error: {e}")
+                logger.error("delete_database form error: %s", e, exc_info=True)
                 self.delete_db_form.add_error(None, _("An error occurred during processing."))
                 self.import_db_form = ImportDatabaseForm()
                 self.export_db_form = ExportDatabaseForm()
@@ -87,7 +91,7 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.export_db_form = ExportDatabaseForm()
 
             except Exception as e:
-                print(f"Form processing error: {e}")
+                logger.error("import_from_excel form error: %s", e, exc_info=True)
                 self.import_db_form.add_error(None, _("An error occurred during processing."))
                 self.delete_db_form = DeleteDatabaseForm()
                 self.export_db_form = ExportDatabaseForm()
@@ -106,7 +110,7 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.import_db_form = ImportDatabaseForm()
 
             except Exception as e:
-                print(f"Form processing error: {e}")
+                logger.error("export_to_excel form error: %s", e, exc_info=True)
                 self.export_db_form.add_error(None, _("An error occurred during processing."))
                 self.delete_db_form = DeleteDatabaseForm()
                 self.import_db_form = ImportDatabaseForm()

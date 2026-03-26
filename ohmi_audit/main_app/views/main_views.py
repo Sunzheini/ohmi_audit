@@ -3,6 +3,8 @@ Main application views.
 Contains the primary IndexView for the main application page.
 """
 import json
+import logging
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
@@ -23,6 +25,8 @@ UserModel = get_user_model()
 # else:
 #     all_users = []
 all_users = []
+
+logger = logging.getLogger('ohmi_audit')
 
 
 # use the LoginRequiredMixin to ensure that the user is logged in before accessing the view
@@ -114,6 +118,7 @@ class IndexView(LoginRequiredMixin, BaseView):
                     }, status=400)
                     
             except json.JSONDecodeError:
+                logger.warning("Invalid JSON received in AJAX search request")
                 return JsonResponse({
                     'success': False,
                     'error': 'Invalid JSON'
@@ -129,9 +134,10 @@ class IndexView(LoginRequiredMixin, BaseView):
         if 'delete' in request.POST:
             try:
                 Customer.objects.get(id=request.POST.get('delete')).delete()
+                logger.info("Customer id=%s deleted by user %s", request.POST.get('delete'), request.user.username)
                 return redirect('index')
             except Customer.DoesNotExist:
-                pass
+                logger.warning("Delete failed – Customer id=%s not found", request.POST.get('delete'))
 
         # -----------------------------------------------------------------------
         # 2. Edit handling (by the name of the button)
@@ -146,7 +152,7 @@ class IndexView(LoginRequiredMixin, BaseView):
                 request.session['editing_id'] = item_id
                 return render(request, self.template_name, self.get_context_data(form=form, form_visibility="block"))
             except Customer.DoesNotExist:
-                pass
+                logger.warning("Edit failed – Customer id=%s not found", request.POST.get('edit'))
 
         # -----------------------------------------------------------------------
         # 3. Continue editing / Handling Save
