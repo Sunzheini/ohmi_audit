@@ -2,4 +2,4 @@
 A program for managing audits by a certification company
 
 # Run tests
-pytest tests/ -v
+pytest  -v
