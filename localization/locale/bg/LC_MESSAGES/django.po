@@ -66,6 +66,42 @@ msgstr "Списък на Клиентите"
 msgid "New Record"
 msgstr "Нов Запис"
 
+#: .\ohmi_audit\main_app\views\main_views.py:74
+msgid "Search"
+msgstr "Търси"
+
+#: .\templates\main_app\index.html:14
+msgid "Search..."
+msgstr "Търси..."
+
+#: .\templates\main_app\index.html:15
+msgid "Please enter a search term"
+msgstr "Моля, въведете текст за търсене"
+
+#: .\templates\main_app\index.html:16
+msgid "Search failed. Please try again."
+msgstr "Търсенето е неуспешно. Моля, опитайте отново."
+
+#: .\templates\main_app\index.html:17
+msgid "Found"
+msgstr "Намерени"
+
+#: .\templates\main_app\index.html:18
+msgid "result(s) for"
+msgstr "резултат(и) за"
+
+#: .\templates\main_app\index.html:19
+msgid "Clear Search"
+msgstr "Изчисти търсенето"
+
+#: .\templates\main_app\index.html:20
+msgid "No results found"
+msgstr "Няма намерени резултати"
+
+#: .\templates\main_app\index.html:21
+msgid "Are you sure?"
+msgstr "Сигурен ли сте?"
+
 #: .\templates\forms\audit_form.html:6 .\templates\forms\customer_form.html:6
 msgid "Id"
 msgstr "Id"

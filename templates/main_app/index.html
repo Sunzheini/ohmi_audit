@@ -1,9 +1,27 @@
 {# This is the base template that other templates will extend from. #}
 {% extends 'base.html' %}
+{% load i18n %}
 
 {# 1. Page Title (On the explorer tab) #}
 {% block page_title %}
     {{ page_title }}
+{% endblock %}
+
+{# Translatable JavaScript strings #}
+{% block additional_js %}
+    <script type="text/javascript">
+        // Translated strings for JavaScript
+        const i18n = {
+            searchPlaceholder: "{% trans 'Search...' %}",
+            searchEmptyAlert: "{% trans 'Please enter a search term' %}",
+            searchFailed: "{% trans 'Search failed. Please try again.' %}",
+            searchFoundResults: "{% trans 'Found' %}",
+            searchResultsFor: "{% trans 'result(s) for' %}",
+            clearSearch: "{% trans 'Clear Search' %}",
+            noResultsFound: "{% trans 'No results found' %}",
+            confirmDelete: "{% trans 'Are you sure?' %}"
+        };
+    </script>
 {% endblock %}
 
 {# 8. Right Bar #}

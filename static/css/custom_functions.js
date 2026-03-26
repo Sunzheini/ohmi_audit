@@ -13,7 +13,7 @@ function handleTableSearch() {
     
     // Check if the input is not empty
     if (!searchQuery.trim()) {
-        alert("Please enter a search term");
+        alert(i18n.searchEmptyAlert);
         return;
     }
     
@@ -37,12 +37,12 @@ function handleTableSearch() {
             // Show a clear search button or message
             showSearchStatus(data.count, searchQuery);
         } else {
-            alert('Search failed: ' + data.error);
+            alert(i18n.searchFailed + ': ' + data.error);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Search failed. Please try again.');
+        alert(i18n.searchFailed);
     });
 }
 
@@ -56,10 +56,23 @@ function showSearchStatus(count, query) {
     // Create search status message
     const statusDiv = document.createElement('div');
     statusDiv.className = 'search-status';
-    statusDiv.style.cssText = 'padding: 10px; margin: 10px 0; background-color: #e3f2fd; border-left: 4px solid #2196F3; display: flex; justify-content: space-between; align-items: center;';
+    statusDiv.style.cssText = `
+        padding: 10px;
+        margin: 10px 0;
+        background-color: var(--clr-table-row-odd-background-color);
+        border: 1px solid var(--clr-main-app-color);
+        border-left: 4px solid var(--clr-main-app-color);
+        border-radius: var(--button-border-radius);
+        box-shadow: var(--box-shadow-style);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'Roboto', sans-serif;
+        color: var(--clr-font-color);
+    `;
     statusDiv.innerHTML = `
-        <span>Found ${count} result(s) for "${query}"</span>
-        <button onclick="clearSearch()" style="padding: 5px 15px; cursor: pointer;">Clear Search</button>
+        <span style="font-weight: 500; font-size: 0.95rem;">${i18n.searchFoundResults} ${count} ${i18n.searchResultsFor} "${query}"</span>
+        <button onclick="clearSearch()" style="padding: 5px 15px; cursor: pointer; background-color: var(--clr-button-color); color: white; border: none; border-radius: var(--button-border-radius); transition: var(--button-transition-style);" onmouseover="this.style.backgroundColor='var(--hover-color)'; this.style.color='var(--clr-font-color)'" onmouseout="this.style.backgroundColor='var(--clr-button-color)'; this.style.color='white'">${i18n.clearSearch}</button>
     `;
     
     // Insert before the table
@@ -88,7 +101,7 @@ function updateTableWithResults(results) {
     
     // If no results found
     if (results.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9">No results found</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="9">${i18n.noResultsFound}</td></tr>`;
         return;
     }
     
@@ -119,7 +132,7 @@ function updateTableWithResults(results) {
                 <form method="POST">
                     <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
                     <button type="submit" name="delete" value="${item.id}" class="btn btn-danger"
-                            onclick="return confirm('Are you sure?')">
+                            onclick="return confirm('${i18n.confirmDelete}')">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </form>

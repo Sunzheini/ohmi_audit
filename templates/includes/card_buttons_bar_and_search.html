@@ -8,7 +8,7 @@
     <button class="car-buttons-bar-button" style="visibility: hidden;"></button>
 
     <div class="search-button-group">
-        <input type="text" id="searchInput" class="car-buttons-bar-button" placeholder="Search..." onkeypress="if(event.key === 'Enter') { event.preventDefault(); handleTableSearch(); }" />
+        <input type="text" id="searchInput" class="car-buttons-bar-button" placeholder="{% trans 'Search...' %}" onkeypress="if(event.key === 'Enter') { event.preventDefault(); handleTableSearch(); }" />
 
         <button class="car-buttons-bar-button" onclick="handleTableSearch()">
             {{ card_button_2_name }}
