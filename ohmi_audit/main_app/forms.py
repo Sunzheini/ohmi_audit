@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import gettext_lazy as _
 
 from common.common_forms_data import *
 from ohmi_audit.main_app.models import *
@@ -97,7 +98,7 @@ class DeleteDatabaseForm(forms.Form):
 class ImportDatabaseForm(forms.Form):
 
     select_file = forms.FileField(
-        label='',
+        label=_('Select file'),
     )
 
 

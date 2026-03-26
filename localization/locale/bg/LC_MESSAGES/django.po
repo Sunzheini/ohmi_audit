@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-25 16:19+0200\n"
+"POT-Creation-Date: 2026-03-26 14:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,6 +15,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\ohmi_audit\main_app\forms.py:101
+msgid "Select file"
+msgstr "Избери файл"
 
 #: .\ohmi_audit\main_app\views\auth_views.py:23
 msgid "Sign Up"
@@ -54,133 +58,49 @@ msgstr "Грешно потребителско име или парола"
 msgid "You have been successfully logged out."
 msgstr "Успешно излязохте от приложението."
 
-#: .\ohmi_audit\main_app\views\main_views.py:44
+#: .\ohmi_audit\main_app\views\db_management_views.py:33
+#: .\ohmi_audit\main_app\views\main_views.py:45
 msgid "Ohmi Audit Test"
 msgstr "Ohmi Audit Тест"
 
-#: .\ohmi_audit\main_app\views\main_views.py:45
+#: .\ohmi_audit\main_app\views\db_management_views.py:34
+msgid "Database Management"
+msgstr "Управление на базата данни"
+
+#: .\ohmi_audit\main_app\views\db_management_views.py:55
+msgid "Database deleted successfully."
+msgstr "Базата данни е изтрита успешно."
+
+#: .\ohmi_audit\main_app\views\db_management_views.py:76
+#: .\ohmi_audit\main_app\views\db_management_views.py:95
+#: .\ohmi_audit\main_app\views\db_management_views.py:114
+msgid "An error occurred during processing."
+msgstr "Възникна грешка при обработката."
+
+#: .\ohmi_audit\main_app\views\db_management_views.py:87
+msgid "Database imported successfully."
+msgstr "Базата данни е импортирана успешно."
+
+#: .\ohmi_audit\main_app\views\db_management_views.py:106
+msgid "Database exported successfully."
+msgstr "Базата данни е експортирана успешно."
+
+#: .\ohmi_audit\main_app\views\main_views.py:46
 msgid "Customer's List"
 msgstr "Списък на Клиентите"
 
-#: .\ohmi_audit\main_app\views\main_views.py:73
+#: .\ohmi_audit\main_app\views\main_views.py:74
 msgid "New Record"
 msgstr "Нов Запис"
 
-#: .\ohmi_audit\main_app\views\main_views.py:74
+#: .\ohmi_audit\main_app\views\main_views.py:75
 msgid "Search"
 msgstr "Търси"
 
-#: .\templates\main_app\index.html:14
+#: .\templates\includes\card_buttons_bar_and_search.html:11
+#: .\templates\main_app\index.html:15
 msgid "Search..."
 msgstr "Търси..."
-
-#: .\templates\main_app\index.html:15
-msgid "Please enter a search term"
-msgstr "Моля, въведете текст за търсене"
-
-#: .\templates\main_app\index.html:16
-msgid "Search failed. Please try again."
-msgstr "Търсенето е неуспешно. Моля, опитайте отново."
-
-#: .\templates\main_app\index.html:17
-msgid "Found"
-msgstr "Намерени"
-
-#: .\templates\main_app\index.html:18
-msgid "result(s) for"
-msgstr "резултат(и) за"
-
-#: .\templates\main_app\index.html:19
-msgid "Clear Search"
-msgstr "Изчисти търсенето"
-
-#: .\templates\main_app\index.html:20
-msgid "No results found"
-msgstr "Няма намерени резултати"
-
-#: .\templates\main_app\index.html:21
-msgid "Are you sure?"
-msgstr "Сигурен ли сте?"
-
-#: .\templates\forms\audit_form.html:6 .\templates\forms\customer_form.html:6
-msgid "Id"
-msgstr "Id"
-
-#: .\templates\forms\audit_form.html:8
-msgid "Name"
-msgstr "Име"
-
-#: .\templates\forms\audit_form.html:9
-msgid "Description"
-msgstr "Описание"
-
-#: .\templates\forms\audit_form.html:10
-msgid "Date"
-msgstr "Дата"
-
-#: .\templates\forms\audit_form.html:11
-msgid "Is Active"
-msgstr "Активен"
-
-#: .\templates\forms\audit_form.html:12
-msgid "Category"
-msgstr "Категория"
-
-#: .\templates\forms\audit_form.html:13
-msgid "Image"
-msgstr "Снимка"
-
-#: .\templates\forms\audit_form.html:14
-msgid "File"
-msgstr "Файл"
-
-#: .\templates\forms\audit_form.html:16 .\templates\forms\audit_form.html:48
-#: .\templates\forms\customer_form.html:15
-#: .\templates\forms\customer_form.html:35
-msgid "Edit"
-msgstr "Редактирай"
-
-#: .\templates\forms\audit_form.html:17 .\templates\forms\audit_form.html:57
-#: .\templates\forms\customer_form.html:16
-#: .\templates\forms\customer_form.html:44
-msgid "Delete"
-msgstr "Изтрий"
-
-#: .\templates\forms\audit_form.html:34
-msgid "No Image"
-msgstr "Няма снимка"
-
-#: .\templates\forms\audit_form.html:39
-msgid "Download File"
-msgstr "Свали файл"
-
-#: .\templates\forms\audit_form.html:41
-msgid "No File"
-msgstr "Няма файл"
-
-#: .\templates\forms\customer_form.html:8
-msgid "Year"
-msgstr "Година"
-
-#: .\templates\forms\customer_form.html:9
-msgid "BG Vor Nr"
-msgstr "Номер"
-
-#: .\templates\forms\customer_form.html:10
-msgid "Company Name Bg"
-msgstr "Наименование Bg"
-
-#: .\templates\forms\customer_form.html:11
-msgid "Company Name En"
-msgstr "Наименование En"
-
-#: .\templates\forms\customer_form.html:12
-msgid "Company ID"
-msgstr "Идентификационен №"
-
-#: .\templates\forms\customer_form.html:13
-msgid "VAT"
-msgstr "ДДС"
 
 #: .\templates\includes\content_container.html:17
 msgid "Save"
@@ -189,6 +109,18 @@ msgstr "Запази"
 #: .\templates\includes\content_container.html:43
 msgid "No items found"
 msgstr "Не са налични записи"
+
+#: .\templates\includes\db_content_container.html:16
+msgid "Delete whole database"
+msgstr "Изтрий цялата база данни"
+
+#: .\templates\includes\db_content_container.html:31
+msgid "Import from .xlsx"
+msgstr "Импортирай от .xlsx"
+
+#: .\templates\includes\db_content_container.html:46
+msgid "Export to .xlsx"
+msgstr "Експортирай в .xlsx"
 
 #: .\templates\includes\left_menu_bar.html:6
 msgid "Customers"
@@ -229,6 +161,115 @@ msgstr "следващо"
 #: .\templates\includes\pagination.html:19
 msgid "last"
 msgstr "последно"
+
+#: .\templates\main_app\index.html:16
+msgid "Please enter a search term"
+msgstr "Моля, въведете текст за търсене"
+
+#: .\templates\main_app\index.html:17
+msgid "Search failed. Please try again."
+msgstr "Търсенето е неуспешно. Моля, опитайте отново."
+
+#: .\templates\main_app\index.html:18
+msgid "Found"
+msgstr "Намерени"
+
+#: .\templates\main_app\index.html:19
+msgid "result(s) for"
+msgstr "резултат(и) за"
+
+#: .\templates\main_app\index.html:20
+msgid "Clear Search"
+msgstr "Изчисти търсенето"
+
+#: .\templates\main_app\index.html:21
+msgid "No results found"
+msgstr "Няма намерени резултати"
+
+#: .\templates\main_app\index.html:22
+msgid "Are you sure?"
+msgstr "Сигурен ли сте?"
+
+#: .\templates\tables\audit_table.html:6
+#: .\templates\tables\customer_table.html:6
+msgid "Id"
+msgstr "Id"
+
+#: .\templates\tables\audit_table.html:8
+msgid "Name"
+msgstr "Име"
+
+#: .\templates\tables\audit_table.html:9
+msgid "Description"
+msgstr "Описание"
+
+#: .\templates\tables\audit_table.html:10
+msgid "Date"
+msgstr "Дата"
+
+#: .\templates\tables\audit_table.html:11
+msgid "Is Active"
+msgstr "Активен"
+
+#: .\templates\tables\audit_table.html:12
+msgid "Category"
+msgstr "Категория"
+
+#: .\templates\tables\audit_table.html:13
+msgid "Image"
+msgstr "Снимка"
+
+#: .\templates\tables\audit_table.html:14
+msgid "File"
+msgstr "Файл"
+
+#: .\templates\tables\audit_table.html:16
+#: .\templates\tables\audit_table.html:48
+#: .\templates\tables\customer_table.html:15
+msgid "Edit"
+msgstr "Редактирай"
+
+#: .\templates\tables\audit_table.html:17
+#: .\templates\tables\audit_table.html:57
+#: .\templates\tables\customer_table.html:16
+msgid "Delete"
+msgstr "Изтрий"
+
+#: .\templates\tables\audit_table.html:34
+msgid "No Image"
+msgstr "Няма снимка"
+
+#: .\templates\tables\audit_table.html:39
+msgid "Download File"
+msgstr "Свали файл"
+
+#: .\templates\tables\audit_table.html:41
+msgid "No File"
+msgstr "Няма файл"
+
+#: .\templates\tables\customer_table.html:8
+msgid "Year"
+msgstr "Година"
+
+#: .\templates\tables\customer_table.html:9
+msgid "BG Vor Nr"
+msgstr "Номер"
+
+#: .\templates\tables\customer_table.html:10
+msgid "Company Name Bg"
+msgstr "Наименование Bg"
+
+#: .\templates\tables\customer_table.html:11
+msgid "Company Name En"
+msgstr "Наименование En"
+
+#: .\templates\tables\customer_table.html:12
+msgid "Company ID"
+msgstr "Идентификационен №"
+
+#: .\templates\tables\customer_table.html:13
+msgid "VAT"
+msgstr "ДДС"
 
 #~ msgid "Welcome"
 #~ msgstr "Добре дошли"
