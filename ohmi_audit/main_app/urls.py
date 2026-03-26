@@ -24,11 +24,16 @@ from ohmi_audit.main_app.views import (
     redirect_from_here_view,
 )
 
+from ohmi_audit.main_app.views.db_management_views import DbIndexView
+
 
 urlpatterns = [
     # http://localhost:8000/
     # path('', index_view, name='index'),
     path('', IndexView.as_view(), name='index'),
+
+    # http://localhost:8000/db/
+    path('db/', DbIndexView.as_view(), name='db_index'),
 
     #Auth
     # ----------------------------------------------------------------

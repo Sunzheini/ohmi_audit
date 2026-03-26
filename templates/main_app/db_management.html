@@ -1,0 +1,21 @@
+{# This is the base template that other templates will extend from. #}
+{% extends 'base.html' %}
+{% load i18n %}
+
+{# 1. Page Title (On the explorer tab) #}
+{% block page_title %}
+    {{ page_title }}
+{% endblock %}
+
+{# 8. Right Bar #}
+{% block right_bar %}
+    <div class="right-bar-container">
+        {% if request.user.is_authenticated %}
+            {% block content_container %}
+                <div class="content-container">
+                    {% include "includes/content_container.html" %}
+                </div>
+            {% endblock %}
+        {% endif %}
+    </div>
+{% endblock %}
