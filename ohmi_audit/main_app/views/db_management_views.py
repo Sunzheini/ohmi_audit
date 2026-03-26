@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 
 from common.base_view import BaseView
+from common.db_management import DbManagement
 from ohmi_audit.main_app.forms import *
 
 UserModel = get_user_model()
@@ -49,11 +50,6 @@ class DbIndexView(LoginRequiredMixin, BaseView):
         }
         return context
 
-    @staticmethod
-    def delete_database():
-        # Placeholder for actual database deletion logic
-        return _("Database deleted successfully.")
-
     # -----------------------------------------------------------------------
     def post(self, request: HttpRequest):
         message = None
@@ -65,7 +61,7 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.delete_db_form = DeleteDatabaseForm(request.POST)
 
                 if self.delete_db_form.is_valid():
-                    message = self.delete_database()
+                    message = DbManagement.delete_database()
                     self.delete_db_form = DeleteDatabaseForm()
 
                 self.import_db_form = ImportDatabaseForm()
@@ -84,7 +80,7 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.import_db_form = ImportDatabaseForm(request.POST, request.FILES)
 
                 if self.import_db_form.is_valid():
-                    message = _("Database imported successfully.")
+                    message = DbManagement.import_from_excel()
                     self.import_db_form = ImportDatabaseForm()
 
                 self.delete_db_form = DeleteDatabaseForm()
@@ -103,7 +99,7 @@ class DbIndexView(LoginRequiredMixin, BaseView):
                 self.export_db_form = ExportDatabaseForm(request.POST)
 
                 if self.export_db_form.is_valid():
-                    message = _("Database exported successfully.")
+                    message = DbManagement.export_to_excel()
                     self.export_db_form = ExportDatabaseForm()
 
                 self.delete_db_form = DeleteDatabaseForm()
