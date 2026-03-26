@@ -13,7 +13,7 @@ function handleTableSearch() {
     
     // Check if the input is not empty
     if (!searchQuery.trim()) {
-        alert(i18n.searchEmptyAlert);
+        showSearchWarning(i18n.searchEmptyAlert);
         return;
     }
     
@@ -37,12 +37,12 @@ function handleTableSearch() {
             // Show a clear search button or message
             showSearchStatus(data.count, searchQuery);
         } else {
-            alert(i18n.searchFailed + ': ' + data.error);
+            showSearchWarning(i18n.searchFailed + ': ' + data.error);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert(i18n.searchFailed);
+        showSearchWarning(i18n.searchFailed);
     });
 }
 
@@ -85,6 +85,49 @@ function showSearchStatus(count, query) {
 function clearSearch() {
     // Simply reload the page to show all results
     window.location.reload();
+}
+
+function showSearchWarning(message) {
+    // Remove existing search status if any
+    const existingStatus = document.querySelector('.search-status');
+    if (existingStatus) {
+        existingStatus.remove();
+    }
+    
+    // Create warning message
+    const warningDiv = document.createElement('div');
+    warningDiv.className = 'search-status';
+    warningDiv.style.cssText = `
+        padding: 10px;
+        margin: 10px 0;
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-left: 4px solid #ffc107;
+        border-radius: var(--button-border-radius);
+        box-shadow: var(--box-shadow-style);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'Roboto', sans-serif;
+        color: #856404;
+    `;
+    warningDiv.innerHTML = `
+        <span style="font-weight: 500; font-size: 0.95rem;">⚠️ ${message}</span>
+        <button onclick="this.parentElement.remove()" style="padding: 5px 15px; cursor: pointer; background-color: #ffc107; color: #856404; border: none; border-radius: var(--button-border-radius); font-weight: 500;">✕</button>
+    `;
+    
+    // Insert before the table
+    const tableContainer = document.querySelector('.content-container-wrapper-bottom');
+    if (tableContainer) {
+        tableContainer.insertBefore(warningDiv, tableContainer.firstChild);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (warningDiv.parentElement) {
+                warningDiv.remove();
+            }
+        }, 5000);
+    }
 }
 
 function updateTableWithResults(results) {
