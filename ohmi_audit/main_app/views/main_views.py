@@ -71,6 +71,7 @@ class IndexView(LoginRequiredMixin, BaseView):
             'data_for_content_container_wrapper_bottom': all_items,
 
             'card_button_1_name': _('New Record'),  # Mark for translation
+            'card_button_2_name': _('Search'),
             'form_visibility': kwargs.get('form_visibility', "none"),
         }
         return context

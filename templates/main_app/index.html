@@ -13,7 +13,8 @@
 
             {% if request.user.is_authenticated %}
                 <div class="card-buttons-bar-container">
-                    {% include "includes/card_buttons_bar.html" %}
+{#                    {% include "includes/card_buttons_bar.html" %}#}
+                    {% include "includes/card_buttons_bar_and_search.html" %}
                 </div>
             {% endif %}
         {% endblock %}

@@ -1,0 +1,17 @@
+{% load static i18n %}
+
+<div class="car-buttons-bar">
+    <button class="car-buttons-bar-button" onclick="fShowHideCreateForm()">
+        {{ card_button_1_name }}
+    </button>
+
+    <button class="car-buttons-bar-button" style="visibility: hidden;"></button>
+
+    <div class="search-button-group">
+        <input type="text" class="car-buttons-bar-button" placeholder="Search..." />
+
+        <button class="car-buttons-bar-button" onclick="fShowHideCreateForm()">
+            {{ card_button_2_name }}
+        </button>
+    </div>
+</div>
