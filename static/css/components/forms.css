@@ -85,3 +85,13 @@ form label .asteriskField {
     background-color: var(--hover-color);
 }
 
+/* Hide empty label column in import form so file input aligns with the button */
+#import_db_form table td:first-child {
+    display: none;
+}
+
+#import_db_form table td:last-child {
+    width: 100%;
+    padding-left: 0;
+}
+
