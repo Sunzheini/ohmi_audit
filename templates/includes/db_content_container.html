@@ -3,7 +3,7 @@
 <div class="content-container-wrapper">
 {% if request.user.is_authenticated %}
     <div class="content-container-wrapper-top">
-        <form method="POST" id="custom_form">
+        <form method="POST" id="delete_db_form" class="db-management-form">
             {% csrf_token %}
             <table>
                 {% for field in delete_db_form %}
@@ -18,7 +18,7 @@
 
         {#---#}
 
-        <form method="POST" enctype="multipart/form-data" id="custom_form">
+        <form method="POST" enctype="multipart/form-data" id="import_db_form" class="db-management-form">
             {% csrf_token %}
             <table>
                 {% for field in import_db_form %}
@@ -33,7 +33,7 @@
 
         {#---#}
 
-        <form method="POST" id="custom_form">
+        <form method="POST" id="export_db_form" class="db-management-form">
             {% csrf_token %}
             <table>
                 {% for field in export_db_form %}

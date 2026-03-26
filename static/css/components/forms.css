@@ -39,3 +39,17 @@ form label .asteriskField {
     color: #d32f2f;
     margin-left: 0.25rem;
 }
+
+/* DB Management Forms only */
+.db-management-form {
+    padding: 1rem;
+    border: var(--table-row-border);
+    border-radius: var(--table-border-radius);
+    box-shadow: var(--box-shadow-style);
+    background-color: var(--clr-table-row-odd-background-color);
+}
+
+.db-management-form + .db-management-form {
+    margin-top: 1rem;
+}
+
