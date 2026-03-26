@@ -29,7 +29,11 @@ class DbIndexView(LoginRequiredMixin, BaseView):
     # -----------------------------------------------------------------------
     def define_basic_elements(self):
         self.template_name = 'main_app/db_management.html'
-        self.form_class = CustomerForm  # Select the correct form for the view
+
+        self.form_class_delete_db = DeleteDatabaseForm
+        self.form_class_import_db = ImportDatabaseForm
+        self.form_class_export_db = ExportDatabaseForm
+
         self.page_title = _('Ohmi Audit Test')  # Mark for translation
         self.page_name = _("Database Management")
 
@@ -49,7 +53,7 @@ class DbIndexView(LoginRequiredMixin, BaseView):
         context = {
             'page_title': self.page_title,
             'page_name': self.page_name,
-            'redirect_to': self.request.GET.get('next', ''),  # Add this to ensure language switcher works
+            'redirect_to': self.request.GET.get('next', ''),
             'data_for_content_container_wrapper_top': kwargs.get('form', self.form_class()),
             # Pass the form instance, not the class
 

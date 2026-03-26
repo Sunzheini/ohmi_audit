@@ -13,7 +13,7 @@
         {% if request.user.is_authenticated %}
             {% block content_container %}
                 <div class="content-container">
-                    {% include "includes/content_container.html" %}
+                    {% include "includes/db_content_container.html" %}
                 </div>
             {% endblock %}
         {% endif %}

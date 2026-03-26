@@ -6,7 +6,7 @@ from common.common_forms_data import *
 from ohmi_audit.main_app.models import *
 
 
-__all__ = ['AuditForm', 'CustomerForm', 'SignUpForm', 'LoginForm']
+__all__ = ['AuditForm', 'CustomerForm', 'SignUpForm', 'LoginForm', 'DeleteDatabaseForm', 'ImportDatabaseForm', 'ExportDatabaseForm']
 UserModel = get_user_model()
 
 
@@ -85,3 +85,21 @@ class LoginForm(AuthenticationForm, ChangeLabelsMixin, FormWidgetStylesMixin):
     class Meta:
         model = UserModel
         fields = ['username', 'password']
+
+
+# ------------------------------------------------------------------------------------------
+# DB Forms
+# ------------------------------------------------------------------------------------------
+class DeleteDatabaseForm(forms.Form):
+    pass
+
+
+class ImportDatabaseForm(forms.Form):
+
+    select_file = forms.FileField(
+        label='',
+    )
+
+
+class ExportDatabaseForm(forms.Form):
+    pass

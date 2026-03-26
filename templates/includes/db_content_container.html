@@ -1,0 +1,44 @@
+{% load static i18n %}
+
+<div class="content-container-wrapper">
+    <div class="content-container-wrapper-top">
+{#        {% if data_for_content_container_wrapper_top %}#}
+{#            <form method="POST" enctype="multipart/form-data" id="custom_form" style="display: {{ form_visibility|default:'block' }};"#}
+{#            >#}
+{#                {% csrf_token %}#}
+{#                <table>#}
+{#                    {% for field in data_for_content_container_wrapper_top %}#}
+{#                        <tr>#}
+{#                            <td><b>{{ field.label_tag }}</b></td>#}
+{#                            <td>{{ field }}</td>#}
+{#                        </tr>#}
+{#                    {% endfor %}#}
+{#                </table>#}
+{#                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>#}
+{#            </form>#}
+{#        {% else %}#}
+{#            No forms#}
+{#        {% endif %}#}
+    </div>
+
+    {% if message %}
+        {{ message }}
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+        <div class="content-container-wrapper-bottom">
+            {% if data_for_content_container_wrapper_bottom %}
+
+{#                {% include "tables/customer_table.html" %}#}
+
+                {# pagination #}
+{#                {% if page_obj %}#}
+{#                    {% include "includes/pagination.html" %}#}
+{#                {% endif %}#}
+            {% else %}
+{#                <p>{% trans "No items found" %}</p>#}
+            {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
