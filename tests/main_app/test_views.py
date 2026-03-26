@@ -6,6 +6,14 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+# WhiteNoise's CompressedManifestStaticFilesStorage raises when the staticfiles
+# manifest is missing entries (e.g. in a fresh checkout without collectstatic).
+# Override it for all tests in this module so views render without errors.
+@pytest.fixture(autouse=True)
+def use_plain_static_storage(settings):
+    settings.STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+
 @pytest.mark.django_db
 class TestIndexView:
     def test_requires_login_redirects_anonymous(self, client):

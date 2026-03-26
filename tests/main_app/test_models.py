@@ -126,20 +126,20 @@ class TestCustomerModel(BaseModelTest):
     @pytest.fixture(autouse=True)
     def setup(self):
         self.valid_data = {
-            'first_name': 'Alice',
-            'last_name': 'Johnson',
-            'address': '123 Main St',
-            'phone': '+1987654321',
-            'email': 'alice@example.com'
+            'year': 2026,
+            'BG_Vor_Nr': 'BG-001/24',
+            'company_name_bg': 'Тест ООД',
+            'company_name_en': 'TEST LTD',
+            'company_id': 123456789,
+            'VAT_number': 'BG123456789',
         }
         self.customer = Customer.objects.create(**self.valid_data)
         self.instance = self.customer
-        self.invalid_field = 'phone'  # For base class test
+        self.invalid_field = 'BG_Vor_Nr'  # For base class test
 
     def test_max_length_constraints(self):
         """Test field length validations"""
-        # First name too long
-        self.customer.first_name = 'A' * (CustomModelData.MAX_FIRST_NAME_CHARFIELD_LENGTH + 1)
+        self.customer.BG_Vor_Nr = 'A' * (CustomModelData.MAX_CHARFIELD_LENGTH + 1)
         with pytest.raises(ValidationError):
             self.customer.full_clean()
 
@@ -147,9 +147,9 @@ class TestCustomerModel(BaseModelTest):
         """Test validation passes with correct data"""
         self.customer.validate_model()  # Should not raise
 
-    def test_validate_model_raises_on_empty_address(self):
-        """Test address validation"""
-        self.customer.address = ""
+    def test_validate_model_raises_on_empty_BG_Vor_Nr(self):
+        """Test BG_Vor_Nr validation"""
+        self.customer.BG_Vor_Nr = ""
         with pytest.raises(ValidationError) as exc_info:
             self.customer.validate_model()
-        assert "Address is required" in str(exc_info.value)
+        assert "BG_Vor_Nr is required" in str(exc_info.value)
