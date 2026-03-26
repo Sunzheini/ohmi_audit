@@ -95,7 +95,8 @@ class IndexView(LoginRequiredMixin, BaseView):
                         Q(company_name_en__icontains=search_query) |
                         Q(BG_Vor_Nr__icontains=search_query) |
                         Q(company_id__icontains=search_query) |
-                        Q(year__icontains=search_query)
+                        Q(year__icontains=search_query) |
+                        Q(VAT_number__icontains=search_query)
                     )
                     
                     # Serialize the results
