@@ -25,7 +25,6 @@ docker compose exec web pytest -v
 ```
 
 ---
-
 ## Local Development (no Docker) � PyCharm
 
 Run Django directly in PyCharm while Postgres and Redis run in lightweight

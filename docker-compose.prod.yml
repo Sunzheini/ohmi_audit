@@ -13,7 +13,7 @@ services:
       # Override .env values for Docker networking
       - DOCKER=True
       - DEBUG=False
-      - DATABASE_URL=postgresql://postgres_user:password@db/ohmi_audit_db
+      - DATABASE_URL=postgresql://postgres_user:${DB_PASSWORD}@db/${DB_NAME}
     volumes:
       - media_volume:/app/media_files
     depends_on:
