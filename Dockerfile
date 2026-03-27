@@ -3,45 +3,46 @@
 # FROM is used to specify the base image for the Docker image.
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
-#FROM python:3.11-bullseye  # More complete OS base
 
 # Set environment variables
 # Prevents Python from writing .pyc files
 ENV PYTHONDONTWRITEBYTECODE 1
 # Ensures that Python output is sent straight to terminal (e.g. for logging)
 ENV PYTHONUNBUFFERED 1
+# Tell Poetry not to create a virtualenv — we're already inside a container
+ENV POETRY_VIRTUALENVS_CREATE=false
+ENV POETRY_NO_INTERACTION=1
 
 # Creates and sets /app as the working directory (like cd /app)
 # All subsequent commands will run from this directory
 WORKDIR /app
 
-# Install system dependencies
-# Updates package lists (apt-get update)
-# Installs essential build tools and PostgreSQL client library
-# Cleans up to reduce image size
+# Install system dependencies (including curl for healthcheck)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Poetry
+RUN pip install --no-cache-dir poetry
 
-# Install Celery
-RUN pip install celery
+# Copy only dependency files first — better Docker layer caching
+# (dependencies are re-installed only when pyproject.toml/poetry.lock change)
+COPY pyproject.toml poetry.lock ./
 
-# command to optimize build caching
-COPY --chown=1000:1000 . .
-# Copies all files from your local directory to the container's /app directory
+# Install production dependencies (skip installing the project root itself)
+RUN poetry install --no-root --no-ansi
+
+# Copy the rest of the project
 COPY . .
 
-# Collect static files (for production)
-# Gathers all static files in one location (for production serving)
-RUN python manage.py collectstatic --noinput
+# Copy and make entrypoint executable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# collectstatic and migrate are handled in entrypoint.sh at runtime
+# (SECRET_KEY and DB are not available during build)
 
-# to run docker on render.com
-# Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "ohmi_audit.wsgi:application"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "ohmi_audit.wsgi:application"]

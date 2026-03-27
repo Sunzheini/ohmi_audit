@@ -16,8 +16,8 @@ from ohmi_audit.main_app.views import (
     CustomDataEndPointView,
 
     # Task views
-    TaskTestView,
-    task_status,
+    # TaskTestView,
+    # task_status,
 
     # Other views
     about_us_view,
@@ -67,9 +67,9 @@ urlpatterns = [
     # Celery Example
     # ----------------------------------------------------------------
     # http://localhost:8000/celery-example/
-    path('celery-example/', TaskTestView.as_view(), name='celery-example-view'),
+    # path('celery-example/', TaskTestView.as_view(), name='celery-example-view'),
     # status endpoint for Celery tasks
-    path('celery-example-task-status/<str:task_id>/', task_status, name='celery-example-task-status'),
+    # path('celery-example-task-status/<str:task_id>/', task_status, name='celery-example-task-status'),
 
     # ----------------------------------------------------------------
     path('health/', lambda request: HttpResponse(status=200)),

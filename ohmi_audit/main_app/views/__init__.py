@@ -33,8 +33,8 @@ __all__ = [
     'CustomDataEndPointView',
     
     # Task views
-    'TaskTestView',
-    'task_status',
+    # 'TaskTestView',
+    # 'task_status',
     
     # Other views
     'about_us_view',

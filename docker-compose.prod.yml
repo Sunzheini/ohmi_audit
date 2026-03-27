@@ -1,28 +1,27 @@
-# Docker Compose file is used to define and run multi-container Docker applications.
+# docker-compose.prod.yml  — used on AWS EC2 (pulls image from Docker Hub, no build)
 version: '3.8'
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/app
-      - media_volume:/app/media_files  # Persistent media storage
+    image: sunzheini1407/ohmi_audit:latest   # pulled from Docker Hub
+    # entrypoint.sh (baked into image) runs collectstatic + migrate automatically
     ports:
       - "8000:8000"
     env_file:
       - .env
     environment:
-      # These override .env values for Docker networking
+      # Override .env values for Docker networking
       - DOCKER=True
+      - DEBUG=False
       - DATABASE_URL=postgresql://postgres_user:password@db/ohmi_audit_db
+    volumes:
+      - media_volume:/app/media_files
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 30s
@@ -31,24 +30,27 @@ services:
 
   db:
     image: postgres:13
+    env_file:
+      - .env
     environment:
-      - POSTGRES_DB=ohmi_audit_db
-      - POSTGRES_USER=postgres_user
-      - POSTGRES_PASSWORD=password
+      # Read directly from .env so they always match DB_* vars used by Django
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres_user -d ohmi_audit_db"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  redis:  # Add this if using Redis
+  redis:
     image: redis:6
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -60,3 +62,4 @@ volumes:
   media_volume:
   postgres_data:
   redis_data:
+
