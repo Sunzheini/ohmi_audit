@@ -1,4 +1,4 @@
-﻿# ohmi_audit
+# ohmi_audit
 
 A program for managing audits by a certification company.
 
@@ -26,7 +26,7 @@ docker compose exec web pytest -v
 
 ---
 
-## Local Development (no Docker) — PyCharm
+## Local Development (no Docker) � PyCharm
 
 Run Django directly in PyCharm while Postgres and Redis run in lightweight
 Docker containers (no full docker-compose stack needed).
@@ -45,12 +45,12 @@ docker compose -f docker-compose.services.yml down -v
 ```
 
 > The `.env` has `DOCKER=False`, so Django connects to `localhost:5432` and
-> `localhost:6379` — exactly what these containers expose.
+> `localhost:6379` � exactly what these containers expose.
 
 ### Run Django
 
 ```powershell
-# First time only — installs all dependencies into .venv
+# First time only � installs all dependencies into .venv
 poetry install
 
 # Apply any new migrations
@@ -70,7 +70,7 @@ All services (Django, PostgreSQL, Redis) run in containers.
 `entrypoint.sh` automatically runs `collectstatic` and `migrate` on every container start.
 
 ```powershell
-# First time or after any code change вЂ” build + run
+# First time or after any code change — build + run
 docker compose up --build
 
 # Subsequent runs (no code changes)
@@ -84,7 +84,8 @@ docker compose down -v
 ```
 
 ```
-# run in separate terminal: docker compose exec web python manage.py createsuperuser
+# run in a separate terminal:
+docker compose exec web python manage.py createsuperuser
 ```
 
 
@@ -105,53 +106,61 @@ Access: http://localhost:8000
 
 ```
 Local machine            Docker Hub               AWS EC2
-в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ   push в†’  в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ   pull в†’   в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
+─────────────   push →  ────────────   pull →   ──────────────────────────
 docker build             sunzheini1407/           web  (gunicorn)
 docker push              ohmi_audit:latest        db   (postgres:13)
                                                   redis (redis:6)
 ```
 
-On EC2 there is **no source code** and **no Dockerfile** вЂ” only:
+On EC2 there is **no source code** and **no Dockerfile** — only:
 - `docker-compose.yml` (copied once from `docker-compose.prod.yml`)
 - `.env` (created manually on EC2)
 
 ---
 
-### Step 0 вЂ” One-time: AWS Security Group
+### Step 0 — One-time: AWS Security Group
 
-In **AWS Console в†’ EC2 в†’ Security Groups в†’ your instance's SG в†’ Inbound Rules**, add:
+
+1. In the EC2 console, click "Security Groups" in the left navigation pane.
+2. Find and select the security group associated with your instance.
+3. Click the "Inbound rules" tab, then the "Edit inbound rules" button.
+
+In **AWS Console → EC2 → Security Groups → your instance's SG → Inbound Rules**, add:
 
 | Type       | Protocol | Port | Source    | Purpose             |
 |------------|----------|------|-----------|---------------------|
-| SSH        | TCP      | 22   | My IP     | Your SSH access     |
-| Custom TCP | TCP      | 8000 | 0.0.0.0/0 | Public web access   |
+| SSH        | TCP      | 22   | My IP          | Your SSH access     |
+| Custom TCP | TCP      | 8000 | Anywhere IPv4  | Public web access   |
 
-> рџ’Ў Assign an **Elastic IP** (EC2 в†’ Elastic IPs в†’ Allocate в†’ Associate) so the IP
+> 💡 Assign an **Elastic IP** (EC2 → Elastic IPs → Allocate → Associate) so the IP
 > never changes after a restart.
 
 ---
 
-### Step 1 вЂ” One-time: Fix .pem Key Permissions (PowerShell)
+### Step 1 — One-time: Fix .pem Key Permissions (PowerShell)
 
 ```powershell
 # !! Set this to your actual .pem file path before running any command below !!
 $pem = "D:\BigBusiness\OhmiCert\19.03.2026\keypair1.pem"
-icacls $pem /inheritance:r
-icacls $pem /grant:r "${env:USERNAME}:R"
+icacls $pem /inheritance:r                              # remove all inherited ACEs
+icacls $pem /remove "NT AUTHORITY\Authenticated Users"  # remove explicit broad ACE
+icacls $pem /remove "BUILTIN\Users"                     # remove Users group ACE
+icacls $pem /grant:r "${env:USERNAME}:R"                # grant read to current user only
+icacls $pem                                             # verify: only your user + Administrators + SYSTEM
 ```
 
 ---
 
-### Step 2 вЂ” One-time: SSH Into EC2
+### Step 2 — One-time: SSH Into EC2
 
 ```powershell
-# EC2 public IP is shown in AWS Console в†’ EC2 в†’ Instances
-ssh -i "D:\BigBusiness\OhmiCert\19.03.2026\keypair1.pem" ec2-user@13.62.222.241
+# EC2 public IP is shown in AWS Console → EC2 → Instances
+ssh -i "D:\BigBusiness\OhmiCert\19.03.2026\keypair1.pem" ec2-user@13.50.70.50
 ```
 
 ---
 
-### Step 3 вЂ” One-time: Install Docker on EC2 (Amazon Linux 2)
+### Step 3 — One-time: Install Docker on EC2 (Amazon Linux 2)
 
 ```bash
 sudo yum update -y
@@ -169,25 +178,24 @@ docker --version
 
 ---
 
-### Step 4 вЂ” One-time: Install Docker Compose Plugin on EC2
+### Step 4 — One-time: Install Docker Compose Plugin on EC2
 
 ```bash
 sudo mkdir -p /usr/local/lib/docker/cli-plugins
-sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
-     -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 docker compose version   # verify
 ```
 
 ---
 
-### Step 5 вЂ” One-time: Transfer Files to EC2
+### Step 5 — One-time: Transfer Files to EC2
 
 Run from your **local PowerShell** (not EC2):
 
 ```powershell
 $pem  = "D:\BigBusiness\OhmiCert\19.03.2026\keypair1.pem"
-$ec2  = "ec2-user@13.62.222.241"
+$ec2  = "ec2-user@13.50.70.50"
 $proj = "D:\Study\Projects\PycharmProjects\ohmi_audit"
 
 # Create app folder on EC2
@@ -196,41 +204,19 @@ ssh -i $pem $ec2 "mkdir -p ~/app"
 # Transfer the production docker-compose as docker-compose.yml
 scp -i $pem "$proj\docker-compose.prod.yml" "${ec2}:~/app/docker-compose.yml"
 
-# Transfer .env (secrets вЂ” never commit to git)
-scp -i $pem "$proj\.env" "${ec2}:~/app/.env"
+# Transfer .env.prod as .env — already fully production-ready, no editing on EC2 needed
+scp -i $pem "$proj\.env.prod" "${ec2}:~/app/.env"
 ```
+
+> `.env.prod` has a real `SECRET_KEY` already baked in, `DEBUG=False`, and
+> the correct `ALLOWED_HOSTS`/`CSRF_TRUSTED_ORIGINS` for `13.50.70.50`.
+> Nothing to touch on EC2 after this step.
 
 ---
 
-### Step 6 вЂ” One-time: Harden .env on EC2
+### Step 6 — Every Deployment: Build + Push + Deploy
 
-SSH into EC2 and edit the file:
-
-```bash
-nano ~/app/.env
-```
-
-Change these values for production:
-
-```dotenv
-DEBUG=False
-SECRET_KEY=<run: python -c "import secrets; print(secrets.token_hex(50))">
-
-ALLOWED_HOSTS=localhost,127.0.0.1,web,13.62.222.241
-CSRF_TRUSTED_ORIGINS=http://13.62.222.241:8000
-
-DB_PASSWORD=<use-a-strong-password>
-```
-
-> ⚠️ Never use the insecure dev `SECRET_KEY` in production.  
-> `docker-compose.yml` reads `DB_PASSWORD` via `${DB_PASSWORD}` substitution,  
-> so Postgres and Django always stay in sync — no other file to edit.
-
----
-
-### Step 7 вЂ” Every Deployment: Build + Push + Deploy
-
-**Local machine (PowerShell) вЂ” after every code change:**
+**Local machine (PowerShell) — after every code change:**
 
 ```powershell
 cd "D:\Study\Projects\PycharmProjects\ohmi_audit"
@@ -241,7 +227,7 @@ docker build -t sunzheini1407/ohmi_audit:latest .
 docker push sunzheini1407/ohmi_audit:latest
 ```
 
-**EC2 (bash) вЂ” pull and restart:**
+**EC2 (bash) — pull and restart:**
 
 ```bash
 cd ~/app
@@ -251,14 +237,14 @@ docker compose up -d
 docker compose ps   # all should be Up
 ```
 
-Access: `http://13.62.222.241:8000`
+Access: `http://13.50.70.50:8000`
 
 > `entrypoint.sh` (baked into the image) runs `collectstatic` and `migrate`
-> automatically before gunicorn starts вЂ” no manual migration step needed.
+> automatically before gunicorn starts — no manual migration step needed.
 
 ---
 
-### Step 8 вЂ” One-time: Create Superuser on EC2
+### Step 7 — One-time: Create Superuser on EC2
 
 ```bash
 docker compose exec web python manage.py createsuperuser
@@ -291,7 +277,7 @@ docker compose up --build
 # View live logs
 docker compose logs -f web
 
-# Free up disk (safe вЂ” does not touch running containers or DB volumes)
+# Free up disk (safe — does not touch running containers or DB volumes)
 docker system prune -af
 
 # Check disk usage
@@ -313,20 +299,18 @@ docker system prune -af   # removes stopped containers, unused images
 df -h                     # check free space
 ```
 
-If still full, expand the EBS volume in AWS Console в†’ EC2 в†’ Volumes в†’ Modify Volume.
+If still full, expand the EBS volume in AWS Console → EC2 → Volumes → Modify Volume.
 
 ---
 
 ## Notes
 
 - `entrypoint.sh` runs `collectstatic` and `migrate` on every container start.
-  Both are idempotent вЂ” safe to run repeatedly.
+  Both are idempotent — safe to run repeatedly.
 - `DOCKER=False` in `.env` is overridden to `DOCKER=True` by the `environment:`
-  section in docker-compose files вЂ” no need to edit `.env` when using Docker.
-- `.env` is in `.gitignore` and `.dockerignore` вЂ” never pushed to GitHub or baked
+  section in docker-compose files — no need to edit `.env` when using Docker.
+- `.env` is in `.gitignore` and `.dockerignore` — never pushed to GitHub or baked
   into the image. Must be created manually on each machine.
 - EC2 `t2.micro` (free tier) may struggle with Gunicorn. Use `t2.small` or larger.
 - If EC2 IP changes after a restart (no Elastic IP), update `ALLOWED_HOSTS` and
   `CSRF_TRUSTED_ORIGINS` in `~/app/.env` and run `docker compose restart web`.
-
-

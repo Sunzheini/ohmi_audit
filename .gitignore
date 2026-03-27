@@ -9,3 +9,5 @@ venv/
 /logs/
 Thumbs.db
 .env
+.env.prod
+
