@@ -18,6 +18,8 @@ services:
       # These override .env values for Docker networking
       - DOCKER=True
       - DATABASE_URL=postgresql://postgres_user:password@db/ohmi_audit_db
+      # Use simple static file storage locally (avoids collectstatic hash failures)
+      - DJANGO_DISABLE_WHITENOISE=True
     depends_on:
       db:
         condition: service_healthy

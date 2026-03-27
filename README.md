@@ -83,6 +83,11 @@ docker compose down
 docker compose down -v
 ```
 
+```
+# run in separate terminal: docker compose exec web python manage.py createsuperuser
+```
+
+
 Access: http://localhost:8000
 
 > **Note**: `docker-compose.yml` automatically overrides `DOCKER=False` from `.env`
